@@ -9,6 +9,27 @@ wiki/
 ├── getting-started.md    # Getting started
 ├── doc-map.md           # Documentation index (this file)
 │
+├── cli/                 # CLI Core and Entry
+│   ├── _index.md       # CLI module overview
+│   ├── entrypoints.md   # CLI entry points
+│   └── startup.md       # Startup and fast paths
+│
+├── agent/               # Agent and Coordination
+│   ├── _index.md       # Agent module overview
+│   ├── agent-tool.md    # Agent tool
+│   └── fork-subagent.md # Fork subagent
+│
+├── remote/              # Remote and Service Extensions
+│   ├── _index.md       # Remote extensions overview
+│   ├── bridge.md       # Remote Control Bridge
+│   └── mcp.md          # MCP client
+│
+├── plugins/             # Plugins and Skills System
+│   ├── _index.md       # Plugin system overview
+│   ├── builtin.md      # Built-in plugins
+│   ├── bundled-skills.md # Bundled skills
+│   └── companion.md    # Companion system
+│
 ├── core/                # Core modules
 │   ├── _index.md       # Core modules overview
 │   ├── commands.md     # Command system
@@ -41,12 +62,20 @@ flowchart LR
     Commands[Command System]
     Services[Service Layer]
     Tools[Tool System]
+    CLI[CLI Entry]
+    Agent[Agent System]
+    Remote[Remote Extensions]
+    Plugins[Plugins System]
 
     UI --> Core
     UI --> Commands
+    CLI --> Core
     Commands --> Core
     Core --> Tools
     Core --> Services
+    Agent --> Core
+    Remote --> Services
+    Plugins --> Services
 ```
 
 ## Documentation Checklist
@@ -57,8 +86,21 @@ flowchart LR
 | [architecture.md](architecture.md) | System architecture overview | High |
 | [getting-started.md](getting-started.md) | Getting started guide | High |
 | [doc-map.md](doc-map.md) | Documentation index | High |
-| [core/commands.md](core/commands.md) | Command system | High |
-| [core/tools.md](core/tools.md) | Tool system | High |
+| [cli/_index.md](cli/_index.md) | CLI Core and Entry overview | High |
+| [cli/entrypoints.md](cli/entrypoints.md) | CLI entry points | High |
+| [cli/startup.md](cli/startup.md) | Startup and fast paths | High |
+| [agent/_index.md](agent/_index.md) | Agent and Coordination overview | High |
+| [agent/agent-tool.md](agent/agent-tool.md) | Agent tool | High |
+| [agent/fork-subagent.md](agent/fork-subagent.md) | Fork subagent | High |
+| [remote/_index.md](remote/_index.md) | Remote and Service Extensions overview | High |
+| [remote/bridge.md](remote/bridge.md) | Remote Control Bridge | High |
+| [remote/mcp.md](remote/mcp.md) | MCP client | High |
+| [plugins/_index.md](plugins/_index.md) | Plugins and Skills System overview | High |
+| [plugins/builtin.md](plugins/builtin.md) | Built-in plugins | High |
+| [plugins/bundled-skills.md](plugins/bundled-skills.md) | Bundled skills | High |
+| [plugins/companion.md](plugins/companion.md) | Companion system | Medium |
+| [core/commands.md](core/commands.md) | Command system | Medium |
+| [core/tools.md](core/tools.md) | Tool system | Medium |
 | [core/query.md](core/query.md) | Query engine | Medium |
 | [services/api.md](services/api.md) | API service | Medium |
 | [services/mcp.md](services/mcp.md) | MCP service | Medium |

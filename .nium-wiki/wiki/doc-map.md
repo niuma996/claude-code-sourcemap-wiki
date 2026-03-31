@@ -9,6 +9,27 @@ wiki/
 ├── getting-started.md    # 快速开始
 ├── doc-map.md           # 文档索引（本文档）
 │
+├── cli/                 # CLI 核心与入口
+│   ├── _index.md       # CLI 模块概览
+│   ├── entrypoints.md   # CLI 入口点
+│   └── startup.md       # 启动流程与快速路径
+│
+├── agent/               # 智能体与协调
+│   ├── _index.md       # 智能体模块概览
+│   ├── agent-tool.md    # Agent 工具
+│   └── fork-subagent.md # Fork 子智能体
+│
+├── remote/              # 远程与服务扩展
+│   ├── _index.md       # 远程扩展概览
+│   ├── bridge.md       # Remote Control Bridge
+│   └── mcp.md          # MCP 客户端
+│
+├── plugins/             # 插件与技能系统
+│   ├── _index.md       # 插件系统概览
+│   ├── builtin.md      # 内置插件
+│   ├── bundled-skills.md # 打包技能
+│   └── companion.md    # 伴侣系统
+│
 ├── core/                # 核心模块
 │   ├── _index.md       # 核心模块概览
 │   ├── commands.md     # 命令系统
@@ -57,8 +78,21 @@ flowchart LR
 | [architecture.md](architecture.md) | 系统架构总览 | 高 |
 | [getting-started.md](getting-started.md) | 快速开始指南 | 高 |
 | [doc-map.md](doc-map.md) | 文档索引 | 高 |
-| [core/commands.md](core/commands.md) | 命令系统 | 高 |
-| [core/tools.md](core/tools.md) | 工具系统 | 高 |
+| [cli/_index.md](cli/_index.md) | CLI 核心与入口概览 | 高 |
+| [cli/entrypoints.md](cli/entrypoints.md) | CLI 入口点 | 高 |
+| [cli/startup.md](cli/startup.md) | 启动流程与快速路径 | 高 |
+| [agent/_index.md](agent/_index.md) | 智能体与协调概览 | 高 |
+| [agent/agent-tool.md](agent/agent-tool.md) | Agent 工具 | 高 |
+| [agent/fork-subagent.md](agent/fork-subagent.md) | Fork 子智能体 | 高 |
+| [remote/_index.md](remote/_index.md) | 远程与服务扩展概览 | 高 |
+| [remote/bridge.md](remote/bridge.md) | Remote Control Bridge | 高 |
+| [remote/mcp.md](remote/mcp.md) | MCP 客户端 | 高 |
+| [plugins/_index.md](plugins/_index.md) | 插件与技能系统概览 | 高 |
+| [plugins/builtin.md](plugins/builtin.md) | 内置插件 | 高 |
+| [plugins/bundled-skills.md](plugins/bundled-skills.md) | 打包技能 | 高 |
+| [plugins/companion.md](plugins/companion.md) | 伴侣系统 | 中 |
+| [core/commands.md](core/commands.md) | 命令系统 | 中 |
+| [core/tools.md](core/tools.md) | 工具系统 | 中 |
 | [core/query.md](core/query.md) | 查询引擎 | 中 |
 | [services/api.md](services/api.md) | API 服务 | 中 |
 | [services/mcp.md](services/mcp.md) | MCP 服务 | 中 |

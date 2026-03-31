@@ -2,11 +2,28 @@
 - [System Architecture](/architecture.md)
 - [Getting Started](/getting-started.md)
 - [Documentation Map](/doc-map.md)
+- agent
+  - [Agent and Coordination](/agent/_index.md)
+  - [Agent Tool](/agent/agent-tool.md)
+  - [Fork Subagent](/agent/fork-subagent.md)
+- cli
+  - [CLI Core and Entry](/cli/_index.md)
+  - [CLI Entry Points](/cli/entrypoints.md)
+  - [Startup and Fast Paths](/cli/startup.md)
 - core
   - [Core Modules](/core/_index.md)
   - [Command System](/core/commands.md)
   - [Query Engine](/core/query.md)
   - [Tool System](/core/tools.md)
+- plugins
+  - [Plugins and Skills System](/plugins/_index.md)
+  - [Built-in Plugins](/plugins/builtin.md)
+  - [Bundled Skills](/plugins/bundled-skills.md)
+  - [Companion System](/plugins/companion.md)
+- remote
+  - [Remote and Service Extensions](/remote/_index.md)
+  - [Remote Control Bridge](/remote/bridge.md)
+  - [MCP Client](/remote/mcp.md)
 - services
   - [Service Layer](/services/_index.md)
   - [API Service](/services/api.md)
