@@ -1,0 +1,18 @@
+- [Claude Code](/)
+- [System Architecture](/architecture.md)
+- [Getting Started](/getting-started.md)
+- [Documentation Map](/doc-map.md)
+- core
+  - [Core Modules](/core/_index.md)
+  - [Command System](/core/commands.md)
+  - [Query Engine](/core/query.md)
+  - [Tool System](/core/tools.md)
+- services
+  - [Service Layer](/services/_index.md)
+  - [API Service](/services/api.md)
+  - [MCP Service](/services/mcp.md)
+  - [OAuth Authentication](/services/oauth.md)
+- ui
+  - [User Interface Layer](/ui/_index.md)
+  - [Ink Rendering Engine](/ui/ink.md)
+  - [REPL Interface](/ui/repl.md)

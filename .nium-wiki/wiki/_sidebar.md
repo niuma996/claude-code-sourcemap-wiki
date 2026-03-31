@@ -1,0 +1,18 @@
+- [Claude Code](/)
+- [系统架构](/architecture.md)
+- [快速开始](/getting-started.md)
+- [文档地图](/doc-map.md)
+- core
+  - [核心模块](/core/_index.md)
+  - [命令系统](/core/commands.md)
+  - [查询引擎](/core/query.md)
+  - [工具系统](/core/tools.md)
+- services
+  - [服务层](/services/_index.md)
+  - [API 服务](/services/api.md)
+  - [MCP 服务](/services/mcp.md)
+  - [OAuth 认证](/services/oauth.md)
+- ui
+  - [用户界面层](/ui/_index.md)
+  - [Ink 渲染引擎](/ui/ink.md)
+  - [REPL 界面](/ui/repl.md)

@@ -1,0 +1,100 @@
+{
+  "entries": {
+    "en:_sidebar.md": {
+      "hash": "50201b41e15a",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:architecture.md": {
+      "hash": "7cdb2f52effc",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:core/_index.md": {
+      "hash": "9d04cb546a67",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:core/commands.md": {
+      "hash": "b7529194dfdf",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:core/query.md": {
+      "hash": "d307110fd6aa",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:core/tools.md": {
+      "hash": "ae96d177673a",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:doc-map.md": {
+      "hash": "a9c212072eba",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:getting-started.md": {
+      "hash": "211210385d30",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:index.md": {
+      "hash": "58235f1427a3",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:services/_index.md": {
+      "hash": "603f46ac4002",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:services/api.md": {
+      "hash": "f203cf8c6414",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:services/mcp.md": {
+      "hash": "3a7e8ecb0755",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:services/oauth.md": {
+      "hash": "e477cc3ac811",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:ui/_index.md": {
+      "hash": "006f954a02bd",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:ui/ink.md": {
+      "hash": "38266c1d538e",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    },
+    "en:ui/repl.md": {
+      "hash": "cdb575aa66f1",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-03-31T10:07:06.090Z"
+    }
+  }
+}

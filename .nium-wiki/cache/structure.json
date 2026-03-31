@@ -1,0 +1,29 @@
+{
+  "projectName": "claude-code-sourcemap",
+  "projectType": [],
+  "entryPoints": [],
+  "modules": [
+    {
+      "name": "package",
+      "path": "package",
+      "files": 2,
+      "type": "module"
+    },
+    {
+      "name": "restored-src",
+      "path": "restored-src",
+      "files": 1901,
+      "type": "module"
+    }
+  ],
+  "docsFound": [
+    "README.md",
+    "readme.md"
+  ],
+  "stats": {
+    "totalFiles": 1905,
+    "totalModules": 2,
+    "totalDocs": 2
+  },
+  "createdAt": "2026-03-31T09:12:15.200Z"
+}

@@ -1,0 +1,18 @@
+{
+  "version": "0.0.0",
+  "project": "claude-code-sourcemap",
+  "branch": "main",
+  "createdAt": "2026-03-31T09:12:06.835Z",
+  "updatedAt": "2026-03-31T10:30:00.000Z",
+  "filesDocumented": 15,
+  "modulesCount": 8,
+  "documentation": {
+    "language": "zh",
+    "totalFiles": 15,
+    "modules": [
+      "core",
+      "services",
+      "ui"
+    ]
+  }
+}
