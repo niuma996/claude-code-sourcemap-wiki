@@ -8,7 +8,8 @@
     "coverage",
     "__pycache__",
     "venv",
-    ".venv"
+    ".venv",
+    ".claude"
   ],
   "useGitignore": true
 }

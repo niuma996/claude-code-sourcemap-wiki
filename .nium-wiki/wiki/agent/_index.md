@@ -17,6 +17,9 @@
 |------|------|------|
 | [Agent 工具](agent-tool.md) | 子智能体启动框架 | [agent-tool.md](agent-tool.md) |
 | [Fork 子智能体](fork-subagent.md) | Fork 分叉机制 | [fork-subagent.md](fork-subagent.md) |
+| [会话历史](session-history.md) | Agent SDK 会话事件历史读取 | [session-history.md](session-history.md) |
+| [协调器模式](../coordinator/coordinator.md) | 多智能体协调编排 | [coordinator.md](../coordinator/coordinator.md) |
+| [AI 伴侣](../buddy/_index.md) | 终端伴侣 UI 与交互 | [buddy/index.md](../buddy/_index.md) |
 
 ## 架构位置
 
@@ -30,6 +33,15 @@ flowchart TB
         prompt["prompt.ts"]
         localTask["LocalAgentTask"]
         remoteTask["RemoteAgentTask"]
+        sessionHistory["sessionHistory.ts"]
+        coordinatorMode["coordinatorMode.ts"]
+    end
+    subgraph Buddy["AI 伴侣"]
+        companion["companion.ts"]
+        sprites["sprites.ts"]
+        CompanionSprite["CompanionSprite.tsx"]
+        promptBuddy["prompt.ts"]
+        notifications["useBuddyNotification.tsx"]
     end
     AgentTool --> runAgent
     runAgent --> localTask
@@ -37,6 +49,11 @@ flowchart TB
     AgentTool --> forkSubagent
     AgentTool --> loadAgentsDir
     AgentTool --> prompt
+    prompt --> sessionHistory
+    AgentTool -.-> coordinatorMode
+    CompanionSprite --> sprites
+    companion --> sprites
+    companion --> promptBuddy
 ```
 
 ## 核心概念

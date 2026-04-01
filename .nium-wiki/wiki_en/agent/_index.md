@@ -17,6 +17,9 @@ The agent system supports three execution modes: local execution, remote CCR exe
 |--------|-------------|----------|
 | [Agent Tool](agent-tool.md) | Subagent spawning framework | [agent-tool.md](agent-tool.md) |
 | [Fork Subagent](fork-subagent.md) | Fork mechanism | [fork-subagent.md](fork-subagent.md) |
+| [Session History](session-history.md) | Agent SDK session event history | [session-history.md](session-history.md) |
+| [Coordinator Mode](../coordinator/coordinator.md) | Multi-agent coordination orchestration | [coordinator.md](../coordinator/coordinator.md) |
+| [AI Buddy](../buddy/_index.md) | Terminal companion UI & interaction | [buddy/index.md](../buddy/_index.md) |
 
 ## Architecture Position
 
@@ -30,6 +33,15 @@ flowchart TB
         prompt["prompt.ts"]
         localTask["LocalAgentTask"]
         remoteTask["RemoteAgentTask"]
+        sessionHistory["sessionHistory.ts"]
+        coordinatorMode["coordinatorMode.ts"]
+    end
+    subgraph Buddy["AI Buddy"]
+        companion["companion.ts"]
+        sprites["sprites.ts"]
+        CompanionSprite["CompanionSprite.tsx"]
+        promptBuddy["prompt.ts"]
+        notifications["useBuddyNotification.tsx"]
     end
     AgentTool --> runAgent
     runAgent --> localTask
@@ -37,6 +49,11 @@ flowchart TB
     AgentTool --> forkSubagent
     AgentTool --> loadAgentsDir
     AgentTool --> prompt
+    prompt --> sessionHistory
+    AgentTool -.-> coordinatorMode
+    CompanionSprite --> sprites
+    companion --> sprites
+    companion --> promptBuddy
 ```
 
 ## Core Concepts

@@ -1,100 +1,226 @@
 {
   "entries": {
     "en:_sidebar.md": {
-      "hash": "50201b41e15a",
+      "hash": "ba5bde5e7578",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:architecture.md": {
-      "hash": "7cdb2f52effc",
+      "hash": "ff14c780d9f3",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:core/_index.md": {
       "hash": "9d04cb546a67",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:core/commands.md": {
       "hash": "b7529194dfdf",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:core/query.md": {
       "hash": "d307110fd6aa",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:core/tools.md": {
       "hash": "ae96d177673a",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:doc-map.md": {
-      "hash": "a9c212072eba",
+      "hash": "7eae5ee1b287",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:getting-started.md": {
       "hash": "211210385d30",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:index.md": {
       "hash": "58235f1427a3",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:services/_index.md": {
       "hash": "603f46ac4002",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:services/api.md": {
       "hash": "f203cf8c6414",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:services/mcp.md": {
       "hash": "3a7e8ecb0755",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:services/oauth.md": {
       "hash": "e477cc3ac811",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:ui/_index.md": {
       "hash": "006f954a02bd",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:ui/ink.md": {
       "hash": "38266c1d538e",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     },
     "en:ui/repl.md": {
       "hash": "cdb575aa66f1",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-03-31T10:07:06.090Z"
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:agent/_index.md": {
+      "hash": "a3f15b1bba32",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:agent/agent-tool.md": {
+      "hash": "242e89dd7c0a",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:agent/fork-subagent.md": {
+      "hash": "43b156fb3e5a",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:agent/session-history.md": {
+      "hash": "ecd7e3cb9a50",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:buddy/_index.md": {
+      "hash": "0a3e5f46399b",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:buddy/buddy-notifications.md": {
+      "hash": "1ddb94178778",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:buddy/buddy-prompt.md": {
+      "hash": "78570127f6a2",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:buddy/companion-sprite-ui.md": {
+      "hash": "affd692c7741",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:buddy/companion.md": {
+      "hash": "3708c15a402d",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:buddy/sprites.md": {
+      "hash": "d40f25a14c15",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:cli/_index.md": {
+      "hash": "9f8361b2ef67",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:cli/entrypoints.md": {
+      "hash": "887fb2341828",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:cli/startup.md": {
+      "hash": "409639729640",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:coordinator/coordinator.md": {
+      "hash": "c678c5c14d0b",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:plugins/_index.md": {
+      "hash": "dbeeea7911c0",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:plugins/builtin.md": {
+      "hash": "ebeb28a2cb9d",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:plugins/bundled-skills.md": {
+      "hash": "888b35bd4aa7",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:plugins/companion.md": {
+      "hash": "624ca91f827c",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:remote/_index.md": {
+      "hash": "c2c843ba4370",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:remote/bridge.md": {
+      "hash": "f706b99e2fa6",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:remote/mcp.md": {
+      "hash": "607b2cec477a",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
     }
   }
 }

@@ -6,10 +6,20 @@
   - [Agent and Coordination](/agent/_index.md)
   - [Agent Tool](/agent/agent-tool.md)
   - [Fork Subagent](/agent/fork-subagent.md)
+  - [Session History](/agent/session-history.md)
+- buddy
+  - [AI Buddy (Companion)](/buddy/_index.md)
+  - [Buddy Notifications & Teaser](/buddy/buddy-notifications.md)
+  - [Buddy Prompt Integration](/buddy/buddy-prompt.md)
+  - [CompanionSprite UI](/buddy/companion-sprite-ui.md)
+  - [Companion Roll System](/buddy/companion.md)
+  - [Sprites Rendering](/buddy/sprites.md)
 - cli
   - [CLI Core and Entry](/cli/_index.md)
   - [CLI Entry Points](/cli/entrypoints.md)
   - [Startup and Fast Paths](/cli/startup.md)
+- coordinator
+  - [Coordinator Mode](/coordinator/coordinator.md)
 - core
   - [Core Modules](/core/_index.md)
   - [Command System](/core/commands.md)

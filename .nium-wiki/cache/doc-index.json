@@ -1,5 +1,71 @@
 {
-  "sourceToDoc": {},
-  "docToSources": {},
-  "createdAt": "2026-03-31T16:32:45.414Z"
+  "sourceToDoc": {
+    "src/assistant/sessionHistory.ts": [
+      "agent/session-history.md"
+    ],
+    "src/buddy/types.ts": [
+      "buddy/_index.md",
+      "buddy/companion.md"
+    ],
+    "src/buddy/companion.ts": [
+      "buddy/_index.md",
+      "buddy/companion.md"
+    ],
+    "src/buddy/sprites.ts": [
+      "buddy/_index.md",
+      "buddy/sprites.md"
+    ],
+    "src/buddy/CompanionSprite.tsx": [
+      "buddy/_index.md",
+      "buddy/buddy-prompt.md",
+      "buddy/companion-sprite-ui.md"
+    ],
+    "src/buddy/useBuddyNotification.tsx": [
+      "buddy/_index.md",
+      "buddy/buddy-notifications.md"
+    ],
+    "src/buddy/prompt.ts": [
+      "buddy/_index.md",
+      "buddy/buddy-notifications.md",
+      "buddy/buddy-prompt.md"
+    ],
+    "src/coordinator/coordinatorMode.ts": [
+      "coordinator/coordinator.md"
+    ]
+  },
+  "docToSources": {
+    "agent/session-history.md": [
+      "src/assistant/sessionHistory.ts"
+    ],
+    "buddy/_index.md": [
+      "src/buddy/types.ts",
+      "src/buddy/companion.ts",
+      "src/buddy/sprites.ts",
+      "src/buddy/CompanionSprite.tsx",
+      "src/buddy/useBuddyNotification.tsx",
+      "src/buddy/prompt.ts"
+    ],
+    "buddy/buddy-notifications.md": [
+      "src/buddy/useBuddyNotification.tsx",
+      "src/buddy/prompt.ts"
+    ],
+    "buddy/buddy-prompt.md": [
+      "src/buddy/prompt.ts",
+      "src/buddy/CompanionSprite.tsx"
+    ],
+    "buddy/companion-sprite-ui.md": [
+      "src/buddy/CompanionSprite.tsx"
+    ],
+    "buddy/companion.md": [
+      "src/buddy/companion.ts",
+      "src/buddy/types.ts"
+    ],
+    "buddy/sprites.md": [
+      "src/buddy/sprites.ts"
+    ],
+    "coordinator/coordinator.md": [
+      "src/coordinator/coordinatorMode.ts"
+    ]
+  },
+  "createdAt": "2026-04-01T03:17:37.088Z"
 }

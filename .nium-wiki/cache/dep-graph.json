@@ -1,6 +1,5 @@
 {
   "imports": {
-    "antdiff.md": [],
     ".trae/skills/nium-wiki/SKILL.md": [],
     ".trae/skills/nium-wiki/refs/mermaid-syntax.md": [],
     ".trae/skills/nium-wiki/scripts/index.js": [],
@@ -12,7 +11,9 @@
     ".trae/skills/nium-wiki/templates/module-simple.md": [],
     ".trae/skills/nium-wiki/templates/module.md": [],
     "README.md": [],
+    "antdiff.md": [],
     "extract-sources.js": [],
+    "folksubagent.md": [],
     "package/LICENSE.md": [],
     "package/README.md": [],
     "package/cli.js": [],
@@ -15489,7 +15490,6 @@
     ]
   },
   "importedBy": {
-    "antdiff.md": [],
     ".trae/skills/nium-wiki/SKILL.md": [],
     ".trae/skills/nium-wiki/refs/mermaid-syntax.md": [],
     ".trae/skills/nium-wiki/scripts/index.js": [],
@@ -15501,7 +15501,9 @@
     ".trae/skills/nium-wiki/templates/module-simple.md": [],
     ".trae/skills/nium-wiki/templates/module.md": [],
     "README.md": [],
+    "antdiff.md": [],
     "extract-sources.js": [],
+    "folksubagent.md": [],
     "package/LICENSE.md": [],
     "package/README.md": [],
     "package/cli.js": [],
@@ -31181,5 +31183,5 @@
       "restored-src/src/commands.ts"
     ]
   },
-  "createdAt": "2026-03-31T16:32:46.518Z"
+  "createdAt": "2026-04-01T03:17:38.238Z"
 }
