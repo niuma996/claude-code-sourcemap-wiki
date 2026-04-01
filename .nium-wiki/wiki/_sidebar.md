@@ -2,38 +2,28 @@
 - [系统架构](/architecture.md)
 - [快速开始](/getting-started.md)
 - [文档地图](/doc-map.md)
-- agent
-  - [智能体与协调](/agent/_index.md)
-  - [Agent 工具](/agent/agent-tool.md)
-  - [Fork 子智能体](/agent/fork-subagent.md)
-  - [会话历史 (Session History)](/agent/session-history.md)
-- buddy
-  - [AI 伴侣 (Buddy)](/buddy/_index.md)
-  - [Buddy 通知与提示](/buddy/buddy-notifications.md)
-  - [Buddy 提示词集成](/buddy/buddy-prompt.md)
-  - [CompanionSprite UI](/buddy/companion-sprite-ui.md)
-  - [Companion 抽卡系统](/buddy/companion.md)
-  - [Sprites 精灵渲染](/buddy/sprites.md)
 - cli
   - [CLI 核心与入口](/cli/_index.md)
   - [CLI 入口点](/cli/entrypoints.md)
   - [启动流程与快速路径](/cli/startup.md)
-- coordinator
-  - [协调器模式 (Coordinator Mode)](/coordinator/coordinator.md)
-- core
-  - [核心模块](/core/_index.md)
-  - [命令系统](/core/commands.md)
-  - [查询引擎](/core/query.md)
-  - [工具系统](/core/tools.md)
+- agent
+  - [智能体与协调](/agent/_index.md)
+  - [Agent 工具](/agent/agent-tool.md)
+  - [Fork 子智能体](/agent/fork-subagent.md)
+- remote
+  - [远程与服务扩展](/remote/_index.md)
+  - [Remote Control Bridge](/remote/bridge.md)
+  - [MCP 客户端](/remote/mcp.md)
 - plugins
   - [插件与技能系统](/plugins/_index.md)
   - [内置插件](/plugins/builtin.md)
   - [打包技能](/plugins/bundled-skills.md)
   - [伴侣系统](/plugins/companion.md)
-- remote
-  - [远程与服务扩展](/remote/_index.md)
-  - [Remote Control Bridge](/remote/bridge.md)
-  - [MCP 客户端](/remote/mcp.md)
+- core
+  - [核心模块](/core/_index.md)
+  - [命令系统](/core/commands.md)
+  - [查询引擎](/core/query.md)
+  - [工具系统](/core/tools.md)
 - services
   - [服务层](/services/_index.md)
   - [API 服务](/services/api.md)

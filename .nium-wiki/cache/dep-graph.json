@@ -11,9 +11,7 @@
     ".trae/skills/nium-wiki/templates/module-simple.md": [],
     ".trae/skills/nium-wiki/templates/module.md": [],
     "README.md": [],
-    "antdiff.md": [],
     "extract-sources.js": [],
-    "folksubagent.md": [],
     "package/LICENSE.md": [],
     "package/README.md": [],
     "package/cli.js": [],
@@ -15501,9 +15499,7 @@
     ".trae/skills/nium-wiki/templates/module-simple.md": [],
     ".trae/skills/nium-wiki/templates/module.md": [],
     "README.md": [],
-    "antdiff.md": [],
     "extract-sources.js": [],
-    "folksubagent.md": [],
     "package/LICENSE.md": [],
     "package/README.md": [],
     "package/cli.js": [],
@@ -31183,5 +31179,5 @@
       "restored-src/src/commands.ts"
     ]
   },
-  "createdAt": "2026-04-01T03:17:38.238Z"
+  "createdAt": "2026-04-01T16:15:47.583Z"
 }

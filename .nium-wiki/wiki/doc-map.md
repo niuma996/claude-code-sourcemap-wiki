@@ -34,7 +34,9 @@ wiki/
 │   ├── _index.md       # 核心模块概览
 │   ├── commands.md     # 命令系统
 │   ├── tools.md        # 工具系统
-│   └── query.md        # 查询引擎
+│   ├── query.md        # 查询引擎
+│   ├── context.md      # Context 状态管理
+│   └── hooks.md        # Hooks 事件系统
 │
 ├── services/            # 服务层
 │   ├── _index.md       # 服务层概览
@@ -94,6 +96,8 @@ flowchart LR
 | [core/commands.md](core/commands.md) | 命令系统 | 中 |
 | [core/tools.md](core/tools.md) | 工具系统 | 中 |
 | [core/query.md](core/query.md) | 查询引擎 | 中 |
+| [core/context.md](core/context.md) | Context 状态管理 | 高 |
+| [core/hooks.md](core/hooks.md) | Hooks 事件系统 | 高 |
 | [services/api.md](services/api.md) | API 服务 | 中 |
 | [services/mcp.md](services/mcp.md) | MCP 服务 | 中 |
 | [services/oauth.md](services/oauth.md) | OAuth 认证 | 中 |

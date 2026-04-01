@@ -34,7 +34,9 @@ wiki/
 │   ├── _index.md       # Core modules overview
 │   ├── commands.md     # Command system
 │   ├── tools.md        # Tool system
-│   └── query.md        # Query engine
+│   ├── query.md        # Query engine
+│   ├── context.md      # Context state management
+│   └── hooks.md        # Hooks event system
 │
 ├── services/            # Service layer
 │   ├── _index.md       # Service layer overview
@@ -102,6 +104,8 @@ flowchart LR
 | [core/commands.md](core/commands.md) | Command system | Medium |
 | [core/tools.md](core/tools.md) | Tool system | Medium |
 | [core/query.md](core/query.md) | Query engine | Medium |
+| [core/context.md](core/context.md) | Context state management | High |
+| [core/hooks.md](core/hooks.md) | Hooks event system | High |
 | [services/api.md](services/api.md) | API service | Medium |
 | [services/mcp.md](services/mcp.md) | MCP service | Medium |
 | [services/oauth.md](services/oauth.md) | OAuth authentication | Medium |
