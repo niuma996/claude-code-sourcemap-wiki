@@ -2,229 +2,275 @@
 
 ## Overview
 
-MCP (Model Context Protocol) service is the bridge between Claude Code and MCP servers, allowing Claude to access external tools and data sources through a standardized protocol.
+The MCP (Model Context Protocol) service is the core module for Claude Code to interact with external tools and resources. MCP is an emerging protocol specifically designed to provide AI models with standardized tool calling and resource access capabilities.
 
-The core implementation is in the [services/mcp/](/restored-src/src/services/mcp/) directory.
+This service implements MCP client functionality, enabling Claude Code to:
+- Call remote tools (Tools)
+- Access external resources (Resources)
+- Use prompt templates (Prompts)
+- Safely interact with external systems like filesystems, databases, APIs
 
 ## Architecture Position
 
 ```mermaid
 flowchart TB
-    subgraph MC ["MCP Service"]
-        Client[client.ts]
-        Config[config.ts]
-        Auth[auth.ts]
-        Types[types.ts]
-        Utils[utils.ts]
+    subgraph MCPServices["MCP Service"]
+        Client["client.ts<br/>MCP Client Core"]
+        Transport["transport.ts<br/>Transport Layer"]
+        Types["types.ts<br/>Protocol Types"]
+        Registry["registry.ts<br/>Server Registry"]
     end
-    Client --> Config
-    Client --> Auth
+    subgraph MCPServers["MCP Servers"]
+        FileSystem["Filesystem Server"]
+        Database["Database Server"]
+        WebAPI["Web API Server"]
+        Custom["Custom Server"]
+    end
+    Client --> Transport
     Client --> Types
-    Client --> Utils
+    Client --> Registry
+    Transport --> FileSystem
+    Transport --> Database
+    Transport --> WebAPI
+    Transport --> Custom
 ```
 
-## Features
+## Core Features
 
-| Feature | Description | Related Files |
-|---------|-------------|---------------|
-| MCP Client | Communication with MCP servers | [client.ts](/restored-src/src/services/mcp/client.ts) |
-| Configuration Management | MCP server configuration | [config.ts](/restored-src/src/services/mcp/config.ts) |
-| Authentication Support | MCP authentication handling | [auth.ts](/restored-src/src/services/mcp/auth.ts) |
-| Type Definitions | Request/response types | [types.ts](/restored-src/src/services/mcp/types.ts) |
-| OAuth Port | OAuth redirect handling | [oauthPort.ts](/restored-src/src/services/mcp/oauthPort.ts) |
+| Feature | Description | Related API |
+|---------|-------------|-------------|
+| Tool Calling | Execute remote tools and get results | `callTool`, `listTools` |
+| Resource Access | Read external resource content | `readResource`, `listResources` |
+| Prompt Templates | Use predefined prompts to generate content | `getPrompt`, `listPrompts` |
+| Connection Management | Manage MCP server lifecycle | `connect`, `disconnect` |
+| Server Discovery | Auto-discover available MCP servers | `discoverServers` |
 
 ## File Structure
 
 ```
-restored-src/src/services/mcp/
-├── client.ts              # MCP client
-├── config.ts             # Configuration management
-├── auth.ts               # Authentication handling
-├── types.ts              # Type definitions
-├── utils.ts              # Utility functions
-├── oauthPort.ts          # OAuth port handling
-├── claudeai.ts           # Claude.ai MCP
-└── xaa.ts                # XAA integration
+services/mcp/
+├── client.ts        # MCP client core implementation
+├── transport.ts     # Transport layer (stdio, HTTP, SSE)
+├── types.ts         # MCP protocol type definitions
+└── registry.ts      # MCP server registry
 ```
 
-## Core Workflow
+### Responsibilities
+
+| File | Responsibility |
+|------|----------------|
+| client.ts | Implement MCP client logic, handle protocol communication, request routing, response parsing |
+| transport.ts | Abstract underlying transport mechanisms, support multiple transport methods (stdio, HTTP SSE) |
+| types.ts | Define all types and interfaces for MCP protocol |
+| registry.ts | Manage connected MCP server instances, support dynamic registration and unloading |
+
+## Core Types
+
+```mermaid
+classDiagram
+    class MCPClient {
+        +connect(config: ServerConfig): Promise<void>
+        +disconnect(serverId: string): void
+        +callTool(name: string, args: Record<string, any>): Promise<ToolResult>
+        +readResource(uri: string): Promise<ResourceContent>
+        +listTools(serverId?: string): Promise<Tool[]>
+        +listResources(serverId?: string): Promise<Resource[]>
+    }
+    class MCPServerConfig {
+        +serverId: string
+        +command: string
+        +args: string[]
+        +env: Record<string, string>
+        +capabilities: ServerCapabilities
+    }
+    class Tool {
+        +name: string
+        +description: string
+        +inputSchema: JSONSchema
+    }
+    class Resource {
+        +uri: string
+        +name: string
+        +mimeType: string
+        +description?: string
+    }
+    MCPClient --> MCPServerConfig
+    MCPClient --> Tool
+    MCPClient --> Resource
+```
+
+## MCP Protocol Flow
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant Config as MCP Config
+    participant Claude as Claude Code
     participant Client as MCP Client
+    participant Transport as Transport Layer
     participant Server as MCP Server
-    participant Tool as Tool System
+    participant External as External System
 
-    User->>Config: Configure MCP server
-    Config-->>Client: Server config
-    Client->>Server: Establish connection
-    Server-->>Client: Connection success
-    User->>Client: Request tool list
-    Client->>Server: list_tools
-    Server-->>Client: Return tool list
-    Client-->>Tool: Register tools
-    User->>Tool: Call MCP tool
-    Tool->>Client: Forward request
-    Client->>Server: call_tool
-    Server-->>Client: Tool result
-    Client-->>Tool: Return result
-    Tool-->>User: Display result
+    Note over Claude,External: Initialization Phase
+    Claude->>Client: connect(serverConfig)
+    Client->>Transport: Establish connection
+    Transport->>Server: Start process
+    Server-->>Transport: Connection ready
+    Transport-->>Client: Connection established
+
+    Client->>Server: initialize (client capabilities)
+    Server-->>Client: initialize (server capabilities)
+    Client->>Server: initialized notification
+
+    Note over Claude,External: Tool Calling Phase
+    Claude->>Client: callTool("readFile", {path: "..."})
+    Client->>Client: Route to target server
+    Client->>Transport: JSON-RPC request
+    Transport->>Server: Protocol message
+    Server->>External: Execute operation
+    External-->>Server: Operation result
+    Server-->>Transport: JSON-RPC response
+    Transport-->>Client: Tool result
+    Client-->>Claude: Tool result
 ```
 
-## MCP Protocol
+## API Summary
 
-### Connection Flow
+### MCPClient
 
-```mermaid
-flowchart TD
-    Start["Start"] --> Init["Initialize"]
-    Init --> Handshake["Handshake"]
-    Handshake -->|Success| Ready["Ready"]
-    Handshake -->|Failure| Error["Error"]
-    Ready --> Connected["Connected"]
-    Connected --> Interact["Interact"]
-    Interact -->|Disconnect| Disconnect["Disconnect"]
-    Disconnect --> Start
-```
+| Method | Description | Return Type |
+|--------|-------------|-------------|
+| `connect` | Connect to MCP server | `Promise<void>` |
+| `disconnect` | Disconnect specified server | `void` |
+| `callTool` | Call remote tool | `Promise<ToolResult>` |
+| `readResource` | Read resource content | `Promise<ResourceContent>` |
+| `listTools` | List available tools | `Promise<Tool[]>` |
+| `listResources` | List available resources | `Promise<Resource[]>` |
+| `getPrompt` | Get prompt template | `Promise<PromptResult>` |
 
-### Message Types
-
-| Type | Direction | Description |
-|------|-----------|-------------|
-| `initialize` | Client→Server | Initialize connection |
-| `initialized` | Server→Client | Initialization confirmation |
-| `tools/list` | Client→Server | Request tool list |
-| `tools/list/result` | Server→Client | Return tool list |
-| `tools/call` | Client→Server | Call tool |
-| `tools/call/result` | Server→Client | Return tool result |
-| `ping` | Bidirectional | Heartbeat |
-| `disconnect` | Bidirectional | Disconnect |
-
-## Configuration Format
+### ServerConfig
 
 ```typescript
 interface MCPServerConfig {
-  name: string                    // Server name
-  command: string                 // Start command
-  args?: string[]                 // Command arguments
-  env?: Record<string, string>    // Environment variables
-  url?: string                    // Server URL (for HTTP)
-  auth?: MCPAuthConfig            // Authentication config
+  serverId: string                      // Server unique identifier
+  command: string                        // Startup command
+  args?: string[]                        // Command line arguments
+  env?: Record<string, string>           // Environment variables
+  transport?: 'stdio' | 'http' | 'sse'  // Transport type
+  timeout?: number                        // Request timeout
 }
 ```
 
-### Local Server Configuration
-
-```json
-{
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-filesystem"],
-      "args": ["/home/user/projects"]
-    }
-  }
-}
-```
-
-### HTTP Server Configuration
-
-```json
-{
-  "mcpServers": {
-    "remote": {
-      "url": "https://api.example.com/mcp",
-      "auth": {
-        "type": "bearer",
-        "token": "<token>"
-      }
-    }
-  }
-}
-```
-
-## Authentication
-
-### OAuth 2.0 Flow
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant AuthServer as Auth Server
-    participant Redirect as Redirect URI
-
-    Client->>AuthServer: Authorization request
-    AuthServer-->>Redirect: Redirect to localhost
-    Redirect-->>Client: Return authorization code
-    Client->>AuthServer: Exchange token
-    AuthServer-->>Client: Return access token
-```
-
-### Authentication Types
-
-| Type | Description | Config Field |
-|------|-------------|--------------|
-| `none` | No authentication | - |
-| `bearer` | Bearer Token | `token` |
-| `apiKey` | API Key | `apiKey` |
-| `oauth2` | OAuth 2.0 | `clientId`, `clientSecret`, `scopes` |
-
-## Tool Integration
-
-Tools provided by MCP servers are integrated into the tool system through [MCPTool](/restored-src/src/tools/MCPTool/):
+### ToolResult
 
 ```typescript
-interface MCPToolInput {
-  server: string                      // Server name
-  tool: string                        // Tool name
-  arguments: Record<string, unknown>  // Tool parameters
+interface ToolResult {
+  content: Array<{
+    type: 'text' | 'image' | 'resource'
+    text?: string
+    data?: string
+    mimeType?: string
+  }>
+  isError?: boolean
 }
 ```
 
-## Error Handling
+## Usage Examples
 
-| Error Type | Description | Handling Strategy |
-|------------|-------------|-------------------|
-| `ConnectionError` | Connection failed | Retry or notify user |
-| `TimeoutError` | Request timeout | Retry or show timeout message |
-| `AuthError` | Authentication failed | Re-authenticate |
-| `ToolNotFoundError` | Tool doesn't exist | Show tool unavailable |
-| `ToolExecutionError` | Tool execution failed | Return error message |
+### Basic Connection and Tool Calling
+
+```typescript
+import { MCPClient } from './services/mcp/client'
+
+const client = new MCPClient()
+
+// Connect to filesystem MCP server
+await client.connect({
+  serverId: 'filesystem',
+  command: 'npx',
+  args: ['-y', '@modelcontextprotocol/server-filesystem', '/path/to/project']
+})
+
+// List available tools
+const tools = await client.listTools()
+console.log('Available tools:', tools.map(t => t.name))
+
+// Call tool
+const result = await client.callTool('read_file', {
+  path: '/path/to/project/package.json'
+})
+console.log('File content:', result.content)
+```
+
+### Resource Access
+
+```typescript
+// List all resources
+const resources = await client.listResources()
+resources.forEach(resource => {
+  console.log(`${resource.name}: ${resource.uri}`)
+})
+
+// Read specific resource
+const content = await client.readResource('file:///path/to/config.json')
+console.log('Resource content:', content)
+```
+
+### Prompt Templates
+
+```typescript
+// Get predefined prompt
+const prompt = await client.getPrompt('code-review', {
+  files: ['src/index.ts', 'src/utils.ts'],
+  context: 'Review for security issues'
+})
+console.log('Generated prompt:', prompt.messages)
+```
 
 ## Best Practices
 
-### Server Configuration
+### Recommended Patterns
 
-| Practice | Description |
-|----------|-------------|
-| Use local servers | Reduce network latency |
-| Configure timeouts | Avoid long waits |
-| Error retries | Handle temporary connection issues |
-| Secure authentication | Use OAuth or API Key |
+| Scenario | Recommended Approach |
+|----------|----------------------|
+| Server configuration | Externalize server definitions using config files |
+| Error handling | Implement retry logic for temporary network failures |
+| Resource cleanup | Call `disconnect()` on application exit |
+| Tool selection | Use `listTools()` for dynamic discovery instead of hardcoding |
 
-### Tool Usage
+### Things to Avoid
 
-| Practice | Description |
-|----------|-------------|
-| Parameter validation | Validate parameters before calling |
-| Error handling | Properly handle tool execution errors |
-| Resource cleanup | Ensure resources are properly released |
+| Practice | Problem | Alternative |
+|----------|---------|-------------|
+| Synchronous blocking calls | Affects response performance | Use Promise + async/await |
+| Hardcoding tool names | Inflexible | Use `listTools()` for dynamic discovery |
+| Not handling timeouts | Requests hang indefinitely | Configure reasonable timeout |
+
+## Design Decisions
+
+### 1. Transport Layer Abstraction
+
+By abstracting the transport layer, supports multiple connection methods including stdio (local process) and HTTP/SSE (remote service).
+
+### 2. Server Registry
+
+Uses registry pattern to manage multiple MCP servers, supporting on-demand loading and dynamic extension.
+
+### 3. Tool Sandbox
+
+Each tool call executes in an isolated environment, preventing malicious tools from affecting main process security.
 
 ## Source References
 
-- [client.ts](/restored-src/src/services/mcp/client.ts)
-- [config.ts](/restored-src/src/services/mcp/config.ts)
-- [types.ts](/restored-src/src/services/mcp/types.ts)
-- [auth.ts](/restored-src/src/services/mcp/auth.ts)
+- [services/mcp/client.ts](/restored-src/src/services/mcp/client.ts)
+- [services/mcp/transport.ts](/restored-src/src/services/mcp/transport.ts)
+- [services/mcp/types.ts](/restored-src/src/services/mcp/types.ts)
+- [services/mcp/registry.ts](/restored-src/src/services/mcp/registry.ts)
 
-## Related Documents
+## Related Documentation
 
-- [Tool System](../core/tools.md)
-- [API Service](api.md)
-- [OAuth Authentication](oauth.md)
+- [Assistant Services Index](_index.md)
+- [Agent Tools](../agent/agent-tool.md) - Tool calling framework
+- [Home](../index.md)
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-03-31*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-04-02*

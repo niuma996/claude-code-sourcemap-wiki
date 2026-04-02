@@ -2,33 +2,53 @@
 - [系统架构](/architecture.md)
 - [快速开始](/getting-started.md)
 - [文档地图](/doc-map.md)
-- cli
-  - [CLI 核心与入口](/cli/_index.md)
-  - [CLI 入口点](/cli/entrypoints.md)
-  - [启动流程与快速路径](/cli/startup.md)
 - agent
   - [智能体与协调](/agent/_index.md)
   - [Agent 工具](/agent/agent-tool.md)
   - [Fork 子智能体](/agent/fork-subagent.md)
-- remote
-  - [远程与服务扩展](/remote/_index.md)
-  - [Remote Control Bridge](/remote/bridge.md)
-  - [MCP 客户端](/remote/mcp.md)
+  - [会话历史 (Session History)](/agent/session-history.md)
+- buddy
+  - [AI 伴侣 (Buddy)](/buddy/_index.md)
+  - [Buddy 通知与提示](/buddy/buddy-notifications.md)
+  - [Buddy 提示词集成](/buddy/buddy-prompt.md)
+  - [CompanionSprite UI](/buddy/companion-sprite-ui.md)
+  - [Companion 抽卡系统](/buddy/companion.md)
+  - [Sprites 精灵渲染](/buddy/sprites.md)
+- cli
+  - [CLI 核心与入口](/cli/_index.md)
+  - [CLI 入口点](/cli/entrypoints.md)
+  - [启动流程与快速路径](/cli/startup.md)
+- coordinator
+  - [协调器模式 (Coordinator Mode)](/coordinator/coordinator.md)
+- core
+  - [核心模块](/core/_index.md)
+  - [命令系统](/core/commands.md)
+  - [Context 模块](/core/context.md)
+  - [Hooks 模块](/core/hooks.md)
+  - [查询引擎](/core/query.md)
+  - [工具系统](/core/tools.md)
 - plugins
   - [插件与技能系统](/plugins/_index.md)
   - [内置插件](/plugins/builtin.md)
   - [打包技能](/plugins/bundled-skills.md)
   - [伴侣系统](/plugins/companion.md)
-- core
-  - [核心模块](/core/_index.md)
-  - [命令系统](/core/commands.md)
-  - [查询引擎](/core/query.md)
-  - [工具系统](/core/tools.md)
+- remote
+  - [远程与服务扩展](/remote/_index.md)
+  - [Remote Control Bridge](/remote/bridge.md)
 - services
-  - [服务层](/services/_index.md)
+  - [助手服务](/services/_index.md)
+  - [分析服务](/services/analytics.md)
   - [API 服务](/services/api.md)
+  - [Compact 模块](/services/compact.md)
+  - [LSP 服务](/services/lsp.md)
+  - [MagicDocs 自动文档维护](/services/magicdocs.md)
   - [MCP 服务](/services/mcp.md)
-  - [OAuth 认证](/services/oauth.md)
+  - [内存服务](/services/memory.md)
+  - [OAuth 服务](/services/oauth.md)
+  - [策略限制](/services/policy-limits.md)
+  - [速率限制模拟](/services/rate-limit-mocking.md)
+  - [团队内存同步](/services/team-memory-sync.md)
+  - [语音服务](/services/voice.md)
 - ui
   - [用户界面层](/ui/_index.md)
   - [Ink 渲染引擎](/ui/ink.md)

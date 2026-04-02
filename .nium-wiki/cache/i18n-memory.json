@@ -216,8 +216,74 @@
       "createdAt": "2026-04-01T03:20:30.013Z",
       "updatedAt": "2026-04-01T03:20:30.013Z"
     },
-    "en:remote/mcp.md": {
-      "hash": "607b2cec477a",
+    "en:services/compact.md": {
+      "hash": "compact_en_20260402",
+      "lang": "en",
+      "createdAt": "2026-04-02T00:00:00.000Z",
+      "updatedAt": "2026-04-02T00:00:00.000Z"
+    },
+    "en:services/magicdocs.md": {
+      "hash": "c3a8f7d2e901",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:core/_index.md": {
+      "hash": "9d04cb546a67",
+      "lang": "en",
+      "createdAt": "2026-03-31T10:07:06.090Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:core/context.md": {
+      "hash": "8a2f9c1b3d4e",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:core/hooks.md": {
+      "hash": "5e7c3d2a8f1b",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:services/analytics.md": {
+      "hash": "6a9c2d4e8f1b",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:services/lsp.md": {
+      "hash": "1b3c5d7e9f2a",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:services/memory.md": {
+      "hash": "4e7f9a2c5d8b",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:services/policy-limits.md": {
+      "hash": "9d2c4e6f1a3b",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:services/rate-limit-mocking.md": {
+      "hash": "3a5c7e9f2b4d",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:services/team-memory-sync.md": {
+      "hash": "7f1a3c5e9d2b",
+      "lang": "en",
+      "createdAt": "2026-04-01T03:20:30.013Z",
+      "updatedAt": "2026-04-01T03:20:30.013Z"
+    },
+    "en:services/voice.md": {
+      "hash": "2b4d6f8a1c3e",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
       "updatedAt": "2026-04-01T03:20:30.013Z"

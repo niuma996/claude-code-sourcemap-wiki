@@ -143,7 +143,7 @@ Available commands:
 |------|------|------|
 | 架构学习 | 深入了解系统架构和模块关系 | [架构文档](architecture.md) |
 | 高级配置 | 学习配置选项和插件系统 | [配置文件](../configuration.md) |
-| MCP 集成 | 配置 MCP 服务器以扩展功能 | [MCP 文档](../services/mcp/) |
+| MCP 集成 | 配置 MCP 服务器以扩展功能 | [MCP 文档](../services/mcp.md) |
 | 开发指南 | 为 Claude Code 做贡献 | [开发文档](../development.md) |
 
 ## 相关文档

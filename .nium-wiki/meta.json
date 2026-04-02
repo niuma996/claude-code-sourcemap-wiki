@@ -3,12 +3,12 @@
   "project": "claude-code-sourcemap",
   "branch": "main",
   "createdAt": "2026-03-31T09:12:06.835Z",
-  "updatedAt": "2026-04-01T00:00:00.000Z",
-  "filesDocumented": 31,
+  "updatedAt": "2026-04-02T00:00:00.000Z",
+  "filesDocumented": 33,
   "modulesCount": 12,
   "documentation": {
     "language": "zh",
-    "totalFiles": 31,
+    "totalFiles": 33,
     "modules": [
       "core",
       "services",

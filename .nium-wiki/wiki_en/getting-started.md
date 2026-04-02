@@ -143,7 +143,7 @@ Available commands:
 |-------|-------------|------|
 | Architecture Learning | Deep dive into system architecture and module relationships | [Architecture Docs](architecture.md) |
 | Advanced Configuration | Learn configuration options and plugin system | [Configuration](../configuration.md) |
-| MCP Integration | Configure MCP servers to extend functionality | [MCP Docs](../services/mcp/) |
+| MCP Integration | Configure MCP servers to extend functionality | [MCP Docs](../services/mcp.md) |
 | Development Guide | Contribute to Claude Code | [Development](../development.md) |
 
 ## Related Documents
