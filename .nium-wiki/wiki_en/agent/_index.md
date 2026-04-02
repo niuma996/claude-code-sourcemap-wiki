@@ -18,8 +18,22 @@ The agent system supports three execution modes: local execution, remote CCR exe
 | [Agent Tool](agent-tool.md) | Subagent spawning framework | [agent-tool.md](agent-tool.md) |
 | [Fork Subagent](fork-subagent.md) | Fork mechanism | [fork-subagent.md](fork-subagent.md) |
 | [Session History](session-history.md) | Agent SDK session event history | [session-history.md](session-history.md) |
+| [Built-in Agents](built-in/_index.md) | Built-in agents overview | [built-in/_index.md](built-in/_index.md) |
 | [Coordinator Mode](../coordinator/coordinator.md) | Multi-agent coordination orchestration | [coordinator.md](../coordinator/coordinator.md) |
 | [AI Buddy](../buddy/_index.md) | Terminal companion UI & interaction | [buddy/index.md](../buddy/_index.md) |
+
+## Built-in Agents
+
+Claude Code provides the following built-in agents:
+
+| Agent | Type | Description |
+|-------|------|-------------|
+| [Explore Agent](built-in/explore-agent.md) | Read-only | Fast codebase exploration |
+| [Plan Agent](built-in/plan-agent.md) | Read-only | Architecture design and implementation planning |
+| [Verification Agent](built-in/verification-agent.md) | Read-only | Implementation quality verification |
+| [Claude Code Guide](built-in/claude-code-guide-agent.md) | Read-only | Claude Code feature guidance |
+| [General Purpose](built-in/general-purpose-agent.md) | Writable | General multi-step tasks |
+| [Statusline Setup](built-in/statusline-setup-agent.md) | Writable | Status line configuration |
 
 ## Architecture Position
 

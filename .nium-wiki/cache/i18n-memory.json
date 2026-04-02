@@ -1,292 +1,328 @@
 {
   "entries": {
     "en:_sidebar.md": {
-      "hash": "ba5bde5e7578",
+      "hash": "9fcb6faad9ad",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:architecture.md": {
       "hash": "ff14c780d9f3",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:core/_index.md": {
       "hash": "9d04cb546a67",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:core/commands.md": {
       "hash": "b7529194dfdf",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:core/query.md": {
       "hash": "d307110fd6aa",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:core/tools.md": {
       "hash": "ae96d177673a",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:doc-map.md": {
-      "hash": "7eae5ee1b287",
+      "hash": "c4605dae6d0d",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:getting-started.md": {
-      "hash": "211210385d30",
+      "hash": "28f68376c370",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:index.md": {
       "hash": "58235f1427a3",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/_index.md": {
-      "hash": "603f46ac4002",
+      "hash": "cb287d55a559",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/api.md": {
       "hash": "f203cf8c6414",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/mcp.md": {
-      "hash": "3a7e8ecb0755",
+      "hash": "fcbb25400a5e",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/oauth.md": {
-      "hash": "e477cc3ac811",
+      "hash": "d46747d004eb",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:ui/_index.md": {
       "hash": "006f954a02bd",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:ui/ink.md": {
       "hash": "38266c1d538e",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:ui/repl.md": {
       "hash": "cdb575aa66f1",
       "lang": "en",
       "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:agent/_index.md": {
-      "hash": "a3f15b1bba32",
+      "hash": "e91db880d866",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:agent/agent-tool.md": {
       "hash": "242e89dd7c0a",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:agent/fork-subagent.md": {
       "hash": "43b156fb3e5a",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:agent/session-history.md": {
       "hash": "ecd7e3cb9a50",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:buddy/_index.md": {
       "hash": "0a3e5f46399b",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:buddy/buddy-notifications.md": {
       "hash": "1ddb94178778",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:buddy/buddy-prompt.md": {
       "hash": "78570127f6a2",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:buddy/companion-sprite-ui.md": {
       "hash": "affd692c7741",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:buddy/companion.md": {
       "hash": "3708c15a402d",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:buddy/sprites.md": {
       "hash": "d40f25a14c15",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:cli/_index.md": {
       "hash": "9f8361b2ef67",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:cli/entrypoints.md": {
       "hash": "887fb2341828",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:cli/startup.md": {
       "hash": "409639729640",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:coordinator/coordinator.md": {
       "hash": "c678c5c14d0b",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:plugins/_index.md": {
       "hash": "dbeeea7911c0",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:plugins/builtin.md": {
       "hash": "ebeb28a2cb9d",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:plugins/bundled-skills.md": {
       "hash": "888b35bd4aa7",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:plugins/companion.md": {
       "hash": "624ca91f827c",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:remote/_index.md": {
       "hash": "c2c843ba4370",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:remote/bridge.md": {
       "hash": "f706b99e2fa6",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/compact.md": {
-      "hash": "compact_en_20260402",
+      "hash": "11c71ee9e065",
       "lang": "en",
       "createdAt": "2026-04-02T00:00:00.000Z",
-      "updatedAt": "2026-04-02T00:00:00.000Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/magicdocs.md": {
-      "hash": "c3a8f7d2e901",
+      "hash": "ee18f23cfff5",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
-    },
-    "en:core/_index.md": {
-      "hash": "9d04cb546a67",
-      "lang": "en",
-      "createdAt": "2026-03-31T10:07:06.090Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:core/context.md": {
-      "hash": "8a2f9c1b3d4e",
+      "hash": "ffeb10cd3c90",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:core/hooks.md": {
-      "hash": "5e7c3d2a8f1b",
+      "hash": "434cd48f9787",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/analytics.md": {
-      "hash": "6a9c2d4e8f1b",
+      "hash": "3d4f889d505c",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/lsp.md": {
-      "hash": "1b3c5d7e9f2a",
+      "hash": "224ce761a33f",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/memory.md": {
-      "hash": "4e7f9a2c5d8b",
+      "hash": "9dbdf0b93149",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/policy-limits.md": {
-      "hash": "9d2c4e6f1a3b",
+      "hash": "3795937170d7",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/rate-limit-mocking.md": {
-      "hash": "3a5c7e9f2b4d",
+      "hash": "4a1bf4461f24",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/team-memory-sync.md": {
-      "hash": "7f1a3c5e9d2b",
+      "hash": "79a79cc48e0a",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     },
     "en:services/voice.md": {
-      "hash": "2b4d6f8a1c3e",
+      "hash": "e0b709fbcdbf",
       "lang": "en",
       "createdAt": "2026-04-01T03:20:30.013Z",
-      "updatedAt": "2026-04-01T03:20:30.013Z"
+      "updatedAt": "2026-04-02T07:33:35.278Z"
+    },
+    "en:agent/built-in/_index.md": {
+      "hash": "83090c775ebc",
+      "lang": "en",
+      "createdAt": "2026-04-02T07:33:35.278Z",
+      "updatedAt": "2026-04-02T07:33:35.278Z"
+    },
+    "en:agent/built-in/claude-code-guide-agent.md": {
+      "hash": "1f424014c871",
+      "lang": "en",
+      "createdAt": "2026-04-02T07:33:35.278Z",
+      "updatedAt": "2026-04-02T07:33:35.278Z"
+    },
+    "en:agent/built-in/explore-agent.md": {
+      "hash": "065d94e76fbf",
+      "lang": "en",
+      "createdAt": "2026-04-02T07:33:35.278Z",
+      "updatedAt": "2026-04-02T07:33:35.278Z"
+    },
+    "en:agent/built-in/general-purpose-agent.md": {
+      "hash": "f4f4522ef26e",
+      "lang": "en",
+      "createdAt": "2026-04-02T07:33:35.278Z",
+      "updatedAt": "2026-04-02T07:33:35.278Z"
+    },
+    "en:agent/built-in/plan-agent.md": {
+      "hash": "b23546f0ff5f",
+      "lang": "en",
+      "createdAt": "2026-04-02T07:33:35.278Z",
+      "updatedAt": "2026-04-02T07:33:35.278Z"
+    },
+    "en:agent/built-in/statusline-setup-agent.md": {
+      "hash": "4ea04eb898c5",
+      "lang": "en",
+      "createdAt": "2026-04-02T07:33:35.278Z",
+      "updatedAt": "2026-04-02T07:33:35.278Z"
+    },
+    "en:agent/built-in/verification-agent.md": {
+      "hash": "8e9d83e2b8f8",
+      "lang": "en",
+      "createdAt": "2026-04-02T07:33:35.278Z",
+      "updatedAt": "2026-04-02T07:33:35.278Z"
     }
   }
 }

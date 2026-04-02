@@ -17,7 +17,16 @@ wiki/
 ├── agent/               # 智能体与协调
 │   ├── _index.md       # 智能体模块概览
 │   ├── agent-tool.md    # Agent 工具
-│   └── fork-subagent.md # Fork 子智能体
+│   ├── fork-subagent.md # Fork 子智能体
+│   ├── session-history.md # 会话历史
+│   └── built-in/        # 内置智能体
+│       ├── _index.md           # 内置智能体概览
+│       ├── explore-agent.md     # Explore Agent
+│       ├── plan-agent.md       # Plan Agent
+│       ├── verification-agent.md # Verification Agent
+│       ├── claude-code-guide-agent.md # Claude Code Guide
+│       ├── general-purpose-agent.md # General Purpose Agent
+│       └── statusline-setup-agent.md # Statusline Setup Agent
 │
 ├── remote/              # 远程与服务扩展
 │   ├── _index.md       # 远程扩展概览
@@ -86,6 +95,13 @@ flowchart LR
 | [agent/_index.md](agent/_index.md) | 智能体与协调概览 | 高 |
 | [agent/agent-tool.md](agent/agent-tool.md) | Agent 工具 | 高 |
 | [agent/fork-subagent.md](agent/fork-subagent.md) | Fork 子智能体 | 高 |
+| [agent/built-in/_index.md](agent/built-in/_index.md) | 内置智能体概览 | 高 |
+| [agent/built-in/explore-agent.md](agent/built-in/explore-agent.md) | Explore Agent | 高 |
+| [agent/built-in/plan-agent.md](agent/built-in/plan-agent.md) | Plan Agent | 高 |
+| [agent/built-in/verification-agent.md](agent/built-in/verification-agent.md) | Verification Agent | 高 |
+| [agent/built-in/claude-code-guide-agent.md](agent/built-in/claude-code-guide-agent.md) | Claude Code Guide Agent | 高 |
+| [agent/built-in/general-purpose-agent.md](agent/built-in/general-purpose-agent.md) | General Purpose Agent | 高 |
+| [agent/built-in/statusline-setup-agent.md](agent/built-in/statusline-setup-agent.md) | Statusline Setup Agent | 高 |
 | [remote/_index.md](remote/_index.md) | 远程与服务扩展概览 | 高 |
 | [remote/bridge.md](remote/bridge.md) | Remote Control Bridge | 高 |
 | [remote/mcp.md](remote/mcp.md) | MCP 客户端 | 高 |

@@ -18,8 +18,22 @@
 | [Agent 工具](agent-tool.md) | 子智能体启动框架 | [agent-tool.md](agent-tool.md) |
 | [Fork 子智能体](fork-subagent.md) | Fork 分叉机制 | [fork-subagent.md](fork-subagent.md) |
 | [会话历史](session-history.md) | Agent SDK 会话事件历史读取 | [session-history.md](session-history.md) |
+| [内置智能体](built-in/_index.md) | 内置智能体概览 | [built-in/_index.md](built-in/_index.md) |
 | [协调器模式](../coordinator/coordinator.md) | 多智能体协调编排 | [coordinator.md](../coordinator/coordinator.md) |
 | [AI 伴侣](../buddy/_index.md) | 终端伴侣 UI 与交互 | [buddy/index.md](../buddy/_index.md) |
+
+## 内置智能体
+
+Claude Code 提供以下内置智能体：
+
+| 智能体 | 类型 | 说明 |
+|--------|------|------|
+| [Explore Agent](built-in/explore-agent.md) | 只读 | 快速代码库探索 |
+| [Plan Agent](built-in/plan-agent.md) | 只读 | 架构设计和实施规划 |
+| [Verification Agent](built-in/verification-agent.md) | 只读 | 实现质量验证 |
+| [Claude Code Guide](built-in/claude-code-guide-agent.md) | 只读 | Claude Code 功能指导 |
+| [General Purpose](built-in/general-purpose-agent.md) | 可写 | 通用多步骤任务 |
+| [Statusline Setup](built-in/statusline-setup-agent.md) | 可写 | 状态栏配置 |
 
 ## 架构位置
 
