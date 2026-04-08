@@ -47,7 +47,7 @@ restored-src/src/
 │   ├── tasks/             # /tasks command
 │   ├── skills/            # /skills command
 │   ├── mcp/               # /mcp command
-│   ├── agent/             # /agent command
+│   ├── agents/            # /agents command
 │   ├── context/           # /context command
 │   ├── compact/           # /compact command
 │   ├── resume/            # /resume command

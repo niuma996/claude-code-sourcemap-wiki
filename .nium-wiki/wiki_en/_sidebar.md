@@ -7,6 +7,14 @@
   - [Agent Tool](/agent/agent-tool.md)
   - [Fork Subagent](/agent/fork-subagent.md)
   - [Session History](/agent/session-history.md)
+  - built-in
+    - [Built-in Agents](/agent/built-in/_index.md)
+    - [Claude Code Guide Agent](/agent/built-in/claude-code-guide-agent.md)
+    - [Explore Agent](/agent/built-in/explore-agent.md)
+    - [General Purpose Agent](/agent/built-in/general-purpose-agent.md)
+    - [Plan Agent](/agent/built-in/plan-agent.md)
+    - [Statusline Setup Agent](/agent/built-in/statusline-setup-agent.md)
+    - [Verification Agent](/agent/built-in/verification-agent.md)
 - buddy
   - [AI Buddy (Companion)](/buddy/_index.md)
   - [Buddy Notifications & Teaser](/buddy/buddy-notifications.md)

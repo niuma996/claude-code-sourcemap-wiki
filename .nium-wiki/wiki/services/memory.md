@@ -2,361 +2,256 @@
 
 ## 概览
 
-内存服务（Memory Service）是 Claude Code 的持久化记忆存储模块，负责管理 AI 的长期记忆和上下文信息。该服务使 Claude Code 能够跨会话保留重要信息、学习用户偏好、记住项目特定知识，从而提供更加个性化和智能的交互体验。
+内存服务（Memory Service）是 Claude Code 的文件型持久化记忆系统，通过 `MEMORY.md` 索引 + 主题文件的方式管理 AI 的长期记忆。该服务使 Claude Code 能够跨会话保留用户偏好、项目背景和外部系统指针，从而提供更加个性化的交互体验。
 
-内存服务采用层次化的存储架构：
-- **工作内存**：当前会话的短期上下文
-- **持久内存**：跨会话的长期记忆
-- **项目内存**：特定项目的专属知识库
+**⚠️ 重要澄清**：内存服务**不是**向量数据库或语义搜索系统。它是基于文件系统的事实性记忆存储，通过文件读写和 grep 搜索实现，没有 SQLite/向量存储/嵌入生成等机制。
 
 ## 架构位置
 
 ```mermaid
 flowchart TB
-    subgraph MemoryServices["内存服务"]
-        MemDir["memdir.ts<br/>内存目录管理"]
-        Storage["storage.ts<br/>持久化存储"]
-        Indexer["indexer.ts<br/>记忆索引"]
-        Query["query.ts<br/>查询引擎"]
+    subgraph MemoryCore["内存核心 (memdir.ts)"]
+        buildMemoryLines["buildMemoryLines()<br/>生成提示词模板"]
+        buildMemoryPrompt["buildMemoryPrompt()<br/>含 MEMORY.md 内容"]
+        loadMemoryPrompt["loadMemoryPrompt()<br/>入口：加载记忆提示"]
+        truncateEntrypoint["truncateEntrypointContent()<br/>截断索引内容"]
     end
-    subgraph Storage["存储层"]
-        Files["文件系统"]
-        SQLite["SQLite 数据库"]
-        Vector["向量存储"]
+
+    subgraph MemoryTypes["类型系统 (memoryTypes.ts)"]
+        MEMORY_TYPES["MEMORY_TYPES = ['user', 'feedback', 'project', 'reference']"]
+        parseMemoryType["parseMemoryType()"]
+        WHAT_NOT_TO_SAVE["WHAT_NOT_TO_SAVE_SECTION"]
+        WHEN_TO_ACCESS["WHEN_TO_ACCESS_SECTION"]
+        TRUSTING_RECALL["TRUSTING_RECALL_SECTION"]
     end
-    MemDir --> Storage
-    MemDir --> Indexer
-    Indexer --> Query
-    Storage --> Files
-    Storage --> SQLite
-    Storage --> Vector
+
+    subgraph MemoryAge["时效管理 (memoryAge.ts)"]
+        memoryAge["memoryAge() / memoryAgeDays()"]
+        memoryFreshnessNote["memoryFreshnessNote()"]
+        memoryFreshnessText["memoryFreshnessText()"]
+    end
+
+    subgraph MemoryPaths["路径管理 (paths.ts)"]
+        getAutoMemPath["getAutoMemPath()"]
+        isAutoMemoryEnabled["isAutoMemoryEnabled()"]
+    end
+
+    subgraph Modes["多模式支持"]
+        Individual["个人模式<br/>(单 MEMORY.md)"]
+        TeamMem["团队模式 (TEAMMEM)<br/>(private + team 目录)"]
+        Kairos["Kairos 日常日志 (KAIROS)<br/>(append-only 日志)"]
+    end
+
+    buildMemoryLines --> MEMORY_TYPES
+    buildMemoryLines --> WHAT_NOT_TO_SAVE
+    buildMemoryLines --> WHEN_TO_ACCESS
+    buildMemoryLines --> TRUSTING_RECALL
+    loadMemoryPrompt --> buildMemoryPrompt
+    loadMemoryPrompt --> Individual
+    loadMemoryPrompt --> TeamMem
+    loadMemoryPrompt --> Kairos
 ```
 
-## 核心功能
+## 核心概念
 
-| 功能 | 说明 | 相关 API |
-|------|------|---------|
-| 记忆存储 | 保存和检索记忆条目 | `store`, `retrieve` |
-| 语义搜索 | 基于向量相似度的记忆检索 | `search`, `similar` |
-| 记忆分类 | 按类型/标签组织记忆 | `categorize`, `tag` |
-| 自动遗忘 | 过期记忆自动清理 | `expire`, `prune` |
-| 增量更新 | 记忆片段的增量修改 | `update`, `patch` |
+### 记忆文件结构
+
+```
+memory/                          # 记忆目录 (~/.claude/projects/<slug>/memory/)
+├── MEMORY.md                   # 索引文件（每行一个引用链接）
+├── user/                       # 用户偏好记忆
+│   ├── user_role.md
+│   └── user_preferences.md
+├── feedback/                   # 用户反馈记忆
+│   └── feedback_testing.md
+├── project/                    # 项目背景记忆
+│   └── project_memory.md
+└── reference/                 # 外部系统指针
+    └── external_refs.md
+```
+
+### MEMORY.md 索引格式
+
+```markdown
+# auto memory
+
+...
+
+## MEMORY.md
+
+- [Title](file.md) — one-line hook
+- [User role](user_role.md) — data scientist focused on logging
+- [Feedback: no summaries](feedback_testing.md) — user不喜欢结尾总结
+```
+
+### 记忆类型（MEMORY_TYPES）
+
+```typescript
+export const MEMORY_TYPES = ['user', 'feedback', 'project', 'reference'] as const
+export type MemoryType = (typeof MEMORY_TYPES)[number]
+```
+
+| 类型 | 说明 | 示例 |
+|------|------|------|
+| `user` | 用户角色、目标、知识背景 | 用户是数据科学家，专注于可观测性 |
+| `feedback` | 用户对工作方式的指导（避免/保持） | 不要在测试中 mock 数据库；用户喜欢简洁回复 |
+| `project` | 进行中工作的上下文、目标、截止日期 | 移动团队 3-5 日冻结非关键合并 |
+| `reference` | 外部系统指针 | Linear "INGEST" 项目跟踪 pipeline bug |
+
+### Frontmatter 格式
+
+```markdown
+---
+name: {{memory name}}
+description: {{one-line description — used to decide relevance in future conversations, so be specific}}
+type: {{user, feedback, project, reference}}
+---
+
+{{memory content — for feedback/project types, structure as: rule/fact, then **Why:** and **How to apply:** lines}}
+```
 
 ## 文件结构
 
 ```
-memdir/
-├── memdir.ts        # 内存目录核心实现
-├── storage.ts       # 持久化存储适配器
-├── indexer.ts       # 记忆索引构建
-└── query.ts         # 查询和检索引擎
+restored-src/src/memdir/
+├── memdir.ts          # 核心实现：buildMemoryPrompt, loadMemoryPrompt, truncateEntrypointContent
+├── memoryTypes.ts    # 类型定义、TYPES_SECTION、frontmatter 示例
+├── memoryAge.ts      # 记忆时效计算函数
+├── memoryScan.ts     # 扫描记忆文件
+├── paths.ts          # 路径管理（getAutoMemPath, isAutoMemoryEnabled）
+├── teamMemPaths.ts   # 团队记忆路径（TEAMMEM 特性）
+└── teamMemPrompts.ts # 团队记忆提示词构建
 ```
 
 ### 职责说明
 
 | 文件 | 职责 |
 |------|------|
-| memdir.ts | 提供统一记忆接口，管理记忆生命周期 |
-| storage.ts | 抽象底层存储，支持文件和数据库混合存储 |
-| indexer.ts | 构建记忆向量索引，支持语义搜索 |
-| query.ts | 实现记忆检索、过滤和排序逻辑 |
+| memdir.ts | 核心：生成记忆提示词、管理 `MEMORY.md` 截断、加载入口 |
+| memoryTypes.ts | 定义四类记忆类型、frontmatter 格式示例、各 section 文本 |
+| memoryAge.ts | 计算记忆时效、生成过期提示文本 |
+| paths.ts | 获取记忆目录路径、判断是否启用自动记忆 |
+| teamMemPaths.ts | 团队记忆路径（TEAMMEM 特性开启时） |
+| teamMemPrompts.ts | 团队记忆 + 个人记忆合并提示词构建 |
 
-## 核心类型
+## 核心 API
 
-```mermaid
-classDiagram
-    class MemDir {
-        +store(memory: MemoryEntry): Promise<string>
-        +retrieve(id: string): Promise<MemoryEntry>
-        +search(query: string, options?: SearchOptions): Promise<MemoryEntry[]>
-        +update(id: string, updates: Partial<MemoryEntry>): Promise<void>
-        +delete(id: string): Promise<void>
-        +prune(expiredBefore?: Date): Promise<number>
-    }
-    class MemoryEntry {
-        +id: string
-        +type: MemoryType
-        +content: string
-        +embedding?: number[]
-        +tags: string[]
-        +metadata: Record<string, any>
-        +createdAt: Date
-        +updatedAt: Date
-        +expiresAt?: Date
-        +importance: number
-    }
-    class MemoryType {
-        <<enumeration>>
-        USER_PREFERENCE
-        PROJECT_KNOWLEDGE
-        CONVERSATION_SUMMARY
-        FACT
-        RULE
-        CUSTOM
-    }
-    class SearchOptions {
-        +limit?: number
-        +offset?: number
-        +type?: MemoryType
-        +tags?: string[]
-        +minImportance?: number
-        +since?: Date
-        +until?: Date
-    }
-    MemDir --> MemoryEntry
-    MemDir --> MemoryType
-    MemDir --> SearchOptions
-```
+### memdir.ts 导出
 
-## 记忆存储流程
+| 函数 | 说明 | 签名 |
+|------|------|------|
+| `loadMemoryPrompt` | 主入口：根据特性开关加载对应记忆提示 | `() => Promise<string \| null>` |
+| `buildMemoryPrompt` | 构建含 MEMORY.md 内容的完整提示 | `(params) => string` |
+| `buildMemoryLines` | 生成提示词骨架（不含内容） | `(displayName, memoryDir, extraGuidelines?) => string[]` |
+| `truncateEntrypointContent` | 截断 MEMORY.md 内容 | `(raw: string) => EntrypointTruncation` |
+| `ensureMemoryDirExists` | 确保记忆目录存在 | `(memoryDir: string) => Promise<void>` |
+
+### memoryTypes.ts 导出
+
+| 导出 | 说明 |
+|------|------|
+| `MEMORY_TYPES` | 记忆类型常量数组 `['user', 'feedback', 'project', 'reference']` |
+| `parseMemoryType(raw)` | 解析 frontmatter 值为 `MemoryType` |
+| `TYPES_SECTION_INDIVIDUAL` | 个人模式下的类型说明文本 |
+| `TYPES_SECTION_COMBINED` | 团队模式下的类型说明文本（含 scope 标签） |
+| `WHAT_NOT_TO_SAVE_SECTION` | 明确禁止保存的内容类型 |
+| `WHEN_TO_ACCESS_SECTION` | 何时访问记忆的指导 |
+| `TRUSTING_RECALL_SECTION` | 如何信任记忆内容的指导 |
+| `MEMORY_FRONTMATTER_EXAMPLE` | frontmatter 示例 |
+
+### memoryAge.ts 导出
+
+| 函数 | 说明 |
+|------|------|
+| `memoryAgeDays(mtimeMs)` | 距今天数（地板取整） |
+| `memoryAge(mtimeMs)` | 人类可读时效字符串（"today", "yesterday", "N days ago"） |
+| `memoryFreshnessText(mtimeMs)` | 过时警告文本（>1 天时返回，否则空字符串） |
+| `memoryFreshnessNote(mtimeMs)` | 包装在 `<system-reminder>` 中的过时警告 |
+
+## 三种运行模式
+
+### 1. 个人模式（默认）
+
+普通会话使用单目录结构，记忆通过 `MEMORY.md` 索引 + 主题文件管理：
 
 ```mermaid
 sequenceDiagram
-    participant Agent as AI Agent
-    participant MemDir as MemDir
-    participant Indexer as Indexer
-    participant Storage as Storage
-    participant VectorDB as Vector DB
+    participant User as 用户
+    participant Claude as Claude
+    participant Memory as memory dir
 
-    Note over Agent,VectorDB: 存储记忆
-    Agent->>MemDir: store(memoryEntry)
-    MemDir->>MemDir: 验证并预处理
-    MemDir->>Indexer: generateEmbedding(content)
-    Indexer-->>MemDir: 向量嵌入
-    MemDir->>Storage: 保存条目
-    Storage-->>MemDir: 存储确认
-    MemDir->>VectorDB: 添加向量索引
-    VectorDB-->>MemDir: 索引完成
-    MemDir-->>Agent: memoryId
-
-    Note over Agent,VectorDB: 检索记忆
-    Agent->>MemDir: search("query")
-    MemDir->>Indexer: generateEmbedding(query)
-    Indexer-->>MemDir: 查询向量
-    MemDir->>VectorDB: similaritySearch(queryVector)
-    VectorDB-->>MemDir: 相似记忆列表
-    MemDir->>MemDir: 排序和过滤
-    MemDir-->>Agent: 记忆结果
+    User->>Claude: 告诉 Claude 一些偏好
+    Claude->>Memory: 写入 user_role.md
+    Claude->>Memory: 更新 MEMORY.md 索引
+    Note over Memory: 保存到 ~/<br/>project/memory/
 ```
 
-## API 摘要
+### 2. 团队模式（TEAMMEM）
 
-### MemDir
+共享 private 和 team 两个目录，支持团队协作：
 
-| 方法 | 说明 | 返回类型 |
-|------|------|---------|
-| `store` | 存储新记忆 | `Promise<string>` (返回记忆ID) |
-| `retrieve` | 按ID检索记忆 | `Promise<MemoryEntry>` |
-| `search` | 语义搜索记忆 | `Promise<MemoryEntry[]>` |
-| `update` | 更新记忆内容 | `Promise<void>` |
-| `delete` | 删除记忆 | `Promise<void>` |
-| `prune` | 清理过期记忆 | `Promise<number>` (删除数量) |
-| `list` | 列出记忆（支持分页） | `Promise<MemoryList>` |
+```
+memory/
+├── MEMORY.md              # 合并索引
+├── user/                  # 个人记忆（不共享）
+├── feedback/              # 个人反馈
+├── project/               # 个人项目背景
+├── reference/             # 个人外部指针
+└── team/                  # 团队共享目录
+    ├── team_feedback.md
+    ├── team_project.md
+    └── team_reference.md
+```
 
-### MemoryEntry
+### 3. Kairos 日志模式（KAIROS）
+
+长时间会话使用 append-only 日志，避免频繁重写 MEMORY.md：
+
+```
+memory/
+└── logs/
+    └── YYYY/
+        └── MM/
+            └── YYYY-MM-DD.md   # 每日追加日志
+```
+
+夜间运行 `/dream` skill 将日志蒸馏为 `MEMORY.md` 和主题文件。
+
+## 截断机制
+
+`MEMORY.md` 有两层截断保护：
+
+| 限制 | 值 | 说明 |
+|------|------|------|
+| 行数限制 | `MAX_ENTRYPOINT_LINES = 200` | 超出后截断最后一行 |
+| 字节限制 | `MAX_ENTRYPOINT_BYTES = 25_000` | 超出后在最后一个换行处截断 |
 
 ```typescript
-interface MemoryEntry {
-  id: string                      // 唯一标识符
-  type: MemoryType                // 记忆类型
-  content: string                 // 记忆内容
-  embedding?: number[]            // 向量嵌入（自动生成）
-  tags: string[]                  // 标签
-  metadata: Record<string, any>   // 元数据
-  createdAt: Date                 // 创建时间
-  updatedAt: Date                 // 更新时间
-  expiresAt?: Date                // 过期时间（可选）
-  importance: number              // 重要性评分 (0-10)
-  accessCount: number             // 访问次数
-  lastAccessedAt?: Date           // 最后访问时间
+export function truncateEntrypointContent(raw: string): EntrypointTruncation {
+  // 1. 行数截断（优先）
+  // 2. 字节截断（在最后换行处截断）
+  // 返回 { content, lineCount, byteCount, wasLineTruncated, wasByteTruncated }
 }
 ```
 
-### MemoryType
+## 时效性处理
+
+记忆时效超过 1 天时，系统自动注入警告：
 
 ```typescript
-enum MemoryType {
-  USER_PREFERENCE = 'user_preference',       // 用户偏好设置
-  PROJECT_KNOWLEDGE = 'project_knowledge',   // 项目特定知识
-  CONVERSATION_SUMMARY = 'conversation_summary', // 对话摘要
-  FACT = 'fact',                             // 事实性知识
-  RULE = 'rule',                             // 规则/约束
-  CUSTOM = 'custom'                          // 自定义类型
-}
+// memoryFreshnessNote() 返回：
+// <system-reminder>记忆已过时：claims about code behavior or file:line citations
+// may be outdated. Verify against current code before asserting as fact.</system-reminder>
 ```
 
-## 使用示例
-
-### 基本存储和检索
-
-```typescript
-import { memdir } from './memdir/memdir'
-
-// 存储用户偏好
-const prefId = await memdir.store({
-  type: MemoryType.USER_PREFERENCE,
-  content: '用户喜欢使用 TypeScript，默认使用 2 空格缩进',
-  tags: ['preferences', 'typescript'],
-  importance: 8
-})
-
-// 检索记忆
-const preference = await memdir.retrieve(prefId)
-console.log(preference.content)
-```
-
-### 语义搜索
-
-```typescript
-// 搜索相关记忆
-const results = await memdir.search(
-  '用户对于代码格式有什么偏好？',
-  {
-    limit: 5,
-    type: MemoryType.USER_PREFERENCE,
-    minImportance: 5
-  }
-)
-
-results.forEach(memory => {
-  console.log(`[${memory.importance}] ${memory.content}`)
-})
-```
-
-### 记忆更新和清理
-
-```typescript
-// 更新记忆
-await memdir.update(prefId, {
-  content: '用户现在更喜欢 4 空格缩进',
-  importance: 9
-})
-
-// 清理过期记忆
-const deletedCount = await memdir.prune(new Date())
-console.log(`Deleted ${deletedCount} expired memories`)
-```
-
-### 项目知识库
-
-```typescript
-// 存储项目特定知识
-await memdir.store({
-  type: MemoryType.PROJECT_KNOWLEDGE,
-  content: '本项目使用 pnpm 作为包管理器，Monorepo 结构',
-  tags: ['project', 'monorepo', 'package-manager'],
-  metadata: {
-    projectId: 'my-project',
-    language: 'TypeScript'
-  },
-  importance: 10
-})
-```
-
-## 记忆生命周期
-
-```mermaid
-stateDiagram-v2
-    [*] --> 新建: store()
-    新建 --> 活跃: 首次访问
-    活跃 --> 活跃: 定期访问
-    活跃 --> 冷存: 长时间未访问
-    活跃 --> 过期: 达到过期时间
-    冷存 --> 活跃: 再次访问
-    冷存 --> 过期: 达到过期时间
-    过期 --> [*]: prune() 清理
-    过期 --> 冷存: 访问时刷新
-```
-
-## 存储策略
-
-### 分层存储
-
-| 层级 | 存储位置 | 容量 | 访问速度 |
-|------|---------|------|---------|
-| 热存储 | 内存/Redis | ~100 条 | < 1ms |
-| 温存储 | SQLite | ~10,000 条 | < 10ms |
-| 冷存储 | 文件系统 | 无限制 | < 100ms |
-
-### 自动分层
-
-```mermaid
-flowchart LR
-    A[新记忆] --> B{访问频率}
-    B -->|高| C[热存储]
-    B -->|中| D[温存储]
-    B -->|低| E[冷存储]
-    C -->|热度下降| D
-    D -->|热度下降| E
-    E -->|重新访问| D
-```
-
-## 最佳实践
-
-### 推荐模式
-
-| 场景 | 推荐做法 |
-|------|---------|
-| 记忆组织 | 使用标签和类型分类，便于检索 |
-| 重要性评分 | 根据记忆价值设置 0-10 分 |
-| 过期策略 | 设置合理的过期时间，定期清理 |
-| 搜索优化 | 使用精确的类型和标签过滤 |
-
-### 避免事项
-
-| 做法 | 问题 | 替代方案 |
-|------|------|---------|
-| 存储敏感信息 | 安全风险 | 使用加密存储或避免存储 |
-| 冗余记忆 | 存储浪费 | 使用更新而非重复创建 |
-| 无限增长 | 性能下降 | 设置自动过期和清理策略 |
-
-## 向量搜索实现
-
-### 嵌入生成
-
-```typescript
-// 使用 OpenAI 或本地模型生成嵌入
-async function generateEmbedding(text: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
-    model: 'text-embedding-ada-002',
-    input: text
-  })
-  return response.data[0].embedding
-}
-```
-
-### 相似度计算
-
-```typescript
-// 余弦相似度计算
-function cosineSimilarity(a: number[], b: number[]): number {
-  const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0)
-  const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0))
-  const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0))
-  return dotProduct / (magnitudeA * magnitudeB)
-}
-```
-
-## 设计决策
-
-### 1. 向量 + 关键词混合搜索
-
-结合向量相似度和 BM25 关键词匹配，提供更准确的搜索结果。
-
-### 2. 自动重要性衰减
-
-长时间未访问的记忆自动降低重要性评分，便于清理低价值数据。
-
-### 3. 增量嵌入更新
-
-只对变化的内容重新生成嵌入，节省计算资源。
+这解决了用户报告的"过时代码状态记忆被当作事实断言"的问题。
 
 ## 源码引用
 
-- [memdir/memdir.ts](/restored-src/src/memdir/memdir.ts)
-- [memdir/storage.ts](/restored-src/src/memdir/storage.ts)
-- [memdir/indexer.ts](/restored-src/src/memdir/indexer.ts)
-- [memdir/query.ts](/restored-src/src/memdir/query.ts)
+- [memdir/memdir.ts](/restored-src/src/memdir/memdir.ts) — 核心实现
+- [memdir/memoryTypes.ts](/restored-src/src/memdir/memoryTypes.ts) — 类型定义
+- [memdir/memoryAge.ts](/restored-src/src/memdir/memoryAge.ts) — 时效计算
+- [memdir/paths.ts](/restored-src/src/memdir/paths.ts) — 路径管理
 
 ## 相关文档
 
@@ -367,4 +262,4 @@ function cosineSimilarity(a: number[], b: number[]): number {
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-04-02*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-04-08*

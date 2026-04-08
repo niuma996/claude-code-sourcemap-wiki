@@ -73,31 +73,43 @@ stateDiagram-v2
 
 ## API Summary
 
-| Method | Description | Parameters |
-|--------|-------------|------------|
-| `query(input)` | Execute query | `QueryInput` |
-| `stream(input)` | Stream query | `QueryInput` |
-| `stop()` | Stop current query | None |
-| `pause()` | Pause query | None |
-| `resume()` | Resume query | None |
+### QueryEngine Class (Core)
+
+| Method | Description | Signature |
+|--------|-------------|-----------|
+| `submitMessage(prompt, ...)` | Main entry: async generator, processes user messages and yields stream events | `async *submitMessage(prompt, opts?)` |
+
+### query() Function (Query Loop Generator)
+
+| Method | Description | Signature |
+|--------|-------------|-----------|
+| `query(params)` | Low-level async generator, encapsulates query loop logic | `async *query(params: QueryParams)` |
+
+> **Note**: `QueryEngine` has no `stop()` / `pause()` / `resume()` public methods. Stopping is done via `AbortController` (passed in `config.abortController`); pausing is controlled internally via `stopHookActive` state.
 
 ## Query Input
 
-```typescript
-interface QueryInput {
-  message: string                    // User message
-  attachments?: Attachment[]         // Attachments
-  context?: QueryContext             // Extra context
-  options?: QueryOptions             // Query options
-}
+The actual type is `QueryParams` (defined in [query.ts](/restored-src/src/query.ts)):
 
-interface QueryOptions {
-  model?: string                     // Specified model
-  maxTokens?: number                // Max tokens
-  temperature?: number               // Temperature parameter
-  stopSequences?: string[]          // Stop sequences
+```typescript
+export type QueryParams = {
+  messages: Message[]                        // Conversation history
+  systemPrompt: SystemPrompt                 // System prompt
+  userContext: { [k: string]: string }     // User context (key-value pairs)
+  systemContext: { [k: string]: string }    // System context (key-value pairs)
+  canUseTool: CanUseToolFn                  // Tool permission check function
+  toolUseContext: ToolUseContext             // Tool execution context
+  fallbackModel?: string                     // Fallback model
+  querySource: QuerySource                   // Query source identifier
+  maxOutputTokensOverride?: number           // Max output token override
+  maxTurns?: number                         // Max turns
+  skipCacheWrite?: boolean                   // Skip cache write
+  taskBudget?: { total: number }            // API task_budget (beta feature)
+  deps?: QueryDeps                           // Query dependencies
 }
 ```
+
+> **Note**: Fields such as `message` / `attachments` / `options` / `temperature` / `topP` / `stopSequences` do **not** exist in `QueryParams`. Model parameters are handled via `getMainLoopModel()` / `parseUserSpecifiedModel()` and other dedicated functions.
 
 ## Context Management
 
@@ -114,19 +126,15 @@ flowchart LR
     CT --> Query
 ```
 
-## Token Budget
+## Task Budget
 
-Token budget management ensures context doesn't exceed model limits:
+`QueryParams.taskBudget` is the API-level `output_config.task_budget` (beta), used to cap total output tokens for an entire agentic turn:
 
 ```typescript
-interface TokenBudget {
-  maxTokens: number          // Max tokens
-  systemPrompt: number       // System prompt usage
-  history: number            // History usage
-  tools: number             // Tool definitions usage
-  remaining: number          // Remaining available
-}
+taskBudget?: { total: number }  // API task_budget beta feature
 ```
+
+> **Note**: The `TokenBudget` interface described in this wiki (`maxTokens` / `systemPrompt` / `history` / `tools` / `remaining`) does **not** exist in the source code.
 
 ## Stop Conditions
 
@@ -148,15 +156,17 @@ Multiple stop conditions are supported:
 | Timeout | Increase timeout or process in segments |
 | Context Too Long | Auto compact or segment |
 
-## Configuration Options
+## Model and Parameter Configuration
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `model` | string | claude-opus-4-5 | Model to use |
-| `maxTokens` | number | 8192 | Max response tokens |
-| `temperature` | number | 1 | Generation temperature |
-| `topP` | number | - | Top-p sampling |
-| `stopSequences` | string[] | [] | Stop sequences |
+Model selection and parameters are not passed directly via `QueryParams`, but handled by dedicated functions:
+
+| Config Item | Handler |
+|------------|---------|
+| Model selection | `getMainLoopModel()` / `parseUserSpecifiedModel()` / `getDefaultSubagentModel()` |
+| Max tokens | `maxOutputTokensOverride` (in `QueryParams`) |
+| Task budget | `taskBudget: { total: number }` (in `QueryParams`) |
+| Temperature / topP | Handled via `getModelParams()` at API layer, not in `QueryParams` |
+| Stop sequences | Handled via `stopHooks` configuration (inside query loop) |
 
 ## Source References
 

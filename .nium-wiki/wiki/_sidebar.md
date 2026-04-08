@@ -7,6 +7,14 @@
   - [Agent 工具](/agent/agent-tool.md)
   - [Fork 子智能体](/agent/fork-subagent.md)
   - [会话历史 (Session History)](/agent/session-history.md)
+  - built-in
+    - [内置智能体（Built-in Agents）](/agent/built-in/_index.md)
+    - [Claude Code Guide Agent（Claude 代码指南智能体）](/agent/built-in/claude-code-guide-agent.md)
+    - [Explore Agent（探索智能体）](/agent/built-in/explore-agent.md)
+    - [General Purpose Agent（通用目的智能体）](/agent/built-in/general-purpose-agent.md)
+    - [Plan Agent（计划智能体）](/agent/built-in/plan-agent.md)
+    - [Statusline Setup Agent（状态栏配置智能体）](/agent/built-in/statusline-setup-agent.md)
+    - [Verification Agent（验证智能体）](/agent/built-in/verification-agent.md)
 - buddy
   - [AI 伴侣 (Buddy)](/buddy/_index.md)
   - [Buddy 通知与提示](/buddy/buddy-notifications.md)
@@ -26,6 +34,7 @@
   - [Context 模块](/core/context.md)
   - [Hooks 模块](/core/hooks.md)
   - [查询引擎](/core/query.md)
+  - [Skills 模块](/core/skills.md)
   - [工具系统](/core/tools.md)
 - plugins
   - [插件与技能系统](/plugins/_index.md)

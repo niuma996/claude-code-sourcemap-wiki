@@ -73,31 +73,43 @@ stateDiagram-v2
 
 ## API 摘要
 
-| 方法 | 说明 | 参数 |
+### QueryEngine 类（核心）
+
+| 方法 | 说明 | 签名 |
 |------|------|------|
-| `query(input)` | 执行查询 | `QueryInput` |
-| `stream(input)` | 流式查询 | `QueryInput` |
-| `stop()` | 停止当前查询 | 无 |
-| `pause()` | 暂停查询 | 无 |
-| `resume()` | 恢复查询 | 无 |
+| `submitMessage(prompt, ...)` | 主入口：异步生成器，处理用户消息并 yield 流式事件 | `async *submitMessage(prompt, opts?)` |
+
+### query() 函数（查询循环生成器）
+
+| 方法 | 说明 | 签名 |
+|------|------|------|
+| `query(params)` | 低级异步生成器，封装查询循环逻辑 | `async *query(params: QueryParams)` |
+
+> **注意**：`QueryEngine` 没有 `stop()` / `pause()` / `resume()` 公开方法。停止通过 `AbortController` 实现（传入 `config.abortController`）；暂停通过 `stopHookActive` 内部状态控制。
 
 ## 查询输入
 
-```typescript
-interface QueryInput {
-  message: string                    // 用户消息
-  attachments?: Attachment[]         // 附件
-  context?: QueryContext             // 额外上下文
-  options?: QueryOptions             // 查询选项
-}
+实际类型为 `QueryParams`（定义于 [query.ts](/restored-src/src/query.ts)）：
 
-interface QueryOptions {
-  model?: string                     // 指定模型
-  maxTokens?: number                // 最大令牌数
-  temperature?: number               // 温度参数
-  stopSequences?: string[]          // 停止序列
+```typescript
+export type QueryParams = {
+  messages: Message[]                        // 对话历史
+  systemPrompt: SystemPrompt                 // 系统提示
+  userContext: { [k: string]: string }     // 用户上下文（键值对）
+  systemContext: { [k: string]: string }    // 系统上下文（键值对）
+  canUseTool: CanUseToolFn                  // 工具权限检查函数
+  toolUseContext: ToolUseContext             // 工具执行上下文
+  fallbackModel?: string                     // 后备模型
+  querySource: QuerySource                   // 查询来源标识
+  maxOutputTokensOverride?: number           // 最大输出令牌覆盖
+  maxTurns?: number                         // 最大轮次
+  skipCacheWrite?: boolean                   // 跳过缓存写入
+  taskBudget?: { total: number }            // API task_budget（beta feature）
+  deps?: QueryDeps                          // 查询依赖
 }
 ```
+
+> **注意**：`message` / `attachments` / `options` / `temperature` / `topP` / `stopSequences` 等字段**不存在**于 `QueryParams` 中。模型参数通过 `getMainLoopModel()` / `parseUserSpecifiedModel()` 等函数处理。
 
 ## 上下文管理
 
@@ -114,19 +126,15 @@ flowchart LR
     CT --> Query
 ```
 
-## 令牌预算
+## 任务预算
 
-令牌预算管理确保上下文不会超出模型限制：
+`QueryParams.taskBudget` 是 API 层的 `output_config.task_budget`（beta），用于限制整个 agentic turn 的总输出令牌数：
 
 ```typescript
-interface TokenBudget {
-  maxTokens: number          // 最大令牌数
-  systemPrompt: number       // 系统提示占用
-  history: number            // 历史占用
-  tools: number             // 工具定义占用
-  remaining: number          // 剩余可用
-}
+taskBudget?: { total: number }  // API task_budget beta feature
 ```
+
+> **注意**：Wiki 中描述的 `TokenBudget` 接口（`maxTokens` / `systemPrompt` / `history` / `tools` / `remaining`）在源码中**不存在**。
 
 ## 停止条件
 
@@ -148,15 +156,17 @@ interface TokenBudget {
 | 超时 | 增加超时或分段处理 |
 | 上下文过长 | 自动压缩或分段 |
 
-## 配置选项
+## 模型与参数配置
 
-| 选项 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `model` | string | claude-opus-4-5 | 使用的模型 |
-| `maxTokens` | number | 8192 | 响应最大令牌 |
-| `temperature` | number | 1 | 生成温度 |
-| `topP` | number | - | Top-p 采样 |
-| `stopSequences` | string[] | [] | 停止序列 |
+模型选择和参数不通过 `QueryParams` 直接传递，而是通过专用函数处理：
+
+| 配置项 | 处理方式 |
+|--------|---------|
+| 模型选择 | `getMainLoopModel()` / `parseUserSpecifiedModel()` / `getDefaultSubagentModel()` |
+| 最大令牌 | `maxOutputTokensOverride`（在 `QueryParams` 中）|
+| 任务预算 | `taskBudget: { total: number }`（在 `QueryParams` 中）|
+| 温度/topP | 通过 `getModelParams()` 在 API 层处理，不在 `QueryParams` 中 |
+| 停止序列 | 通过 `stopHooks` 配置处理（在查询循环内部）|
 
 ## 源码引用
 

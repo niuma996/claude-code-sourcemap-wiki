@@ -46,35 +46,158 @@ flowchart TB
 ```
 restored-src/src/
 ├── commands/
-│   ├── hooks/
-│   │   ├── index.ts           # hooks 命令入口
-│   │   └── hooks.tsx          # HooksConfigMenu UI 组件
-│   └── context/
-│       ├── index.ts           # context 命令入口
-│       ├── context.tsx        # ContextVisualization 可视化
-│       └── context-noninteractive.ts
+│   └── hooks/
+│       └── hooks.tsx              # HooksConfigMenu UI 组件（/hooks 命令）
 │
-└── utils/
-    └── hooks/
-        ├── AsyncHookRegistry.ts    # 异步 Hook 管理
-        ├── hookEvents.ts           # 事件系统
-        ├── hookHelpers.ts          # 辅助函数
-        ├── hooksSettings.ts        # 设置管理
-        ├── hooksConfigManager.ts   # 配置管理器
-        ├── hooksConfigSnapshot.ts  # 配置快照
-        ├── sessionHooks.ts        # 会话 Hook
-        ├── execAgentHook.ts       # Agent Hook 执行
-        ├── execHttpHook.ts        # HTTP Hook 执行
-        ├── execPromptHook.ts      # Prompt Hook 执行
-        ├── execPromptHook.ts
-        ├── fileChangedWatcher.ts   # 文件监控
-        ├── registerFrontmatterHooks.ts
-        ├── registerSkillHooks.ts
-        ├── skillImprovement.ts
-        ├── postSamplingHooks.ts
-        ├── ssrfGuard.ts
-        └── apiQueryHookHelper.ts
+├── components/hooks/
+│   ├── HooksConfigMenu.tsx        # Hook 配置菜单组件
+│   ├── SelectHookMode.tsx         # Hook 模式选择组件
+│   └── ViewHookMode.tsx          # Hook 查看模式组件
+│
+├── schemas/
+│   └── hooks.ts                  # Hook 相关 Zod Schema 定义
+│
+├── types/
+│   └── hooks.ts                  # Hook 类型定义（HookResult, AggregatedHookResult 等）
+│
+└── utils/hooks/
+    ├── AsyncHookRegistry.ts      # 异步 Hook 管理（超时、进度追踪）
+    ├── hookEvents.ts             # 事件广播系统
+    ├── hookHelpers.ts            # 辅助函数（结构化输出、参数替换）
+    ├── hooks.ts                  # Hook 响应 Schema、HookCallback 类型
+    ├── hooksSettings.ts          # 配置管理、Hook 来源解析
+    ├── hooksConfigManager.ts     # Hook 配置 UI 元数据管理
+    ├── hooksConfigSnapshot.ts    # 配置快照
+    ├── sessionHooks.ts           # 会话级别 Hook（临时/内存 Hook）
+    ├── execAgentHook.ts          # Agent Hook 执行器（LLM 验证）
+    ├── execHttpHook.ts           # HTTP Hook 执行器
+    ├── execPromptHook.ts         # Prompt Hook 执行器
+    ├── postSamplingHooks.ts     # 采样后 Hook（内部 API）
+    ├── registerFrontmatterHooks.ts  # Frontmatter Hook 注册
+    ├── registerSkillHooks.ts    # Skill Hook 注册（支持 once: true）
+    ├── apiQueryHookHelper.ts    # API 查询 Hook 辅助工具
+    ├── ssrfGuard.ts             # HTTP Hook SSRF 防护
+    └── hookEvents.ts            # Hook 事件广播
 ```
+
+## 核心类型系统
+
+### HookResult 与 AggregatedHookResult
+
+```mermaid
+classDiagram
+    class HookResult {
+        +message?: Message
+        +systemMessage?: Message
+        +blockingError?: HookBlockingError
+        +outcome: "success"|"blocking"|"non_blocking_error"|"cancelled"
+        +preventContinuation?: boolean
+        +stopReason?: string
+        +permissionBehavior?: "ask"|"deny"|"allow"|"passthrough"
+        +additionalContext?: string
+        +initialUserMessage?: string
+        +updatedInput?: Record~string, unknown~
+        +updatedMCPToolOutput?: unknown
+        +permissionRequestResult?: PermissionRequestResult
+        +retry?: boolean
+    }
+
+    class AggregatedHookResult {
+        +message?: Message
+        +blockingErrors?: HookBlockingError[]
+        +preventContinuation?: boolean
+        +stopReason?: string
+        +additionalContexts?: string[]
+        +permissionBehavior?: PermissionResult.behavior
+    }
+
+    class HookBlockingError {
+        +blockingError: string
+        +command: string
+    }
+
+    class PermissionRequestResult {
+        +behavior: "allow"|"deny"
+        +updatedInput?: Record~string, unknown~
+        +updatedPermissions?: PermissionUpdate[]
+        +message?: string
+        +interrupt?: boolean
+    }
+
+    HookResult --> HookBlockingError
+    HookResult --> PermissionRequestResult
+    AggregatedHookResult --> HookBlockingError
+```
+
+### HookCallback 回调类型
+
+`HookCallback` 是内部 Hook（builtin/internal）的类型，通过代码注册而非配置文件，无法持久化到 `settings.json`：
+
+```typescript
+type HookCallback = {
+  type: 'callback'
+  callback: (
+    input: HookInput,
+    toolUseID: string | null,
+    abort: AbortSignal | undefined,
+    hookIndex?: number,      // SessionStart hooks 用于计算 CLAUDE_ENV_FILE 路径
+    context?: HookCallbackContext,
+  ) => Promise<HookJSONOutput>
+  timeout?: number           // 超时秒数
+  internal?: boolean          // 内部 Hook（如 analytics）不计入 tengu_run_hook 指标
+}
+
+type HookCallbackContext = {
+  getAppState: () => AppState
+  updateAttributionState: (
+    updater: (prev: AttributionState) => AttributionState,
+  ) => void
+}
+```
+
+**内置 Callback Hook 示例**：`sessionFileAccessHooks`（会话文件访问分析）、`classifierApprovalsHook`（分类器审批）。
+
+### FunctionHook 会话函数类型
+
+`FunctionHook` 是另一种会话级别回调，通过 TypeScript 函数实现验证逻辑：
+
+```typescript
+type FunctionHook = {
+  type: 'function'
+  id?: string                // 唯一 ID，用于 removeFunctionHook
+  timeout?: number
+  callback: (messages: Message[], signal?: AbortSignal) => boolean | Promise<boolean>
+  errorMessage: string
+  statusMessage?: string
+}
+```
+
+### Sync Hook 响应 Schema
+
+```typescript
+const syncHookResponseSchema = z.object({
+  continue: z.boolean().optional(),        // 默认 true
+  suppressOutput: z.boolean().optional(),   // 默认 false
+  stopReason: z.string().optional(),
+  decision: z.enum(['approve', 'block']).optional(),
+  reason: z.string().optional(),
+  systemMessage: z.string().optional(),
+  hookSpecificOutput: z.union([...])        // 事件特定的输出字段
+})
+```
+
+每个事件支持不同的 `hookSpecificOutput` 字段，例如：
+
+| 事件 | 特有字段 |
+|------|---------|
+| `PreToolUse` | `permissionDecision`, `updatedInput`, `additionalContext` |
+| `UserPromptSubmit` | `additionalContext` |
+| `SessionStart` | `additionalContext`, `initialUserMessage`, `watchPaths` |
+| `PermissionRequest` | `decision: {behavior: 'allow'|'deny', ...}` |
+| `Elicitation` | `action: 'accept'|'decline'|'cancel'`, `content` |
+| `CwdChanged` | `watchPaths` |
+| `FileChanged` | `watchPaths` |
+| `WorktreeCreate` | `worktreePath` |
 
 ## Hook 类型
 
@@ -138,7 +261,7 @@ classDiagram
         +processId: string
         +hookId: string
         +hookName: string
-        +hookEvent: HookEvent
+        +hookEvent: HookEvent | "StatusLine" | "FileSuggestion"
         +toolName?: string
         +pluginId?: string
         +startTime: number
@@ -162,9 +285,11 @@ classDiagram
 
 **关键功能:**
 
-- **超时管理**：默认 15 秒超时，可配置
+- **超时管理**：默认 15 秒超时，可通过 `asyncTimeout` 字段覆盖
 - **进度追踪**：通过 `startHookProgressInterval` 定期发送 stdout 更新
 - **响应收集**：解析 JSON 行输出，支持 `{"ok": true/false, "reason": "..."}` 格式
+- **特殊事件类型**：支持 `StatusLine` 和 `FileSuggestion`（用于内部 UI 反馈）
+- **SessionStart 完成后**：自动使会话环境缓存失效（`invalidateSessionEnvCache`）
 
 ### HookEvents - 事件广播系统
 
@@ -179,8 +304,8 @@ sequenceDiagram
 
     Source->>Events: emitHookStarted(hookId, name, event)
     Events->>Handler: HookStartedEvent {type: 'started'}
-    Source->>Events: emitHookProgress({stdout, stderr})
-    Events->>Handler: HookProgressEvent {type: 'progress'}
+    Source->>Events: startHookProgressInterval({getOutput})
+    Events->>Handler: HookProgressEvent {type: 'progress'} (定期轮询)
     Source->>Events: emitHookResponse({output, exitCode})
     Events->>Handler: HookResponseEvent {type: 'response'}
     Handler->>UI: 更新进度显示
@@ -219,9 +344,42 @@ type HookResponseEvent = {
 }
 ```
 
+**事件过滤机制:**
+
+```mermaid
+flowchart TD
+    Start["shouldEmit(hookEvent)"] --> CheckAlways{"hookEvent in<br/>ALWAYS_EMITTED_EVENTS"}
+    CheckAlways -->|"SessionStart / Setup"| Allow["return true"]
+    CheckAlways -->|"其他事件"| CheckFlag["allHookEventsEnabled?"]
+    CheckFlag -->|"true"| CheckValid["HOOK_EVENTS 中?"]
+    CheckValid -->|"是"| Allow2["return true"]
+    CheckValid -->|"否"| Deny["return false"]
+    CheckFlag -->|"false"| Deny2["return false"]
+
+    style Allow fill:#c8f7c5
+    style Allow2 fill:#c8f7c5
+    style Deny fill:#f8d7da
+    style Deny2 fill:#f8d7da
+```
+
+- **Always emitted**：无论 `includeHookEvents` 设置如何，`SessionStart` 和 `Setup` 始终广播
+- **Conditional**：其他事件需要 `setAllHookEventsEnabled(true)` 后才会广播（SDK 的 `includeHookEvents` 选项设为 `true` 时，或在 `CLAUDE_CODE_REMOTE` 模式下自动开启）
+- **Pending buffer**：未注册 handler 时，事件缓存在内存中（最多 100 条），handler 注册后一次性发送
+
+```typescript
+// 启用全部事件广播
+setAllHookEventsEnabled(true)
+
+// 注册事件处理器（用于 SDK includeHookEvents 模式）
+registerHookEventHandler((event) => { /* 转为 SDK 消息等 */ })
+
+// 清理状态（测试用）
+clearHookEventState()
+```
+
 ### SessionHooks - 会话级别 Hook
 
-会话 Hook 是临时的、内存中的回调，不会持久化到配置文件。
+会话 Hook 是临时的、内存中的回调，不会持久化到配置文件。使用 `Map` 而非 `Record` 以支持 O(1) 原地修改，避免 O(N²) 的状态复制开销：
 
 ```mermaid
 stateDiagram-v2
@@ -242,36 +400,164 @@ stateDiagram-v2
 | `addFunctionHook()` | 添加函数 hook，返回 hook ID |
 | `removeFunctionHook()` | 通过 ID 移除函数 hook |
 | `removeSessionHook()` | 移除特定 hook |
-| `getSessionHooks()` | 获取会话所有 hook |
-| `getSessionFunctionHooks()` | 获取函数 hook |
+| `getSessionHooks()` | 获取所有非函数 hook（不含 callback） |
+| `getSessionFunctionHooks()` | 获取所有函数 hook |
+| `getSessionHookCallback()` | 获取含 callback 的完整 hook 条目 |
 | `clearSessionHooks()` | 清除会话所有 hook |
 
-**函数 Hook 回调:**
+**会话 Hook 存储结构：**
 
 ```typescript
-type FunctionHookCallback = (
-  messages: Message[],
-  signal?: AbortSignal
-) => boolean | Promise<boolean>
+type SessionStore = {
+  hooks: {
+    [event in HookEvent]?: SessionHookMatcher[]
+  }
+}
+
+type SessionHookMatcher = {
+  matcher: string
+  skillRoot?: string       // Skill 范围隔离
+  hooks: Array<{
+    hook: HookCommand | FunctionHook
+    onHookSuccess?: OnHookSuccess  // 成功后回调
+  }>
+}
 ```
 
-### HookHelpers - 辅助函数
+**Map vs Record 优化原理：**
+
+```typescript
+// Map：O(1) 原地修改，Object.is 短路，不触发监听器
+prev.sessionHooks.set(sessionId, { hooks: newHooks })
+return prev  // 引用未变，所有监听器不触发
+
+// Record：每次 O(N) 拷贝，O(N²) 总复杂度
+prev.sessionHooks[sessionId] = { hooks: newHooks }
+return { ...prev }  // 触发所有 ~30 个监听器
+```
+
+这对高并发 `parallel()` 多 Agent 场景尤为重要——N 个 Agent 并发注册 hook 时，Record 方式会导致 O(N²) 复杂度。
+
+### registerFrontmatterHooks - Frontmatter Hook 注册
+
+从 Agent 或 Skill 的 frontmatter 中注册 Hook，将其转换为会话级别的 session hook：
+
+```typescript
+registerFrontmatterHooks(
+  setAppState,
+  sessionId,     // Agent ID（用于 Agent 范围隔离）
+  hooks,         // frontmatter 中的 hooks 配置
+  sourceName,    // 用于日志的人类可读名称
+  isAgent = false
+)
+```
+
+**Agent 特殊处理**：Agent 的 `Stop` Hook 会被自动转换为 `SubagentStop`，因为 subagent 结束时触发的是 `SubagentStop` 而非 `Stop`：
+
+```typescript
+if (isAgent && event === 'Stop') {
+  targetEvent = 'SubagentStop'
+}
+```
+
+### registerSkillHooks - Skill Hook 注册
+
+从 Skill frontmatter 注册 Hook，支持 `once: true` 一次性 Hook：
+
+```typescript
+registerSkillHooks(
+  setAppState,
+  sessionId,
+  hooks,
+  skillName,
+  skillRoot   // CLAUDE_PLUGIN_ROOT 环境变量
+)
+```
+
+**一次性 Hook**：`once: true` 的 Hook 在首次成功执行后自动移除：
+
+```typescript
+const onHookSuccess = hook.once
+  ? () => removeSessionHook(setAppState, sessionId, eventName, hook)
+  : undefined
+```
+
+### postSamplingHooks - 采样后 Hook（内部 API）
+
+`postSamplingHooks` 是**不对外暴露**的内部机制，用于在模型采样完成后注入自定义逻辑：
+
+```typescript
+type PostSamplingHook = (context: REPLHookContext) => Promise<void> | void
+
+type REPLHookContext = {
+  messages: Message[]        // 完整消息历史（含 assistant 响应）
+  systemPrompt: SystemPrompt
+  userContext: { [k: string]: string }
+  systemContext: { [k: string]: string }
+  toolUseContext: ToolUseContext
+  querySource?: QuerySource
+}
+
+// 注册
+registerPostSamplingHook(hook)
+
+// 执行（采样完成后调用）
+await executePostSamplingHooks(messages, systemPrompt, userContext, ...)
+```
+
+**用途示例**：`apiQueryHookHelper.ts` 基于此实现了 `ApiQueryHook`，支持在 API 查询前后注入自定义逻辑（消息构建、响应解析等）。
+
+### hookHelpers - 辅助函数
 
 提供 Hook 响应模式化和结构化输出工具创建。
 
 ```typescript
-// Hook 响应 Schema
+// Hook 响应 Schema（用于 agent/prompt hook）
 const hookResponseSchema = z.object({
   ok: z.boolean().describe('条件是否满足'),
   reason: z.string().describe('如果不满足，说明原因').optional(),
 })
 
-// 创建结构化输出工具
+// 创建结构化输出工具（强制 Hook 使用 JSON 格式响应）
 const tool = createStructuredOutputTool()
 
-// 注册结构化输出强制执行
+// 注册结构化输出强制执行（确保 Agent 调用 SyntheticOutputTool）
 registerStructuredOutputEnforcement(setAppState, sessionId)
+
+// 参数替换：支持 $ARGUMENTS、$ARGUMENTS[0]、$0 等形式
+addArgumentsToPrompt(prompt, jsonInput)
 ```
+
+**Structured Output Enforcement** 在 `ask.tsx`、`execAgentHook.ts` 和后台验证中均有使用，确保 LLM 输出严格符合 `hookResponseSchema`。
+
+### hooksConfigManager - 配置元数据管理
+
+为 `/hooks` 命令的 UI 提供每种事件的描述、Matcher 候选值等信息：
+
+```mermaid
+classDiagram
+    class hooksConfigManager {
+        +getHookEventMetadata(toolNames)  -- 含所有 26 种事件的 summary/description/matcherMetadata
+        +groupHooksByEventAndMatcher()    -- 按事件和 matcher 分组所有 Hook
+        +getSortedMatchersForEvent()      -- 按来源优先级排序 matcher
+        +getHooksForMatcher()             -- 查询特定 matcher 下的 Hook
+        +getMatcherMetadata()             -- 查询事件的 matcher 配置
+    }
+```
+
+**事件描述示例**（部分）：
+
+| 事件 | 摘要 | Matcher 字段 |
+|------|------|------------|
+| `PreToolUse` | 工具执行前 | `tool_name` |
+| `PostToolUse` | 工具执行后 | `tool_name` |
+| `PermissionRequest` | 权限对话框显示时 | `tool_name` |
+| `Elicitation` | MCP 请求用户输入 | `mcp_server_name` |
+| `CwdChanged` | 工作目录变更后 | — |
+| `FileChanged` | 监控文件变更 | 文件名 glob |
+| `InstructionsLoaded` | 指令文件加载 | `load_reason` |
+
+**Matcher 优先级**：Local Settings > Project Settings > User Settings > Plugin Hooks（最低）
 
 ## Hook 执行流程
 
@@ -303,10 +589,104 @@ sequenceDiagram
 - 最多 50 轮对话
 - 自动注入 `SyntheticOutputTool` 工具
 - 过滤禁用工具（子代理、计划模式等）
+- 直接创建用户消息（不经过 `processUserInput`），避免触发 `UserPromptSubmit` 循环
+
+### Elicitation 协议（MCP 用户输入请求）
+
+Elicitation 是 MCP 服务器向用户请求输入的协议，通过两个 Hook 事件控制：
+
+```mermaid
+sequenceDiagram
+    participant MCP as MCP 服务器
+    participant ElicitHook as Elicitation Hook
+    participant User as 用户
+    participant Claude as Claude
+
+    MCP->>Claude: 请求用户输入（prompt + options）
+    alt Hook 拦截
+        ElicitHook->>ElicitHook: 返回 action: 'accept'/'decline'/'cancel'
+        ElicitHook-->>Claude: 自定义 content 或拒绝
+    else 用户直接响应
+        User->>Claude: 选择/输入
+        Claude->>ElicitResultHook: ElicitationResult 事件
+        alt 结果 Hook 拦截
+            ElicitResultHook-->>Claude: 覆盖/阻止响应
+        end
+    end
+```
+
+**Elicitation Hook 输入 Schema：**
+
+```typescript
+type PromptRequest = {
+  prompt: string       // 请求 ID（用于关联响应）
+  message: string      // 显示给用户的消息
+  options: Array<{
+    key: string
+    label: string
+    description?: string
+  }>
+}
+```
+
+**Hook 响应示例：**
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "Elicitation",
+    "action": "accept",
+    "content": { "selectedKey": "option-1" }
+  }
+}
+```
+
+**Notification 事件**中 `elicitation_dialog`、`elicitation_complete`、`elicitation_response` 子类型对应 UI 侧的显示控制。
 
 ### HTTP Hook 执行
 
-HTTP Hook 支持与外部服务集成，返回 JSON 格式的响应：
+HTTP Hook 支持与外部服务集成，支持沙箱网络代理和 SSRF 防护：
+
+```mermaid
+sequenceDiagram
+    participant Hook as HTTP Hook
+    participant Proxy as 沙箱网络代理
+    participant SSRF as SSRF Guard
+    participant Target as 外部服务
+
+    Hook->>Hook: 检查 HTTP Hook 策略（allowManagedHooksOnly）
+    Hook->>Proxy: 获取代理配置
+    alt 沙箱模式
+        Hook->>Target: 通过代理路由请求
+        Proxy-->>Hook: 响应
+    else 非沙箱模式
+        Hook->>SSRF: ssrfGuardedLookup(hostname)
+        SSRF->>SSRF: 验证解析后的 IP
+        alt IP 在黑名单中
+            SSRF-->>Hook: ERR_HTTP_HOOK_BLOCKED_ADDRESS
+        else IP 安全
+            SSRF->>Target: DNS 解析
+            Target-->>Hook: 响应
+        end
+    end
+```
+
+**SSRF 防护黑名单（ssrfGuard.ts）：**
+
+| 地址范围 | 示例 | 说明 |
+|---------|------|------|
+| 0.0.0.0/8 | 0.0.0.0 | 本网络 |
+| 10.0.0.0/8 | 10.x.x.x | 私有 |
+| 100.64.0.0/10 | 100.64.x.x | CGNAT（阿里云元数据 100.100.100.200） |
+| 169.254.0.0/16 | 169.254.x.x | 链路本地（云元数据） |
+| 172.16.0.0/12 | 172.16.x.x | 私有 |
+| 192.168.0.0/16 | 192.168.x.x | 私有 |
+| IPv6 fc00::/7 | — | 唯一本地 |
+| IPv6 fe80::/10 | — | 链路本地 |
+
+**例外**：127.0.0.0/8 和 ::1（loopback）始终允许，用于本地开发。
+
+**返回结果：**
 
 ```typescript
 type HttpHookResult = {
@@ -398,6 +778,54 @@ classDiagram
     ]
   }
 }
+```
+
+### 一次性 Hook（once: true）
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "setup-env.sh",
+            "once": true
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Skill Frontmatter 中注册 Hook
+
+```yaml
+# skill.md
+---
+hooks:
+  PreToolUse:
+    - matcher: "Bash"
+      hooks:
+        - type: command
+          command: echo "Running skill task"
+          if: "Bash(git *)"
+  SubagentStop:
+    - matcher: ""
+      hooks:
+        - type: prompt
+          prompt: "Summarize: {argument}"
+---
+```
+
+```typescript
+// 在 Agent/Skill 加载时注册
+import { registerFrontmatterHooks } from './utils/hooks/registerFrontmatterHooks'
+
+registerFrontmatterHooks(setAppState, agentId, hooksConfig, 'my-agent', true)
 ```
 
 ### 会话 Hook（代码集成）
@@ -534,7 +962,27 @@ Hook 系统强制使用 `SyntheticOutputTool` 返回结构化结果：
 - [工具系统](/wiki/core/tools.md)
 - [查询引擎](/wiki/core/query.md)
 - [配置系统](/wiki/core/commands.md)
+- [权限系统](/wiki/core/permissions.md)
 
 ---
 
-*Generated by Nium-Wiki | 2026-04-01*
+**Source references**
+- [types/hooks.ts](/restored-src/src/types/hooks.ts)
+- [utils/hooks.ts](/restored-src/src/utils/hooks.ts)
+- [utils/hooks/AsyncHookRegistry.ts](/restored-src/src/utils/hooks/AsyncHookRegistry.ts)
+- [utils/hooks/hookEvents.ts](/restored-src/src/utils/hooks/hookEvents.ts)
+- [utils/hooks/sessionHooks.ts](/restored-src/src/utils/hooks/sessionHooks.ts)
+- [utils/hooks/hooksSettings.ts](/restored-src/src/utils/hooks/hooksSettings.ts)
+- [utils/hooks/hooksConfigManager.ts](/restored-src/src/utils/hooks/hooksConfigManager.ts)
+- [utils/hooks/hookHelpers.ts](/restored-src/src/utils/hooks/hookHelpers.ts)
+- [utils/hooks/execAgentHook.ts](/restored-src/src/utils/hooks/execAgentHook.ts)
+- [utils/hooks/execPromptHook.ts](/restored-src/src/utils/hooks/execPromptHook.ts)
+- [utils/hooks/execHttpHook.ts](/restored-src/src/utils/hooks/execHttpHook.ts)
+- [utils/hooks/ssrfGuard.ts](/restored-src/src/utils/hooks/ssrfGuard.ts)
+- [utils/hooks/postSamplingHooks.ts](/restored-src/src/utils/hooks/postSamplingHooks.ts)
+- [utils/hooks/registerFrontmatterHooks.ts](/restored-src/src/utils/hooks/registerFrontmatterHooks.ts)
+- [utils/hooks/registerSkillHooks.ts](/restored-src/src/utils/hooks/registerSkillHooks.ts)
+- [utils/hooks/apiQueryHookHelper.ts](/restored-src/src/utils/hooks/apiQueryHookHelper.ts)
+- [commands/hooks/hooks.tsx](/restored-src/src/commands/hooks/hooks.tsx)
+
+*Generated by Nium-Wiki | 2026-04-08*

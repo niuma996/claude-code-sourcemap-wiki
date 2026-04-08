@@ -4,7 +4,9 @@
 
 工具系统是 Claude Code 的执行单元，允许 AI 代理通过工具与外部世界交互。系统支持多种工具类型，包括 Bash 执行、文件编辑、搜索、MCP 集成等。
 
-工具系统采用统一的接口设计，每个工具都实现 `Tool` 基类定义的接口。核心实现在 [Tool.ts](/restored-src/src/Tool.ts) 文件中。
+工具系统采用统一的 TypeScript `Tool` interface 设计。核心实现在 [Tool.ts](/restored-src/src/Tool.ts) 文件中。
+
+> **注意**：`Tool` 是 TypeScript `interface` 而非 class 基类。实际方法为 `call()`（执行）和 `description()`（生成描述），而非 `invoke()`/`getMetadata()`。
 
 ## 架构位置
 
@@ -82,27 +84,29 @@ sequenceDiagram
     Tools-->>Query: 返回工具结果
 ```
 
-## 工具基类接口
+## 工具接口
 
 ```mermaid
 classDiagram
     class Tool {
-        +name: string
-        +description: string
-        +invoke(input): Promise~ToolResult~
-        +getMetadata(): ToolMetadata
+        <<interface>>
+        +call(args, context, canUseTool, parentMessage, onProgress?): Promise~ToolResult~
+        +description(input, options): Promise~string~
+        +inputSchema: z.ZodType
     }
     class BashTool {
         +name: "Bash"
-        +invoke(input): Promise~BashResult~
+        +call(args, context, canUseTool, ...): Promise~ToolResult~
     }
     class FileEditTool {
         +name: "Edit"
-        +invoke(input): Promise~EditResult~
+        +call(args, context, canUseTool, ...): Promise~ToolResult~
     }
-    Tool <|-- BashTool
-    Tool <|-- FileEditTool
+    Tool <|.. BashTool
+    Tool <|.. FileEditTool
 ```
+
+> **方法签名说明**：`call(args, context, canUseTool, parentMessage, onProgress?)` 的参数包含 `canUseTool`（权限检查）和 `onProgress`（进度回调），不是简单的 `invoke(input)`。
 
 ## API 摘要
 

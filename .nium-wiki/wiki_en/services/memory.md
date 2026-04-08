@@ -2,369 +2,265 @@
 
 ## Overview
 
-The Memory Service is Claude Code's persistent memory storage module, responsible for managing AI's long-term memory and context information. This service enables Claude Code to retain important information across sessions, learn user preferences, remember project-specific knowledge, and provide more personalized and intelligent interaction experiences.
+The Memory Service is Claude Code's file-based persistent memory system, managing the AI's long-term memory through a `MEMORY.md` index paired with topic files. This service enables Claude Code to retain user preferences, project context, and external system references across sessions, providing more personalized interactions.
 
-The memory service uses a hierarchical storage architecture:
-- **Working Memory**: Short-term context for current session
-- **Persistent Memory**: Long-term memory across sessions
-- **Project Memory**: Project-specific knowledge base
+**⚠️ Important Clarification**: The Memory Service is **not** a vector database or semantic search system. It is a file-system-backed factual memory store implemented through file read/write and grep searches. There is no SQLite, vector storage, or embedding generation involved.
 
-## Architecture Position
+## Architecture
 
 ```mermaid
 flowchart TB
-    subgraph MemoryServices["Memory Service"]
-        MemDir["memdir.ts<br/>Memory Directory Management"]
-        Storage["storage.ts<br/>Persistent Storage"]
-        Indexer["indexer.ts<br/>Memory Indexing"]
-        Query["query.ts<br/>Query Engine"]
+    subgraph MemoryCore["Memory Core (memdir.ts)"]
+        buildMemoryLines["buildMemoryLines()<br/>Generate prompt template"]
+        buildMemoryPrompt["buildMemoryPrompt()<br/>Include MEMORY.md content"]
+        loadMemoryPrompt["loadMemoryPrompt()<br/>Entry: load memory prompt"]
+        truncateEntrypoint["truncateEntrypointContent()<br/>Truncate index content"]
     end
-    subgraph Storage["Storage Layer"]
-        Files["Filesystem"]
-        SQLite["SQLite Database"]
-        Vector["Vector Store"]
+
+    subgraph MemoryTypes["Type System (memoryTypes.ts)"]
+        MEMORY_TYPES["MEMORY_TYPES = ['user', 'feedback', 'project', 'reference']"]
+        parseMemoryType["parseMemoryType()"]
+        WHAT_NOT_TO_SAVE["WHAT_NOT_TO_SAVE_SECTION"]
+        WHEN_TO_ACCESS["WHEN_TO_ACCESS_SECTION"]
+        TRUSTING_RECALL["TRUSTING_RECALL_SECTION"]
     end
-    MemDir --> Storage
-    MemDir --> Indexer
-    Indexer --> Query
-    Storage --> Files
-    Storage --> SQLite
-    Storage --> Vector
+
+    subgraph MemoryAge["Freshness Management (memoryAge.ts)"]
+        memoryAge["memoryAge() / memoryAgeDays()"]
+        memoryFreshnessNote["memoryFreshnessNote()"]
+        memoryFreshnessText["memoryFreshnessText()"]
+    end
+
+    subgraph MemoryPaths["Path Management (paths.ts)"]
+        getAutoMemPath["getAutoMemPath()"]
+        isAutoMemoryEnabled["isAutoMemoryEnabled()"]
+    end
+
+    subgraph Modes["Multi-Mode Support"]
+        Individual["Individual Mode<br/>(single MEMORY.md)"]
+        TeamMem["Team Mode (TEAMMEM)<br/>(private + team dirs)"]
+        Kairos["Kairos Daily Log (KAIROS)<br/>(append-only log)"]
+    end
+
+    buildMemoryLines --> MEMORY_TYPES
+    buildMemoryLines --> WHAT_NOT_TO_SAVE
+    buildMemoryLines --> WHEN_TO_ACCESS
+    buildMemoryLines --> TRUSTING_RECALL
+    loadMemoryPrompt --> buildMemoryPrompt
+    loadMemoryPrompt --> Individual
+    loadMemoryPrompt --> TeamMem
+    loadMemoryPrompt --> Kairos
 ```
 
-## Core Features
+## Core Concepts
 
-| Feature | Description | Related API |
-|---------|-------------|-------------|
-| Memory Storage | Save and retrieve memory entries | `store`, `retrieve` |
-| Semantic Search | Vector similarity-based memory retrieval | `search`, `similar` |
-| Memory Classification | Organize memories by type/tag | `categorize`, `tag` |
-| Auto-Expiration | Automatic cleanup of expired memories | `expire`, `prune` |
-| Incremental Updates | Incremental modification of memory fragments | `update`, `patch` |
+### Memory File Structure
+
+```
+memory/                          # Memory directory (~/.claude/projects/<slug>/memory/)
+├── MEMORY.md                   # Index file (one link per line)
+├── user/                       # User preference memories
+│   ├── user_role.md
+│   └── user_preferences.md
+├── feedback/                   # User feedback memories
+│   └── feedback_testing.md
+├── project/                    # Project context memories
+│   └── project_memory.md
+└── reference/                 # External system pointers
+    └── external_refs.md
+```
+
+### MEMORY.md Index Format
+
+```markdown
+# auto memory
+
+...
+
+## MEMORY.md
+
+- [Title](file.md) — one-line hook
+- [User role](user_role.md) — data scientist focused on logging
+- [Feedback: no summaries](feedback_testing.md) — user dislikes trailing summaries
+```
+
+### Memory Types (MEMORY_TYPES)
+
+```typescript
+export const MEMORY_TYPES = ['user', 'feedback', 'project', 'reference'] as const
+export type MemoryType = (typeof MEMORY_TYPES)[number]
+```
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `user` | User role, goals, knowledge background | User is a data scientist focused on observability |
+| `feedback` | User guidance on how to approach work (avoid/keep) | Don't mock the database in tests; user prefers concise replies |
+| `project` | Ongoing work context, goals, deadlines | Mobile team freeze non-critical merges on March 5 |
+| `reference` | External system pointers | Linear "INGEST" project tracks pipeline bugs |
+
+### Frontmatter Format
+
+```markdown
+---
+name: {{memory name}}
+description: {{one-line description — used to decide relevance in future conversations, so be specific}}
+type: {{user, feedback, project, reference}}
+---
+
+{{memory content — for feedback/project types, structure as: rule/fact, then **Why:** and **How to apply:** lines}}
+```
 
 ## File Structure
 
 ```
-memdir/
-├── memdir.ts        # Memory directory core implementation
-├── storage.ts       # Persistent storage adapter
-├── indexer.ts       # Memory index construction
-└── query.ts         # Query and retrieval engine
+restored-src/src/memdir/
+├── memdir.ts          # Core: buildMemoryPrompt, loadMemoryPrompt, truncateEntrypointContent
+├── memoryTypes.ts     # Type definitions, TYPES_SECTION, frontmatter examples
+├── memoryAge.ts       # Memory freshness calculation functions
+├── memoryScan.ts     # Scan memory files
+├── paths.ts          # Path management (getAutoMemPath, isAutoMemoryEnabled)
+├── teamMemPaths.ts   # Team memory paths (TEAMMEM feature)
+└── teamMemPrompts.ts # Team memory prompt building
 ```
 
 ### Responsibilities
 
 | File | Responsibility |
 |------|----------------|
-| memdir.ts | Provide unified memory interface, manage memory lifecycle |
-| storage.ts | Abstract underlying storage, support mixed file and database storage |
-| indexer.ts | Build memory vector index, support semantic search |
-| query.ts | Implement memory retrieval, filtering, and sorting logic |
+| memdir.ts | Core: generate memory prompts, MEMORY.md truncation, load entry point |
+| memoryTypes.ts | Define four memory types, frontmatter format examples, section text |
+| memoryAge.ts | Calculate memory age, generate staleness warning text |
+| paths.ts | Get memory directory path, check if auto memory is enabled |
+| teamMemPaths.ts | Team memory paths (when TEAMMEM feature is on) |
+| teamMemPrompts.ts | Team + individual memory combined prompt building |
 
-## Core Types
+## Core API
 
-```mermaid
-classDiagram
-    class MemDir {
-        +store(memory: MemoryEntry): Promise<string>
-        +retrieve(id: string): Promise<MemoryEntry>
-        +search(query: string, options?: SearchOptions): Promise<MemoryEntry[]>
-        +update(id: string, updates: Partial<MemoryEntry>): Promise<void>
-        +delete(id: string): Promise<void>
-        +prune(expiredBefore?: Date): Promise<number>
-    }
-    class MemoryEntry {
-        +id: string
-        +type: MemoryType
-        +content: string
-        +embedding?: number[]
-        +tags: string[]
-        +metadata: Record<string, any>
-        +createdAt: Date
-        +updatedAt: Date
-        +expiresAt?: Date
-        +importance: number
-    }
-    class MemoryType {
-        <<enumeration>>
-        USER_PREFERENCE
-        PROJECT_KNOWLEDGE
-        CONVERSATION_SUMMARY
-        FACT
-        RULE
-        CUSTOM
-    }
-    class SearchOptions {
-        +limit?: number
-        +offset?: number
-        +type?: MemoryType
-        +tags?: string[]
-        +minImportance?: number
-        +since?: Date
-        +until?: Date
-    }
-    MemDir --> MemoryEntry
-    MemDir --> MemoryType
-    MemDir --> SearchOptions
-```
+### memdir.ts Exports
 
-## Memory Storage Flow
+| Function | Description | Signature |
+|----------|-------------|-----------|
+| `loadMemoryPrompt` | Main entry: load memory prompt based on feature switches | `() => Promise<string \| null>` |
+| `buildMemoryPrompt` | Build full prompt with MEMORY.md content | `(params) => string` |
+| `buildMemoryLines` | Generate prompt skeleton (without content) | `(displayName, memoryDir, extraGuidelines?) => string[]` |
+| `truncateEntrypointContent` | Truncate MEMORY.md content | `(raw: string) => EntrypointTruncation` |
+| `ensureMemoryDirExists` | Ensure memory directory exists | `(memoryDir: string) => Promise<void>` |
+
+### memoryTypes.ts Exports
+
+| Export | Description |
+|--------|-------------|
+| `MEMORY_TYPES` | Memory type constant array `['user', 'feedback', 'project', 'reference']` |
+| `parseMemoryType(raw)` | Parse frontmatter value to `MemoryType` |
+| `TYPES_SECTION_INDIVIDUAL` | Type description text for individual mode |
+| `TYPES_SECTION_COMBINED` | Type description text for team mode (with scope tags) |
+| `WHAT_NOT_TO_SAVE_SECTION` | Explicitly prohibited content types |
+| `WHEN_TO_ACCESS_SECTION` | Guidance on when to access memories |
+| `TRUSTING_RECALL_SECTION` | Guidance on how to trust recalled memories |
+| `MEMORY_FRONTMATTER_EXAMPLE` | Frontmatter example |
+
+### memoryAge.ts Exports
+
+| Function | Description |
+|----------|-------------|
+| `memoryAgeDays(mtimeMs)` | Days elapsed since mtime (floor-rounded) |
+| `memoryAge(mtimeMs)` | Human-readable age string ("today", "yesterday", "N days ago") |
+| `memoryFreshnessText(mtimeMs)` | Staleness warning text (>1 day returns text, else empty string) |
+| `memoryFreshnessNote(mtimeMs)` | Staleness warning wrapped in `<system-reminder>` tags |
+
+## Three Operating Modes
+
+### 1. Individual Mode (Default)
+
+Normal sessions use a single directory structure, with memories managed via `MEMORY.md` index + topic files:
 
 ```mermaid
 sequenceDiagram
-    participant Agent as AI Agent
-    participant MemDir as MemDir
-    participant Indexer as Indexer
-    participant Storage as Storage
-    participant VectorDB as Vector DB
+    participant User as User
+    participant Claude as Claude
+    participant Memory as memory dir
 
-    Note over Agent,VectorDB: Store Memory
-    Agent->>MemDir: store(memoryEntry)
-    MemDir->>MemDir: Validate and preprocess
-    MemDir->>Indexer: generateEmbedding(content)
-    Indexer-->>MemDir: Vector embedding
-    MemDir->>Storage: Save entry
-    Storage-->>MemDir: Storage confirmation
-    MemDir->>VectorDB: Add vector index
-    VectorDB-->>MemDir: Index complete
-    MemDir-->>Agent: memoryId
-
-    Note over Agent,VectorDB: Retrieve Memory
-    Agent->>MemDir: search("query")
-    MemDir->>Indexer: generateEmbedding(query)
-    Indexer-->>MemDir: Query vector
-    MemDir->>VectorDB: similaritySearch(queryVector)
-    VectorDB-->>MemDir: Similar memories list
-    MemDir->>MemDir: Sort and filter
-    MemDir-->>Agent: Memory results
+    User->>Claude: Tells Claude some preferences
+    Claude->>Memory: Writes user_role.md
+    Claude->>Memory: Updates MEMORY.md index
+    Note over Memory: Saved to ~/<br/>project/memory/
 ```
 
-## API Summary
+### 2. Team Mode (TEAMMEM)
 
-### MemDir
+Shares private and team directories, supporting team collaboration:
 
-| Method | Description | Return Type |
-|--------|-------------|-------------|
-| `store` | Store new memory | `Promise<string>` (returns memory ID) |
-| `retrieve` | Retrieve memory by ID | `Promise<MemoryEntry>` |
-| `search` | Semantic search memories | `Promise<MemoryEntry[]>` |
-| `update` | Update memory content | `Promise<void>` |
-| `delete` | Delete memory | `Promise<void>` |
-| `prune` | Clean up expired memories | `Promise<number>` (deleted count) |
-| `list` | List memories (with pagination) | `Promise<MemoryList>` |
+```
+memory/
+├── MEMORY.md              # Merged index
+├── user/                  # Personal memories (not shared)
+├── feedback/              # Personal feedback
+├── project/              # Personal project context
+├── reference/            # Personal external pointers
+└── team/                 # Team-shared directory
+    ├── team_feedback.md
+    ├── team_project.md
+    └── team_reference.md
+```
 
-### MemoryEntry
+### 3. Kairos Log Mode (KAIROS)
+
+Long-lived sessions use append-only logs to avoid frequently rewriting MEMORY.md:
+
+```
+memory/
+└── logs/
+    └── YYYY/
+        └── MM/
+            └── YYYY-MM-DD.md   # Daily append log
+```
+
+A nightly `/dream` skill distills logs into `MEMORY.md` and topic files.
+
+## Truncation Mechanism
+
+`MEMORY.md` has two layers of truncation protection:
+
+| Limit | Value | Description |
+|-------|-------|-------------|
+| Line limit | `MAX_ENTRYPOINT_LINES = 200` | Truncates after last line when exceeded |
+| Byte limit | `MAX_ENTRYPOINT_BYTES = 25_000` | Truncates at last newline when exceeded |
 
 ```typescript
-interface MemoryEntry {
-  id: string                      // Unique identifier
-  type: MemoryType                // Memory type
-  content: string                 // Memory content
-  embedding?: number[]            // Vector embedding (auto-generated)
-  tags: string[]                  // Tags
-  metadata: Record<string, any>   // Metadata
-  createdAt: Date                 // Creation time
-  updatedAt: Date                 // Update time
-  expiresAt?: Date                // Expiration time (optional)
-  importance: number              // Importance score (0-10)
-  accessCount: number             // Access count
-  lastAccessedAt?: Date           // Last access time
+export function truncateEntrypointContent(raw: string): EntrypointTruncation {
+  // 1. Line truncation (priority)
+  // 2. Byte truncation (at last newline)
+  // Returns { content, lineCount, byteCount, wasLineTruncated, wasByteTruncated }
 }
 ```
 
-### MemoryType
+## Freshness Handling
+
+When memory freshness exceeds 1 day, the system automatically injects a warning:
 
 ```typescript
-enum MemoryType {
-  USER_PREFERENCE = 'user_preference',       // User preference settings
-  PROJECT_KNOWLEDGE = 'project_knowledge',   // Project-specific knowledge
-  CONVERSATION_SUMMARY = 'conversation_summary', // Conversation summary
-  FACT = 'fact',                             // Factual knowledge
-  RULE = 'rule',                             // Rules/constraints
-  CUSTOM = 'custom'                          // Custom type
-}
+// memoryFreshnessNote() returns:
+// <system-reminder>Memory is 3 days old. Memories are point-in-time observations,
+// not live state — claims about code behavior or file:line citations may be
+// outdated. Verify against current code before asserting as fact.</system-reminder>
 ```
 
-## Usage Examples
-
-### Basic Storage and Retrieval
-
-```typescript
-import { memdir } from './memdir/memdir'
-
-// Store user preference
-const prefId = await memdir.store({
-  type: MemoryType.USER_PREFERENCE,
-  content: 'User prefers TypeScript, default 2-space indentation',
-  tags: ['preferences', 'typescript'],
-  importance: 8
-})
-
-// Retrieve memory
-const preference = await memdir.retrieve(prefId)
-console.log(preference.content)
-```
-
-### Semantic Search
-
-```typescript
-// Search relevant memories
-const results = await memdir.search(
-  'What are user preferences for code formatting?',
-  {
-    limit: 5,
-    type: MemoryType.USER_PREFERENCE,
-    minImportance: 5
-  }
-)
-
-results.forEach(memory => {
-  console.log(`[${memory.importance}] ${memory.content}`)
-})
-```
-
-### Memory Update and Cleanup
-
-```typescript
-// Update memory
-await memdir.update(prefId, {
-  content: 'User now prefers 4-space indentation',
-  importance: 9
-})
-
-// Clean up expired memories
-const deletedCount = await memdir.prune(new Date())
-console.log(`Deleted ${deletedCount} expired memories`)
-```
-
-### Project Knowledge Base
-
-```typescript
-// Store project-specific knowledge
-await memdir.store({
-  type: MemoryType.PROJECT_KNOWLEDGE,
-  content: 'This project uses pnpm as package manager, Monorepo structure',
-  tags: ['project', 'monorepo', 'package-manager'],
-  metadata: {
-    projectId: 'my-project',
-    language: 'TypeScript'
-  },
-  importance: 10
-})
-```
-
-## Memory Lifecycle
-
-```mermaid
-stateDiagram-v2
-    [*] --> New: store()
-    New --> Active: First access
-    Active --> Active: Regular access
-    Active --> Cold: Long time without access
-    Active --> Expired: Reached expiration
-    Cold --> Active: Accessed again
-    Cold --> Expired: Reached expiration
-    Expired --> [*]: prune() cleanup
-    Expired --> Cold: Accessed, refresh
-```
-
-## Storage Strategy
-
-### Tiered Storage
-
-| Tier | Storage Location | Capacity | Access Speed |
-|------|----------------|----------|--------------|
-| Hot | Memory/Redis | ~100 entries | < 1ms |
-| Warm | SQLite | ~10,000 entries | < 10ms |
-| Cold | Filesystem | Unlimited | < 100ms |
-
-### Automatic Tiering
-
-```mermaid
-flowchart LR
-    A[New memory] --> B{Access frequency}
-    B -->|High| C[Hot storage]
-    B -->|Medium| D[Warm storage]
-    B -->|Low| E[Cold storage]
-    C -->|Heat decreases| D
-    D -->|Heat decreases| E
-    E -->|Re-accessed| D
-```
-
-## Best Practices
-
-### Recommended Patterns
-
-| Scenario | Recommended Approach |
-|----------|----------------------|
-| Memory organization | Use tags and types for classification, easier retrieval |
-| Importance scoring | Set importance 0-10 based on memory value |
-| Expiration strategy | Set reasonable expiration times, regular cleanup |
-| Search optimization | Use precise type and tag filtering |
-
-### Things to Avoid
-
-| Practice | Problem | Alternative |
-|----------|---------|-------------|
-| Storing sensitive info | Security risk | Use encrypted storage or avoid storing |
-| Redundant memories | Storage waste | Use update instead of repeated creation |
-| Unlimited growth | Performance degradation | Set auto-expiration and cleanup |
-
-## Vector Search Implementation
-
-### Embedding Generation
-
-```typescript
-// Use OpenAI or local model to generate embeddings
-async function generateEmbedding(text: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
-    model: 'text-embedding-ada-002',
-    input: text
-  })
-  return response.data[0].embedding
-}
-```
-
-### Similarity Calculation
-
-```typescript
-// Cosine similarity calculation
-function cosineSimilarity(a: number[], b: number[]): number {
-  const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0)
-  const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0))
-  const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0))
-  return dotProduct / (magnitudeA * magnitudeB)
-}
-```
-
-## Design Decisions
-
-### 1. Hybrid Vector + Keyword Search
-
-Combines vector similarity and BM25 keyword matching to provide more accurate search results.
-
-### 2. Automatic Importance Decay
-
-Memories not accessed for a long time automatically reduce importance score, facilitating cleanup of low-value data.
-
-### 3. Incremental Embedding Updates
-
-Only regenerate embeddings for changed content, saving computational resources.
+This addresses user reports of "stale code-state memories being asserted as fact."
 
 ## Source References
 
-- [memdir/memdir.ts](/restored-src/src/memdir/memdir.ts)
-- [memdir/storage.ts](/restored-src/src/memdir/storage.ts)
-- [memdir/indexer.ts](/restored-src/src/memdir/indexer.ts)
-- [memdir/query.ts](/restored-src/src/memdir/query.ts)
+- [memdir/memdir.ts](/restored-src/src/memdir/memdir.ts) — Core implementation
+- [memdir/memoryTypes.ts](/restored-src/src/memdir/memoryTypes.ts) — Type definitions
+- [memdir/memoryAge.ts](/restored-src/src/memdir/memoryAge.ts) — Freshness calculation
+- [memdir/paths.ts](/restored-src/src/memdir/paths.ts) — Path management
 
 ## Related Documentation
 
-- [Assistant Services Index](_index.md)
-- [Team Memory Sync](team-memory-sync.md) - Multi-user memory sharing
-- [Agent Tools](../agent/agent-tool.md) - Agent tool calling
+- [Services Index](_index.md)
+- [Team Memory Sync](team-memory-sync.md) — Multi-user memory sharing
+- [Agent Tool](../agent/agent-tool.md) — Agent tool calling
 - [Home](../index.md)
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-04-02*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-04-08*

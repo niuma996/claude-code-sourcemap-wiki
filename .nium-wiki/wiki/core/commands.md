@@ -47,7 +47,7 @@ restored-src/src/
 │   ├── tasks/             # /tasks 命令
 │   ├── skills/            # /skills 命令
 │   ├── mcp/               # /mcp 命令
-│   ├── agent/             # /agent 命令
+│   ├── agents/            # /agents 命令
 │   ├── context/           # /context 命令
 │   ├── compact/           # /compact 命令
 │   ├── resume/            # /resume 命令

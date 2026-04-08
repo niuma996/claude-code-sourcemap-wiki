@@ -10,6 +10,7 @@
 |------|------|------|
 | [命令系统](commands.md) | 管理所有斜杠命令 | [commands.md](commands.md) |
 | [工具系统](tools.md) | 工具实现和执行 | [tools.md](tools.md) |
+| [Skills 系统](skills.md) | 可复用命令系统，/skill-name 调用 | [skills.md](skills.md) |
 | [查询引擎](query.md) | 查询流程和模型交互 | [query.md](query.md) |
 
 ## 架构位置
@@ -18,11 +19,13 @@
 flowchart TB
     subgraph Core ["核心模块"]
         Commands[命令系统]
+        Skills[Skills 系统]
         Query[查询引擎]
         Tools[工具系统]
         Task[任务系统]
     end
-    Commands --> Query
+    Commands --> Skills
+    Skills --> Query
     Query --> Task
     Task --> Tools
 ```

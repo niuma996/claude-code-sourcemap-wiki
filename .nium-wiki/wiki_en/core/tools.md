@@ -4,7 +4,9 @@
 
 The tool system is the execution unit of Claude Code, allowing AI agents to interact with the external world through tools. The system supports multiple tool types, including Bash execution, file editing, search, MCP integration, and more.
 
-The tool system uses a unified interface design, where each tool implements the interface defined by the `Tool` base class. The core implementation is in [Tool.ts](/restored-src/src/Tool.ts).
+The tool system uses a unified TypeScript `Tool` interface design. The core implementation is in [Tool.ts](/restored-src/src/Tool.ts).
+
+> **Note**: `Tool` is a TypeScript `interface`, not a base class. The actual methods are `call()` (execution) and `description()` (description generation), not `invoke()`/`getMetadata()`.
 
 ## Architecture Position
 
@@ -82,27 +84,29 @@ sequenceDiagram
     Tools-->>Query: Return tool result
 ```
 
-## Tool Base Class Interface
+## Tool Interface
 
 ```mermaid
 classDiagram
     class Tool {
-        +name: string
-        +description: string
-        +invoke(input): Promise~ToolResult~
-        +getMetadata(): ToolMetadata
+        <<interface>>
+        +call(args, context, canUseTool, parentMessage, onProgress?): Promise~ToolResult~
+        +description(input, options): Promise~string~
+        +inputSchema: z.ZodType
     }
     class BashTool {
         +name: "Bash"
-        +invoke(input): Promise~BashResult~
+        +call(args, context, canUseTool, ...): Promise~ToolResult~
     }
     class FileEditTool {
         +name: "Edit"
-        +invoke(input): Promise~EditResult~
+        +call(args, context, canUseTool, ...): Promise~ToolResult~
     }
-    Tool <|-- BashTool
-    Tool <|-- FileEditTool
+    Tool <|.. BashTool
+    Tool <|.. FileEditTool
 ```
+
+> **Method signature note**: `call(args, context, canUseTool, parentMessage, onProgress?)` includes `canUseTool` (permission check) and `onProgress` (progress callback) parameters, not a simple `invoke(input)`.
 
 ## API Summary
 

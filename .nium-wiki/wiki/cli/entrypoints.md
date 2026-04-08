@@ -8,14 +8,15 @@ Claude Code 的入口点分布在三个主要文件中，分别承担不同的�
 
 ```
 restored-src/src/
-├── cli.tsx              # 主入口（参数路由）
-├── main.tsx             # 完整 CLI 初始化
+├── main.tsx             # 完整 CLI 初始化（~803KB，主文件）
+├── cli.tsx              # 引导入口：参数路由 + 快速路径
 └── entrypoints/
-    ├── cli.tsx         # 主入口（cli.tsx 的实际路径）
-    ├── main.tsx        # 入口点的符号链接
+    ├── cli.tsx         # cli.tsx 的实际路径（cli.tsx 的别名/重导出）
     ├── init.ts         # 共享初始化逻辑
     └── mcp.ts          # MCP 入口点
 ```
+
+> **说明**：`main.tsx` 和 `cli.tsx` 均在 `restored-src/src/` 根目录，**不是符号链接**。两者为独立文件：`cli.tsx`（约 100 行）是引导入口，`main.tsx`（~803KB）是完整 CLI 初始化主文件。
 
 ## 入口文件详解
 

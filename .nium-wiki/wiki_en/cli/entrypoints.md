@@ -8,14 +8,15 @@ Claude Code's entry points are distributed across three main files: [cli.tsx](/r
 
 ```
 restored-src/src/
-├── cli.tsx              # Main entry (argument routing)
-├── main.tsx             # Full CLI initialization
+├── main.tsx             # Full CLI initialization (~803KB, main file)
+├── cli.tsx              # Bootstrap entry: argument routing + fast paths
 └── entrypoints/
-    ├── cli.tsx         # Main entry (actual path of cli.tsx)
-    ├── main.tsx        # Symlink to entrypoint
+    ├── cli.tsx         # Actual path of cli.tsx (alias/reexport of cli.tsx)
     ├── init.ts         # Shared initialization logic
     └── mcp.ts          # MCP entry point
 ```
+
+> **Note**: Both `main.tsx` and `cli.tsx` are in `restored-src/src/` root directory — they are **not symlinks**. They are independent files: `cli.tsx` (~100 lines) is the bootstrap entry, `main.tsx` (~803KB) is the full CLI initialization main file.
 
 ## Entry Files in Detail
 
