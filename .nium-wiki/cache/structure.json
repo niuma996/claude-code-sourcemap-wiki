@@ -18,12 +18,16 @@
   ],
   "docsFound": [
     "README.md",
-    "readme.md"
+    "readme.md",
+    "docs/antdiff.md",
+    "docs/build-guide.md",
+    "docs/folksubagent.md",
+    "docs/teams-analysis.md"
   ],
   "stats": {
     "totalFiles": 1905,
     "totalModules": 2,
-    "totalDocs": 2
+    "totalDocs": 6
   },
-  "createdAt": "2026-03-31T09:12:15.200Z"
+  "createdAt": "2026-04-07T17:33:09.260Z"
 }

@@ -1,23 +1,5 @@
 {
   "sourceToDoc": {
-    "restored-src/src/services/compact/compact.ts": [
-      "services/compact.md"
-    ],
-    "restored-src/src/commands/compact/compact.ts": [
-      "services/compact.md"
-    ],
-    "restored-src/src/services/compact/compactWarningState.ts": [
-      "services/compact.md"
-    ],
-    "restored-src/src/services/compact/compactWarningHook.ts": [
-      "services/compact.md"
-    ],
-    "restored-src/src/services/compact/prompt.ts": [
-      "services/compact.md"
-    ],
-    "restored-src/src/services/compact/grouping.ts": [
-      "services/compact.md"
-    ],
     "src/assistant/sessionHistory.ts": [
       "agent/session-history.md"
     ],
@@ -52,14 +34,6 @@
     ]
   },
   "docToSources": {
-    "services/compact.md": [
-      "restored-src/src/services/compact/compact.ts",
-      "restored-src/src/commands/compact/compact.ts",
-      "restored-src/src/services/compact/compactWarningState.ts",
-      "restored-src/src/services/compact/compactWarningHook.ts",
-      "restored-src/src/services/compact/prompt.ts",
-      "restored-src/src/services/compact/grouping.ts"
-    ],
     "agent/session-history.md": [
       "src/assistant/sessionHistory.ts"
     ],
@@ -93,5 +67,5 @@
       "src/coordinator/coordinatorMode.ts"
     ]
   },
-  "createdAt": "2026-04-02T03:56:13.934Z"
+  "createdAt": "2026-04-07T17:35:47.759Z"
 }
