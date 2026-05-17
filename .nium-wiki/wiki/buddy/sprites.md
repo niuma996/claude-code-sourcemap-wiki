@@ -43,7 +43,7 @@ class HAT_LINES {
 
 ```mermaid
 flowchart TD
-    A["renderSprite(bones, frame=1)"] --> B{"HAT_LINES[hat] exists?"}
+    A[&quot;renderSprite(bones, frame=1)&quot;] --> B{"HAT_LINES[hat] exists?"}
     B -->|yes| C["检查 body[1][0] 是否为空"]
     B -->|none| F
 

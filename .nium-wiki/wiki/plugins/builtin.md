@@ -20,11 +20,11 @@ function isBuiltinPluginId(pluginId: string): boolean {
 
 ```mermaid
 flowchart LR
-    A["initBuiltinPlugins()"] --> B["registerBuiltinPlugin()"]
-    B --> C["BUILTIN_PLUGINS Map"]
-    C --> D["getBuiltinPlugins()"]
-    D --> E["/plugin UI"]
-    D --> F["getBuiltinPluginSkillCommands()"]
+    A[initBuiltinPlugins] --> B[registerBuiltinPlugin]
+    B --> C[BUILTIN_PLUGINS Map]
+    C --> D[getBuiltinPlugins]
+    D --> E[/plugin UI]
+    D --> F[getBuiltinPluginSkillCommands]
 ```
 
 ### 注册内置插件

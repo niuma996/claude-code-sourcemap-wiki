@@ -1,157 +1,157 @@
 # 快速开始
 
-## 前置条件
+本文档介绍如何快速上手 Claude Code 源码研究项目。
 
-| 要求 | 版本 | 说明 |
+## 关于本项目
+
+本项目是通过 npm 发布包（`@anthropic-ai/claude-code`）内附带的 source map 还原的 TypeScript 源码，版本为 **2.1.88**。此源码仅供研究使用，不代表官方原始内部开发仓库结构。
+
+## 项目结构
+
+```
+claude-code-sourcemap/
+├── restored-src/          # 还原的 TypeScript 源码
+│   ├── src/             # 主要源码目录
+│   │   ├── main.tsx     # CLI 主入口
+│   │   ├── QueryEngine.ts  # 查询引擎
+│   │   ├── Task.ts      # 任务管理
+│   │   ├── Tool.ts      # 工具基类
+│   │   ├── commands/    # 80+ 斜杠命令
+│   │   ├── tools/       # 工具实现
+│   │   ├── services/    # 服务层
+│   │   ├── components/  # React 组件
+│   │   ├── ink/         # Ink 渲染引擎
+│   │   └── ...
+│   └── package/         # npm 包配置
+│
+├── .nium-wiki/          # 文档目录
+│   └── wiki/           # 中文文档
+│
+└── README.md            # 项目说明
+```
+
+## 核心模块概览
+
+### 1. CLI 入口层
+
+CLI 入口是应用启动的起点，负责参数解析和快速路径优化。
+
+| 文件 | 功能 |
+|------|------|
+| [entrypoints/cli.tsx](/restored-src/src/entrypoints/cli.tsx) | CLI 快速路径、参数解析 |
+| [main.tsx](/restored-src/src/main.tsx) | 主入口、模块加载 |
+| [init.ts](/restored-src/src/entrypoints/init.ts) | 初始化逻辑 |
+
+### 2. 命令系统
+
+命令系统管理 80+ 斜杠命令，提供丰富的交互能力。
+
+| 文件 | 功能 |
+|------|------|
+| [commands.ts](/restored-src/src/commands.ts) | 命令注册、查找 |
+| [commands/help/](/restored-src/src/commands/help/) | /help 命令 |
+| [commands/config/](/restored-src/src/commands/config/) | /config 命令 |
+| [commands/commit/](/restored-src/src/commands/commit/) | /commit 命令 |
+
+### 3. 核心引擎
+
+核心引擎协调 AI 模型调用、任务管理和工具执行。
+
+| 文件 | 功能 | 行数 |
 |------|------|------|
-| Node.js | >=18.0.0 | JavaScript 运行时环境 |
-| npm 或 yarn | 最新版 | 包管理器 |
-| Anthropic API Key | 有效密钥 | 用于认证 Claude API |
+| [QueryEngine.ts](/restored-src/src/QueryEngine.ts) | 查询引擎、对话管理 | 1177 |
+| [Task.ts](/restored-src/src/Task.ts) | 任务类型、状态管理 | 125 |
+| [Tool.ts](/restored-src/src/Tool.ts) | 工具抽象基类 | 792 |
+| [query.ts](/restored-src/src/query.ts) | 查询循环实现 | 600+ |
 
-## 安装
+### 4. 工具系统
 
-### 使用 npm 安装
+工具系统为 AI 代理提供执行能力。
 
-```bash
-npm install -g @anthropic-ai/claude-code
+| 工具 | 功能 |
+|------|------|
+| BashTool | 执行 shell 命令 |
+| FileEditTool | 编辑文件 |
+| GrepTool | 代码搜索 |
+| GlobTool | 文件模式匹配 |
+| MCPTool | MCP 协议工具 |
+| AgentTool | 子代理创建 |
+
+### 5. 服务层
+
+| 服务 | 功能 |
+|------|------|
+| API | Claude API 调用封装 |
+| MCP | Model Context Protocol 客户端 |
+| OAuth | 认证授权 |
+| LSP | Language Server Protocol 支持 |
+| Analytics | 遥测分析 |
+
+### 6. 用户界面
+
+| 组件 | 功能 |
+|------|------|
+| REPL | 交互式终端界面 |
+| Ink | 终端 UI 渲染引擎 |
+| Components | React 组件库 |
+
+## 研究路线图
+
+### 路线 1：系统架构理解
+
+1. 阅读 [架构文档](architecture.md) 了解整体架构
+2. 阅读 [index.md](index.md) 了解项目概览
+3. 查看核心模块源码
+
+### 路线 2：命令系统研究
+
+1. 阅读 [commands.ts](/restored-src/src/commands.ts) 了解命令注册机制
+2. 查看 [commands/](/restored-src/src/commands/) 目录下的具体命令实现
+3. 学习斜杠命令的工作原理
+
+### 路线 3：工具系统研究
+
+1. 阅读 [Tool.ts](/restored-src/src/Tool.ts) 了解工具抽象
+2. 查看 [tools/](/restored-src/src/tools/) 目录下的具体工具实现
+3. 学习工具注册和执行流程
+
+### 路线 4：查询流程研究
+
+1. 阅读 [QueryEngine.ts](/restored-src/src/QueryEngine.ts) 了解查询管理
+2. 阅读 [query.ts](/restored-src/src/query.ts) 了解查询循环
+3. 学习 AI 模型调用和响应处理
+
+## 关键源码文件
+
+| 优先级 | 文件 | 说明 |
+|--------|------|------|
+| 高 | [QueryEngine.ts](/restored-src/src/QueryEngine.ts) | 查询引擎核心 |
+| 高 | [query.ts](/restored-src/src/query.ts) | 查询循环 |
+| 高 | [Task.ts](/restored-src/src/Task.ts) | 任务管理 |
+| 高 | [Tool.ts](/restored-src/src/Tool.ts) | 工具基类 |
+| 中 | [commands.ts](/restored-src/src/commands.ts) | 命令系统 |
+| 中 | [services/api/claude.ts](/restored-src/src/services/api/claude.ts) | API 客户端 |
+| 中 | [services/mcp/client.ts](/restored-src/src/services/mcp/client.ts) | MCP 客户端 |
+| 低 | [ink/renderer.ts](/restored-src/src/ink/renderer.ts) | UI 渲染 |
+
+## 依赖关系
+
+```mermaid
+graph TD
+    CLI[cli.tsx] --> Main[main.tsx]
+    Main --> Commands[commands.ts]
+    Commands --> Query[QueryEngine]
+    Query --> Tool[Tool.ts]
+    Tool --> Tools[具体工具]
+    Query --> API[API 服务]
+    Tools --> API
 ```
-
-### 验证安装
-
-```bash
-claude --version
-```
-
-**预期输出:**
-
-```
-2.1.88
-```
-
-## 配置说明
-
-首次使用需要登录 Anthropic 账号进行认证。Claude Code 支持两种认证方式：OAuth 登录和 API Key 配置。
-
-### OAuth 登录
-
-```bash
-claude login
-```
-
-这将打开浏览器进行 OAuth 授权流程。
-
-### API Key 配置
-
-如果已有 API Key，可以通过环境变量配置：
-
-```bash
-export ANTHROPIC_API_KEY=<your-api-key>
-```
-
-或设置配置文件 `~/.claude/settings.json`：
-
-```json
-{
-  "api-key": "<your-api-key>"
-}
-```
-
-### 主要配置选项
-
-| 选项 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `api-key` | string | 无 | Anthropic API 密钥 |
-| `model` | string | claude-opus-4-5 | 使用的模型 |
-| `max-tokens` | number | 8192 | 单次响应最大 token 数 |
-| `temperature` | number | 1 | 生成温度参数 |
-| `base-url` | string | Anthropic API | API 基础 URL |
-
-## 第一个示例（分步）
-
-### Step 1: 启动交互式会话
-
-```bash
-claude
-```
-
-启动后，你将看到欢迎信息和提示符：
-
-```
-╭──────────────────────────────────────────────────╮
-│  Welcome to Claude Code                          │
-│                                                  │
-│  I'm powered by Claude, Anthropic's AI assistant│
-│                                                  │
-│  Type /help for available commands              │
-╰──────────────────────────────────────────────────╯
-
-You: _
-```
-
-### Step 2: 与 Claude 对话
-
-尝试让 Claude 解释一段代码：
-
-```
-You: 解释一下这个项目的结构
-```
-
-Claude 将分析代码库并提供详细的项目结构说明。
-
-### Step 3: 使用斜杠命令
-
-Claude Code 支持多种斜杠命令：
-
-```
-You: /help
-```
-
-**预期输出:**
-
-```
-Available commands:
-  /help     - 显示帮助信息
-  /config   - 管理配置设置
-  /login    - 登录 Anthropic 账号
-  /logout   - 退出登录
-  /tasks    - 显示当前任务列表
-  /commit   - 提交更改
-  /review   - 代码审查
-  /diff     - 显示更改差异
-  /compact  - 压缩上下文
-  /model    - 切换 AI 模型
-  ...
-```
-
-## 常用命令
-
-| 命令 | 说明 | 示例 |
-|------|------|------|
-| `/help [command]` | 显示帮助 | `/help commit` |
-| `/config` | 打开配置菜单 | `/config` |
-| `/model [name]` | 切换模型 | `/model opus` |
-| `/tasks` | 查看任务列表 | `/tasks` |
-| `/commit [message]` | 提交更改 | `/commit "fix: bug"` |
-| `/review [path]` | 代码审查 | `/review src/` |
-| `/diff` | 查看更改 | `/diff` |
-| `/compact` | 压缩上下文 | `/compact` |
-| `/clear` | 清除会话 | `/clear` |
-
-## 下一步
-
-| 主题 | 描述 | 链接 |
-|------|------|------|
-| 架构学习 | 深入了解系统架构和模块关系 | [架构文档](architecture.md) |
-| 高级配置 | 学习配置选项和插件系统 | [配置文件](../configuration.md) |
-| MCP 集成 | 配置 MCP 服务器以扩展功能 | [MCP 文档](../services/mcp.md) |
-| 开发指南 | 为 Claude Code 做贡献 | [开发文档](../development.md) |
 
 ## 相关文档
 
-- [主页](index.md)
-- [架构文档](architecture.md)
-- [文档地图](doc-map.md)
+- [架构文档](architecture.md) - 系统架构详解
+- [文档地图](doc-map.md) - 文档索引和关系
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-03-31*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-05-12*

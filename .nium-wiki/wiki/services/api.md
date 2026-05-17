@@ -115,12 +115,12 @@ interface ApiResponse<T> {
 
 ```mermaid
 flowchart TD
-    Start["发送请求"] --> Check{"检查响应"}
-    Check -->|成功| End["返回结果"]
-    Check -->|可重试| Wait["等待"]
-    Wait --> Retry["重试请求"]
+    Start[发送请求] --> Check{检查响应}
+    Check -->|成功| End[返回结果]
+    Check -->|可重试| Wait[等待]
+    Wait --> Retry[重试请求]
     Retry --> Check
-    Check -->|不可重试| Error["抛出错误"]
+    Check -->|不可重试| Error[抛出错误]
     Retry -->|达到最大次数| Error
 ```
 

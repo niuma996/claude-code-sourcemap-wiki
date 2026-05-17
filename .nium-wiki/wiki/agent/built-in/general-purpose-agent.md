@@ -54,7 +54,7 @@ flowchart TB
         FullToolAccess["全工具访问"]
         MultiStep["多步骤执行"]
     end
-    subgraph FullToolAccess["可用工具集"]
+    subgraph FullToolAccess_sub["可用工具集"]
         FileOps["文件操作"]
         Search["搜索工具"]
         Web["Web 工具"]
@@ -93,14 +93,14 @@ General Purpose Agent 配置 `tools: ['*']`，意味着它可以访问所有可�
 
 ```mermaid
 flowchart LR
-    User["用户请求"] --> Default["默认选择"]
-    Default --> GP["General Purpose Agent<br/>未指定类型时"]
+    User[用户请求] --> Default[默认选择]
+    Default --> GP[General Purpose Agent<br/>未指定类型时]
 
-    User --> Specific["指定类型"]
-    Specific --> Explore["Explore Agent<br/>快速搜索"]
-    Specific --> Plan["Plan Agent<br/>架构规划"]
-    Specific --> Verify["Verification Agent<br/>质量验证"]
-    Specific --> Guide["Claude Code Guide<br/>功能指导"]
+    User --> Specific[指定类型]
+    Specific --> Explore[Explore Agent<br/>快速搜索]
+    Specific --> Plan[Plan Agent<br/>架构规划]
+    Specific --> Verify[Verification Agent<br/>质量验证]
+    Specific --> Guide[Claude Code Guide<br/>功能指导]
 ```
 
 ## 默认行为

@@ -105,19 +105,30 @@ sequenceDiagram
         alt 发现新工作
             API-->>Bridge: WorkResponse
             Bridge->>Spawner: spawn()
-            Spawner->>Child: 启动 Claude 进程
-            alt SpawnMode = worktree
-                Spawner->>Worktree: 创建 Worktree
+            alt spawn 失败
+                Spawner-->>Bridge: 错误字符串（不抛出）
+                Bridge->>API: 上报失败状态
+            else spawn 成功
+                Spawner->>Child: 启动 Claude 进程
+                alt SpawnMode = worktree
+                    Spawner->>Worktree: 创建 Worktree
+                end
+                Bridge->>Bridge: 注册会话
+                loop 会话生命周期
+                    Bridge->>Bridge: 心跳上报
+                    Bridge->>Child: 监控输出
+                    alt 会话超时（默认 24h）
+                        Bridge->>Child: 终止进程
+                        Bridge->>API: 上报超时状态
+                    end
+                end
+                Child-->>Bridge: 会话结束
+                Bridge->>API: 上报完成状态
             end
-            Bridge->>Bridge: 注册会话
-            loop 会话生命周期
-                Bridge->>Bridge: 心跳上报
-                Bridge->>Child: 监控输出
-            end
-            Child-->>Bridge: 会话结束
-            Bridge->>API: 上报完成状态
         else 无工作
             Bridge->>Bridge: 指数退避等待
+        else 认证失败
+            Bridge->>Bridge: 退出（不重试）
         end
     end
 ```

@@ -264,7 +264,7 @@ Mode sync via `process.env` mutation rather than in-memory-only switching. Advan
 
 ## Source References
 
-- [coordinatorMode.ts](/src/coordinator/coordinatorMode.ts)
+- [coordinatorMode.ts](/restored-src/src/coordinator/coordinatorMode.ts)
 
 ## Related Documents
 

@@ -137,12 +137,12 @@ const petStartTick = petStart.current ? tick : -1
 
 ```mermaid
 flowchart LR
-    subgraph 宽度检测["terminalColumns"]
-        Full[">= 100 列"] --> FullMode["完整模式"]
-        Compact["< 100 列"] --> CompactMode["紧凑模式"]
+    subgraph WidthCheck[terminalColumns]
+        Full[>= 100 列] --> FullMode[完整模式]
+        Compact[< 100 列] --> CompactMode[紧凑模式]
     end
 
-    FullMode -->|5行精灵 + 气泡| Display["Ink 渲染"]
+    FullMode -->|5行精灵 + 气泡| Display[Ink 渲染]
     CompactMode -->|单行面部 + quip| Display
 
     Display -->|companionReservedColumns| PromptInput

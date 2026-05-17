@@ -81,15 +81,15 @@ export function isBuddyLive(): boolean {
 
 ```mermaid
 flowchart TD
-    A["useBuddyNotification 挂载"] --> B{"feature('BUDDY') 开启?"}
-    B -->|否| Exit["提前退出"]
-    B -->|是| C{"config.companion 已设置?"}
+    A[useBuddyNotification 挂载] --> B{feature BUDDY 开启?}
+    B -->|否| Exit[提前退出]
+    B -->|是| C{config.companion 已设置?}
     C -->|是| Exit
-    C -->|否| D{"isBuddyTeaserWindow()?"}
+    C -->|否| D{isBuddyTeaserWindow?}
     D -->|否| Exit
-    D -->|是| E["显示彩虹公告"]
-    E --> F["15 秒后自动移除"]
-    F --> G["组件卸载时移除"]
+    D -->|是| E[显示彩虹公告]
+    E --> F[15 秒后自动移除]
+    F --> G[组件卸载时移除]
 ```
 
 ### 公告内容
@@ -209,19 +209,19 @@ function handleInput(text: string) {
 
 ```mermaid
 flowchart LR
-    subgraph 发布窗口["4 月 1-7 日"]
-        A["用户首次启动"] --> B{是否有伴侣?}
-        B -->|否| C["彩虹公告显示"]
-        C --> D["用户输入 /buddy"]
-        D --> E["AI 生成 Soul → 孵化"]
-        E --> F["config.companion 写入"]
+    subgraph PublishWin[4 月 1-7 日]
+        A[用户首次启动] --> B{是否有伴侣?}
+        B -->|否| C[彩虹公告显示]
+        C --> D[用户输入 /buddy]
+        D --> E[AI 生成 Soul 孵化]
+        E --> F[config.companion 写入]
     end
 
-    subgraph 公告关闭后["4 月 8 日起"]
-        G["新用户首次启动"] --> H{是否有伴侣?}
-        H -->|否| I["无彩虹公告"]
-        I --> J["用户主动输入 /buddy"]
-        J --> K["伴侣孵化（功能仍可用）"]
+    subgraph AfterAnnounce[4 月 8 日起]
+        G[新用户首次启动] --> H{是否有伴侣?}
+        H -->|否| I[无彩虹公告]
+        I --> J[用户主动输入 /buddy]
+        J --> K[伴侣孵化 功能仍可用]
     end
 ```
 

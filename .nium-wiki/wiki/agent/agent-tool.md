@@ -25,17 +25,17 @@ const agentToolSchema = z.object({
 
 ```mermaid
 flowchart TD
-    Start["调用 Agent Tool"] --> Validate["参数验证"]
-    Validate --> CheckPerms["权限检查"]
-    CheckPerms --> CheckMCP["MCP 前置检查"]
-    CheckMCP --> CheckElig["远程执行资格检查"]
-    CheckElig -->|本地| Local["LocalAgentTask"]
-    CheckElig -->|远程| Remote["RemoteAgentTask"]
-    Local --> Track["进度追踪"]
+    Start[调用 Agent Tool] --> Validate[参数验证]
+    Validate --> CheckPerms[权限检查]
+    CheckPerms --> CheckMCP[MCP 前置检查]
+    CheckMCP --> CheckElig[远程执行资格检查]
+    CheckElig -->|本地| Local[LocalAgentTask]
+    CheckElig -->|远程| Remote[RemoteAgentTask]
+    Local --> Track[进度追踪]
     Remote --> Track
-    Track --> Notify["任务通知"]
-    Notify --> Finalize["结果汇总"]
-    Finalize --> End["返回结果"]
+    Track --> Notify[任务通知]
+    Notify --> Finalize[结果汇总]
+    Finalize --> End[返回结果]
 ```
 
 ## 前置条件检查

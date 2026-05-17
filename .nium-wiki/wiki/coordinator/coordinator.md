@@ -162,16 +162,16 @@ export function getCoordinatorUserContext(
     t => !INTERNAL_WORKER_TOOLS.has(t),
   )
 
-  const ctx = `工作者可使用工具: ${allowedTools.join(', ')}`
+  let ctx = `工作者可使用工具: ${allowedTools.join(', ')}`
 
   // 附加 MCP 服务器
   if (mcpClients.length > 0) {
-    ctx + `\n已连接的 MCP 服务器: ${mcpClients.map(c => c.name).join(', ')}`
+    ctx += `\n已连接的 MCP 服务器: ${mcpClients.map(c => c.name).join(', ')}`
   }
 
   // 附加 Scratchpad 目录（Statsig gate 控制）
   if (scratchpadDir && checkStatsigFeatureGate_CACHED_MAY_BE_STALE('tengu_scratch')) {
-    ctx + `\nScratchpad 目录: ${scratchpadDir}`
+    ctx += `\nScratchpad 目录: ${scratchpadDir}`
   }
 
   return { workerToolsContext: ctx }
@@ -265,7 +265,7 @@ const userCtx = getCoordinatorUserContext(mcpClients, '/tmp/scratch')
 
 ## 源码引用
 
-- [coordinatorMode.ts](/src/coordinator/coordinatorMode.ts)
+- [coordinatorMode.ts](/restored-src/src/coordinator/coordinatorMode.ts)
 
 ## 相关文档
 

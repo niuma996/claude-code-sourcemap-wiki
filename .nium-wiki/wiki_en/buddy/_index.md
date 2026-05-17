@@ -160,30 +160,14 @@ flowchart TD
     CompanionSprite -->|reservedColumns| PromptInput["PromptInput column reservation"]
 ```
 
-## Launch Timeline
-
-```mermaid
-gantt
-    dateFormat  X
-    axisFormat  %m-%d
-
-    section Feature
-    /buddy command active      :active, 04-01, 7d
-    Rainbow teaser window      :active, 04-01, 7d
-    Companion mechanism live  :04-01, 30d
-```
-
-- **April 1-7**: Rainbow teaser window (`isBuddyTeaserWindow()`), prompt users who haven't hatched a companion
-- **April 1 onward**: `isBuddyLive()` is always true; feature is fully active
-
 ## Source References
 
-- [types.ts](/src/buddy/types.ts)
-- [companion.ts](/src/buddy/companion.ts)
-- [sprites.ts](/src/buddy/sprites.ts)
-- [CompanionSprite.tsx](/src/buddy/CompanionSprite.tsx)
-- [useBuddyNotification.tsx](/src/buddy/useBuddyNotification.tsx)
-- [prompt.ts](/src/buddy/prompt.ts)
+- [types.ts](/restored-src/src/buddy/types.ts)
+- [companion.ts](/restored-src/src/buddy/companion.ts)
+- [sprites.ts](/restored-src/src/buddy/sprites.ts)
+- [CompanionSprite.tsx](/restored-src/src/buddy/CompanionSprite.tsx)
+- [useBuddyNotification.tsx](/restored-src/src/buddy/useBuddyNotification.tsx)
+- [prompt.ts](/restored-src/src/buddy/prompt.ts)
 
 ## Related Documents
 

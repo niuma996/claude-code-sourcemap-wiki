@@ -43,7 +43,7 @@ flowchart TB
         SearchTools["搜索工具集"]
         FileRead["文件读取"]
     end
-    subgraph SearchTools["搜索工具集"]
+    subgraph SearchTools_sub["搜索工具集"]
         Glob["GlobTool<br/>模式匹配"]
         Grep["GrepTool<br/>正则搜索"]
         Bash["BashTool<br/>find/grep"]

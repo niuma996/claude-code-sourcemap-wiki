@@ -1,0 +1,358 @@
+{
+  "items": [
+    {
+      "text": "Claude Code",
+      "link": "/",
+      "type": "page",
+      "order": 0
+    },
+    {
+      "text": "System Architecture",
+      "link": "/architecture.md",
+      "type": "page",
+      "order": 1
+    },
+    {
+      "text": "Getting Started",
+      "link": "/getting-started.md",
+      "type": "page",
+      "order": 2
+    },
+    {
+      "text": "Document Map",
+      "link": "/doc-map.md",
+      "type": "page",
+      "order": 3
+    },
+    {
+      "text": "",
+      "dirName": "agent",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "Agent and Coordination",
+          "link": "/agent/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Agent Tool",
+          "link": "/agent/agent-tool.md",
+          "type": "page"
+        },
+        {
+          "text": "Fork Subagent",
+          "link": "/agent/fork-subagent.md",
+          "type": "page"
+        },
+        {
+          "text": "Session History",
+          "link": "/agent/session-history.md",
+          "type": "page"
+        },
+        {
+          "text": "",
+          "dirName": "built-in",
+          "type": "group",
+          "collapsed": false,
+          "children": [
+            {
+              "text": "Built-in Agents",
+              "link": "/agent/built-in/_index.md",
+              "type": "page"
+            },
+            {
+              "text": "Claude Code Guide Agent",
+              "link": "/agent/built-in/claude-code-guide-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "Explore Agent",
+              "link": "/agent/built-in/explore-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "General Purpose Agent",
+              "link": "/agent/built-in/general-purpose-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "Plan Agent",
+              "link": "/agent/built-in/plan-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "Statusline Setup Agent",
+              "link": "/agent/built-in/statusline-setup-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "Verification Agent",
+              "link": "/agent/built-in/verification-agent.md",
+              "type": "page"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "buddy",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "AI Buddy (Companion)",
+          "link": "/buddy/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Buddy Notifications & Teaser",
+          "link": "/buddy/buddy-notifications.md",
+          "type": "page"
+        },
+        {
+          "text": "Buddy Prompt Integration",
+          "link": "/buddy/buddy-prompt.md",
+          "type": "page"
+        },
+        {
+          "text": "CompanionSprite UI",
+          "link": "/buddy/companion-sprite-ui.md",
+          "type": "page"
+        },
+        {
+          "text": "Companion Roll System",
+          "link": "/buddy/companion.md",
+          "type": "page"
+        },
+        {
+          "text": "Sprites Rendering",
+          "link": "/buddy/sprites.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "cli",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "CLI Entry",
+          "link": "/cli/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "CLI Entry Points",
+          "link": "/cli/entrypoints.md",
+          "type": "page"
+        },
+        {
+          "text": "Startup and Fast Paths",
+          "link": "/cli/startup.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "coordinator",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "Coordinator Mode",
+          "link": "/coordinator/coordinator.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "core",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "Core Modules",
+          "link": "/core/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Command System",
+          "link": "/core/commands.md",
+          "type": "page"
+        },
+        {
+          "text": "Context Module",
+          "link": "/core/context.md",
+          "type": "page"
+        },
+        {
+          "text": "Hooks Module",
+          "link": "/core/hooks.md",
+          "type": "page"
+        },
+        {
+          "text": "Query Engine",
+          "link": "/core/query.md",
+          "type": "page"
+        },
+        {
+          "text": "Skills Module",
+          "link": "/core/skills.md",
+          "type": "page"
+        },
+        {
+          "text": "Tool System",
+          "link": "/core/tools.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "plugins",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "Plugins and Skills System",
+          "link": "/plugins/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Built-in Plugins",
+          "link": "/plugins/builtin.md",
+          "type": "page"
+        },
+        {
+          "text": "Bundled Skills",
+          "link": "/plugins/bundled-skills.md",
+          "type": "page"
+        },
+        {
+          "text": "Companion System",
+          "link": "/plugins/companion.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "remote",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "Remote and Service Extensions",
+          "link": "/remote/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Remote Control Bridge",
+          "link": "/remote/bridge.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "services",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "Service Layer",
+          "link": "/services/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Analytics Service",
+          "link": "/services/analytics.md",
+          "type": "page"
+        },
+        {
+          "text": "API Service",
+          "link": "/services/api.md",
+          "type": "page"
+        },
+        {
+          "text": "Compact Module",
+          "link": "/services/compact.md",
+          "type": "page"
+        },
+        {
+          "text": "LSP Service",
+          "link": "/services/lsp.md",
+          "type": "page"
+        },
+        {
+          "text": "MagicDocs Automatic Documentation",
+          "link": "/services/magicdocs.md",
+          "type": "page"
+        },
+        {
+          "text": "MCP Service",
+          "link": "/services/mcp.md",
+          "type": "page"
+        },
+        {
+          "text": "Memory Service",
+          "link": "/services/memory.md",
+          "type": "page"
+        },
+        {
+          "text": "OAuth Service",
+          "link": "/services/oauth.md",
+          "type": "page"
+        },
+        {
+          "text": "Policy Limits",
+          "link": "/services/policy-limits.md",
+          "type": "page"
+        },
+        {
+          "text": "Rate Limit Mocking",
+          "link": "/services/rate-limit-mocking.md",
+          "type": "page"
+        },
+        {
+          "text": "Team Memory Sync",
+          "link": "/services/team-memory-sync.md",
+          "type": "page"
+        },
+        {
+          "text": "Voice Service",
+          "link": "/services/voice.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "ui",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "User Interface Layer",
+          "link": "/ui/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Ink Rendering Engine",
+          "link": "/ui/ink.md",
+          "type": "page"
+        },
+        {
+          "text": "REPL Interface",
+          "link": "/ui/repl.md",
+          "type": "page"
+        }
+      ]
+    }
+  ]
+}

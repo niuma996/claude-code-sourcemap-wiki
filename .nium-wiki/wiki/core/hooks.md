@@ -348,13 +348,13 @@ type HookResponseEvent = {
 
 ```mermaid
 flowchart TD
-    Start["shouldEmit(hookEvent)"] --> CheckAlways{"hookEvent in<br/>ALWAYS_EMITTED_EVENTS"}
-    CheckAlways -->|"SessionStart / Setup"| Allow["return true"]
-    CheckAlways -->|"其他事件"| CheckFlag["allHookEventsEnabled?"]
-    CheckFlag -->|"true"| CheckValid["HOOK_EVENTS 中?"]
-    CheckValid -->|"是"| Allow2["return true"]
-    CheckValid -->|"否"| Deny["return false"]
-    CheckFlag -->|"false"| Deny2["return false"]
+    Start[shouldEmit hookEvent] --> CheckAlways{hookEvent in<br/>ALWAYS_EMITTED_EVENTS}
+    CheckAlways -->|"SessionStart / Setup"| Allow[return true]
+    CheckAlways -->|"其他事件"| CheckFlag[allHookEventsEnabled?]
+    CheckFlag -->|"true"| CheckValid[在 HOOK_EVENTS 中?]
+    CheckValid -->|"是"| Allow2[return true]
+    CheckValid -->|"否"| Deny[return false]
+    CheckFlag -->|"false（默认值）"| Deny2[return false]
 
     style Allow fill:#c8f7c5
     style Allow2 fill:#c8f7c5
@@ -363,7 +363,7 @@ flowchart TD
 ```
 
 - **Always emitted**：无论 `includeHookEvents` 设置如何，`SessionStart` 和 `Setup` 始终广播
-- **Conditional**：其他事件需要 `setAllHookEventsEnabled(true)` 后才会广播（SDK 的 `includeHookEvents` 选项设为 `true` 时，或在 `CLAUDE_CODE_REMOTE` 模式下自动开启）
+- **Conditional**：其他事件默认**不广播**（`allHookEventsEnabled` 默认为 `false`）。需要 `setAllHookEventsEnabled(true)` 后才会广播——SDK 的 `includeHookEvents` 选项设为 `true` 时，或在 `CLAUDE_CODE_REMOTE` 模式下自动开启
 - **Pending buffer**：未注册 handler 时，事件缓存在内存中（最多 100 条），handler 注册后一次性发送
 
 ```typescript
@@ -858,7 +858,7 @@ removeFunctionHook(setAppState, sessionId, 'UserPromptSubmit', hookId)
 查看当前会话的 Hook 配置：
 
 ```bash
-/claude hooks
+/hooks
 ```
 
 显示内容：
@@ -872,7 +872,7 @@ removeFunctionHook(setAppState, sessionId, 'UserPromptSubmit', hookId)
 可视化当前上下文使用情况：
 
 ```bash
-/claude context
+/context
 ```
 
 显示内容：
@@ -962,7 +962,6 @@ Hook 系统强制使用 `SyntheticOutputTool` 返回结构化结果：
 - [工具系统](/wiki/core/tools.md)
 - [查询引擎](/wiki/core/query.md)
 - [配置系统](/wiki/core/commands.md)
-- [权限系统](/wiki/core/permissions.md)
 
 ---
 

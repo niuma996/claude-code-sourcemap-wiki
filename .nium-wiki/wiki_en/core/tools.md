@@ -4,11 +4,17 @@
 
 The tool system is the execution unit of Claude Code, allowing AI agents to interact with the external world through tools. The system supports multiple tool types, including Bash execution, file editing, search, MCP integration, and more.
 
-The tool system uses a unified TypeScript `Tool` interface design. The core implementation is in [Tool.ts](/restored-src/src/Tool.ts).
+The tool system uses a unified TypeScript `Tool` interface design. The core implementation is in the [Tool.ts](/restored-src/src/Tool.ts) file.
 
-> **Note**: `Tool` is a TypeScript `interface`, not a base class. The actual methods are `call()` (execution) and `description()` (description generation), not `invoke()`/`getMetadata()`.
+> **Note**: `Tool` is a TypeScript `interface`, not a class base class. The actual methods are `call()` (execution) and `description()` (generate description), not `invoke()`/`getMetadata()`.
 
-## Architecture Position
+**Core Source Code Location**
+- [Tool.ts](/restored-src/src/Tool.ts#L1) - Tool base class interface
+- [tools.ts](/restored-src/src/tools.ts#L1) - Tool registration
+- [tools/BashTool/](/restored-src/src/tools/BashTool/) - Bash tool implementation
+- [tools/FileEditTool/](/restored-src/src/tools/FileEditTool/) - File edit tool
+
+## Architecture Location
 
 ```mermaid
 flowchart TB
@@ -33,7 +39,7 @@ flowchart TB
 
 | Feature | Description | Related Files |
 |---------|-------------|---------------|
-| Bash Execution | Execute shell commands | [BashTool/](/restored-src/src/tools/BashTool/) |
+| Bash Execution | Execute commands in terminal | [BashTool/](/restored-src/src/tools/BashTool/) |
 | File Editing | Read, write, edit files | [FileEditTool/](/restored-src/src/tools/FileEditTool/) |
 | File Search | Pattern matching file search | [GlobTool/](/restored-src/src/tools/GlobTool/) |
 | Code Search | Grep pattern search | [GrepTool/](/restored-src/src/tools/GrepTool/) |
@@ -45,26 +51,55 @@ flowchart TB
 
 ```
 restored-src/src/
-├── Tool.ts                 # Tool base class
+├── Tool.ts                 # Tool base class interface
+├── tools.ts                # Tool registry
 ├── tools/                  # Tool implementation directory
 │   ├── BashTool/          # Bash execution tool
+│   │   ├── BashTool.ts    # Bash tool main implementation
 │   │   ├── UI.tsx        # Bash tool UI
 │   │   ├── prompt.ts     # Prompt templates
-│   │   └── utils.ts      # Tool utilities
-│   ├── FileEditTool/     # File editing tool
-│   ├── FileReadTool/     # File reading tool
+│   │   └── utils.ts      # Utility functions
+│   ├── FileEditTool/     # File edit tool
+│   │   ├── FileEditTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
+│   ├── FileReadTool/     # File read tool
 │   ├── GlobTool/         # File search tool
+│   │   ├── GlobTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
 │   ├── GrepTool/         # Code search tool
+│   │   ├── GrepTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
 │   ├── MCPTool/          # MCP tool
+│   │   ├── MCPTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
 │   ├── LSPTool/          # LSP tool
+│   │   ├── LSPTool.ts
+│   │   ├── UI.tsx
+│   │   ├── prompt.ts
+│   │   └── schemas.ts
 │   ├── AgentTool/        # Agent tool
+│   │   ├── AgentTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
 │   ├── WebFetchTool/     # Web fetch tool
+│   ├── WebSearchTool/    # Web search tool
 │   ├── TaskStopTool/     # Task stop tool
 │   ├── SleepTool/        # Sleep tool
 │   ├── ConfigTool/       # Config tool
 │   ├── SkillTool/        # Skill tool
 │   └── BriefTool/        # Brief tool
 ```
+
+**Source Code Mapping**
+- [Tool.ts](/restored-src/src/Tool.ts) - Tool base class interface
+- [tools.ts](/restored-src/src/tools.ts) - Tool registration logic
+- [tools/BashTool/BashTool.ts](/restored-src/src/tools/BashTool/) - Bash tool implementation
+- [tools/GlobTool/GlobTool.ts](/restored-src/src/tools/GlobTool/) - Glob tool implementation
+- [tools/GrepTool/GrepTool.ts](/restored-src/src/tools/GrepTool/) - Grep tool implementation
 
 ## Core Workflow
 
@@ -106,53 +141,51 @@ classDiagram
     Tool <|.. FileEditTool
 ```
 
-> **Method signature note**: `call(args, context, canUseTool, parentMessage, onProgress?)` includes `canUseTool` (permission check) and `onProgress` (progress callback) parameters, not a simple `invoke(input)`.
+> **Method Signature Note**: The parameters of `call(args, context, canUseTool, parentMessage, onProgress?)` include `canUseTool` (permission check) and `onProgress` (progress callback), not a simple `invoke(input)`.
 
 ## API Summary
 
-| Tool | Description | Main Method |
-|------|-------------|-------------|
-| BashTool | Execute shell commands | `invoke(input: BashInput)` |
-| FileEditTool | Edit file content | `invoke(input: EditInput)` |
-| FileReadTool | Read file content | `invoke(input: ReadInput)` |
-| GlobTool | Pattern match files | `invoke(input: GlobInput)` |
-| GrepTool | Code search | `invoke(input: GrepInput)` |
-| MCPTool | MCP tool calls | `invoke(input: MCPInput)` |
-| LSPTool | LSP operations | `invoke(input: LSPInput)` |
-| AgentTool | Sub-agent execution | `invoke(input: AgentInput)` |
+| Tool | Description | Main Method | Source Location |
+|------|-------------|-------------|-----------------|
+| BashTool | Execute shell commands | `call(input, context, ...)` | [BashTool.ts](/restored-src/src/tools/BashTool/BashTool.ts) |
+| FileEditTool | Edit file content | `call(input, context, ...)` | [FileEditTool.ts](/restored-src/src/tools/FileEditTool/FileEditTool.ts) |
+| FileReadTool | Read file content | `call(input, context, ...)` | [FileReadTool.ts](/restored-src/src/tools/FileReadTool/) |
+| GlobTool | Pattern matching files | `call(input, context, ...)` | [GlobTool.ts](/restored-src/src/tools/GlobTool/GlobTool.ts) |
+| GrepTool | Code search | `call(input, context, ...)` | [GrepTool.ts](/restored-src/src/tools/GrepTool/GrepTool.ts) |
+| MCPTool | MCP tool invocation | `call(input, context, ...)` | [MCPTool.ts](/restored-src/src/tools/MCPTool/MCPTool.ts) |
+| LSPTool | LSP operations | `call(input, context, ...)` | [LSPTool.ts](/restored-src/src/tools/LSPTool/LSPTool.ts) |
+| AgentTool | Sub-agent execution | `call(input, context, ...)` | [AgentTool.ts](/restored-src/src/tools/AgentTool/AgentTool.ts) |
+| WebFetchTool | Web fetch | `call(input, context, ...)` | [WebFetchTool.ts](/restored-src/src/tools/WebFetchTool/) |
+| WebSearchTool | Web search | `call(input, context, ...)` | [WebSearchTool.ts](/restored-src/src/tools/WebSearchTool/) |
 
 ## BashTool Detailed Description
 
-BashTool is the most commonly used tool, allowing shell command execution:
+BashTool is the most commonly used tool, allowing shell command execution. The following is an illustrative input/output structure (not the actual type names in source code — see [BashTool.ts](/restored-src/src/tools/BashTool/BashTool.ts) for the real implementation):
 
 ```typescript
-interface BashInput {
-  command: string        // Command to execute
-  context?: {
-    cwd?: string        // Working directory
-    env?: Record<string, string>
-    timeout?: number    // Timeout in milliseconds
-  }
+// Illustrative structure (not actual source type names)
+// Input: command is required, timeout is optional (milliseconds)
+{
+  command: string
+  timeout?: number
 }
 
-interface BashResult {
-  stdout: string         // Standard output
-  stderr: string         // Standard error
-  exitCode: number       // Exit code
-  duration: number       // Execution duration in milliseconds
+// Output: stdout/stderr text + exit code
+{
+  stdout: string
+  stderr: string
+  exitCode: number
 }
 ```
 
-## File Editing Tool
+## File Edit Tool
 
-The file editing tool supports multiple operations:
+The file edit tool supports the following operations (operation names match actual source parameters — see [FileEditTool.ts](/restored-src/src/tools/FileEditTool/FileEditTool.ts)):
 
 | Operation | Description | Parameters |
 |-----------|-------------|------------|
 | `create` | Create new file | `file_path`, `content` |
-| `edit` | Edit file content | `file_path`, `old_string`, `new_string` |
-| `delete` | Delete file | `file_path` |
-| `rename` | Rename file | `old_path`, `new_path` |
+| `str_replace` | Replace string in file | `file_path`, `old_string`, `new_string` |
 
 ## MCP Tool Integration
 
@@ -162,43 +195,55 @@ MCP tools are integrated through [MCPTool](/restored-src/src/tools/MCPTool/):
 interface MCPInput {
   server: string           // MCP server name
   tool: string             // Tool name
-  arguments: Record<string, unknown>  // Tool parameters
+  arguments: Record<string, unknown>  // Tool arguments
 }
 ```
 
 ## Best Practices
 
-### Tool Calling Principles
+### Tool Invocation Principles
 
 | Principle | Description |
 |-----------|-------------|
-| Parameter Validation | Validate all parameters before `invoke` |
+| Parameter Validation | Validate all parameters before `call()` |
 | Error Handling | Catch and properly handle execution errors |
 | Timeout Control | Set timeouts for long-running operations |
 | Result Caching | Cache reusable results |
 
-### Avoiding Problems
+### Issues to Avoid
 
-| Problem | Solution |
-|---------|----------|
+| Issue | Solution |
+|-------|----------|
 | Command Injection | Use parameterized commands, avoid string concatenation |
 | Path Traversal | Normalize and validate file paths |
 | Timeout Runaway | Set reasonable default timeouts and allow configuration |
 | Resource Leaks | Ensure child processes and file handles are properly closed |
 
-## Source References
+## Source Code References
 
-- [Tool.ts](/restored-src/src/Tool.ts)
-- [tools/BashTool/](/restored-src/src/tools/BashTool/)
-- [tools/FileEditTool/](/restored-src/src/tools/FileEditTool/)
-- [tools/GrepTool/](/restored-src/src/tools/GrepTool/)
+**Core Files**
+- [Tool.ts](/restored-src/src/Tool.ts) - Tool base class interface
+- [tools.ts](/restored-src/src/tools.ts) - Tool registry
 
-## Related Documents
+**Tool Implementations**
+- [tools/BashTool/BashTool.ts](/restored-src/src/tools/BashTool/) - Bash tool
+- [tools/FileEditTool/](/restored-src/src/tools/FileEditTool/) - File edit tool
+- [tools/GrepTool/](/restored-src/src/tools/GrepTool/) - Search tool
+- [tools/GlobTool/](/restored-src/src/tools/GlobTool/) - File matching tool
+- [tools/MCPTool/](/restored-src/src/tools/MCPTool/) - MCP tool
+- [tools/AgentTool/](/restored-src/src/tools/AgentTool/) - Agent tool
+
+**Tool UI and Prompts**
+- [BashTool/UI.tsx](/restored-src/src/tools/BashTool/UI.tsx) - Bash UI
+- [GlobTool/prompt.ts](/restored-src/src/tools/GlobTool/prompt.ts) - Glob prompt
+
+## Related Documentation
 
 - [Query Engine](query.md)
 - [MCP Service](../../services/mcp.md)
 - [Command System](commands.md)
+- [Core Module Index](_index.md)
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-03-31*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-05-16*

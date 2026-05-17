@@ -1,126 +1,190 @@
 # 文档地图
 
+本文档提供 Claude Code 源码项目所有文档的索引和关系说明。
+
 ## 文档结构
 
 ```
-wiki/
-├── index.md              # 项目主页
-├── architecture.md       # 系统架构
-├── getting-started.md    # 快速开始
-├── doc-map.md           # 文档索引（本文档）
+.nium-wiki/wiki/
+├── index.md                  # 项目主页
+├── architecture.md           # 系统架构
+├── getting-started.md        # 快速开始
+├── doc-map.md               # 本文档
 │
-├── cli/                 # CLI 核心与入口
-│   ├── _index.md       # CLI 模块概览
-│   ├── entrypoints.md   # CLI 入口点
-│   └── startup.md       # 启动流程与快速路径
+├── core/                    # 核心模块
+│   ├── _index.md           # 核心模块概览
+│   ├── commands.md         # 命令系统
+│   ├── context.md          # 上下文管理
+│   ├── hooks.md           # Hook 系统
+│   ├── query.md           # 查询引擎
+│   ├── skills.md          # 技能系统
+│   └── tools.md           # 工具系统
 │
-├── agent/               # 智能体与协调
-│   ├── _index.md       # 智能体模块概览
-│   ├── agent-tool.md    # Agent 工具
-│   ├── fork-subagent.md # Fork 子智能体
+├── cli/                     # CLI 入口
+│   ├── _index.md          # CLI 概览
+│   ├── entrypoints.md     # 入口点
+│   └── startup.md         # 启动流程
+│
+├── agent/                   # Agent 系统
+│   ├── _index.md          # Agent 概览
+│   ├── agent-tool.md      # Agent 工具
+│   ├── fork-subagent.md   # 子代理
 │   ├── session-history.md # 会话历史
-│   └── built-in/        # 内置智能体
-│       ├── _index.md           # 内置智能体概览
-│       ├── explore-agent.md     # Explore Agent
-│       ├── plan-agent.md       # Plan Agent
-│       ├── verification-agent.md # Verification Agent
-│       ├── claude-code-guide-agent.md # Claude Code Guide
-│       ├── general-purpose-agent.md # General Purpose Agent
-│       └── statusline-setup-agent.md # Statusline Setup Agent
+│   └── built-in/          # 内置代理
+│       ├── _index.md
+│       ├── general-purpose-agent.md
+│       ├── explore-agent.md
+│       ├── plan-agent.md
+│       ├── verification-agent.md
+│       └── ...
 │
-├── remote/              # 远程与服务扩展
-│   ├── _index.md       # 远程扩展概览
-│   ├── bridge.md       # Remote Control Bridge
-│   └── mcp.md          # MCP 客户端
+├── services/               # 服务层
+│   ├── _index.md          # 服务概览
+│   ├── api.md             # API 服务
+│   ├── mcp.md             # MCP 服务
+│   ├── oauth.md           # OAuth 服务
+│   ├── lsp.md             # LSP 服务
+│   ├── analytics.md       # 分析服务
+│   ├── memory.md          # 内存服务
+│   ├── voice.md           # 语音服务
+│   └── ...
 │
-├── plugins/             # 插件与技能系统
-│   ├── _index.md       # 插件系统概览
-│   ├── builtin.md      # 内置插件
-│   ├── bundled-skills.md # 打包技能
-│   └── companion.md    # 伴侣系统
+├── plugins/                # 插件系统
+│   ├── _index.md          # 插件概览
+│   ├── builtin.md         # 内置插件
+│   ├── bundled-skills.md  # 打包技能
+│   └── ...
 │
-├── core/                # 核心模块
-│   ├── _index.md       # 核心模块概览
-│   ├── commands.md     # 命令系统
-│   ├── tools.md        # 工具系统
-│   ├── query.md        # 查询引擎
-│   ├── context.md      # Context 状态管理
-│   └── hooks.md        # Hooks 事件系统
+├── remote/                 # 远程系统
+│   ├── _index.md          # 远程概览
+│   └── bridge.md          # 桥接模式
 │
-├── services/            # 服务层
-│   ├── _index.md       # 服务层概览
-│   ├── api.md          # API 服务
-│   ├── mcp.md          # MCP 服务
-│   └── oauth.md        # OAuth 认证
+├── ui/                     # 用户界面
+│   ├── _index.md          # UI 概览
+│   ├── ink.md             # Ink 组件
+│   └── repl.md            # REPL 界面
 │
-├── ui/                  # 用户界面
-│   ├── _index.md       # UI 层概览
-│   ├── repl.md         # REPL 界面
-│   └── ink.md          # Ink 渲染引擎
+├── buddy/                  # Companion 系统
+│   ├── _index.md          # Buddy 概览
+│   ├── companion.md       # Companion
+│   ├── buddy-prompt.md   # Buddy 提示
+│   └── sprites.md         # 精灵图
 │
-└── reference/           # 参考文档
-    ├── _index.md       # 参考文档概览
-    ├── api.md          # API 参考
-    └── types.md        # 类型定义
+└── coordinator/           # 协调器
+    └── coordinator.md     # 任务协调
 ```
 
-## 模块依赖关系
+## 文档依赖关系
 
 ```mermaid
-flowchart LR
-    UI[用户界面]
-    Core[核心引擎]
-    Commands[命令系统]
-    Services[服务层]
-    Tools[工具系统]
+graph TD
+    Home["index.md"]
+    Arch["architecture.md"]
+    GS["getting-started.md"]
+    DM["doc-map.md"]
 
-    UI --> Core
-    UI --> Commands
-    Commands --> Core
-    Core --> Tools
-    Core --> Services
+    Home --> Arch
+    Home --> GS
+    Home --> DM
+
+    Arch --> Core["core/_index.md"]
+    Arch --> Cli["cli/_index.md"]
+    Arch --> Services["services/_index.md"]
+
+    Core --> Commands["core/commands.md"]
+    Core --> Context["core/context.md"]
+    Core --> Tools["core/tools.md"]
+    Core --> Query["core/query.md"]
+    Core --> Hooks["core/hooks.md"]
+
+    Commands --> Agent["agent/_index.md"]
+    Commands --> Skills["core/skills.md"]
+
+    Services --> API["services/api.md"]
+    Services --> MCP["services/mcp.md"]
+    Services --> OAuth["services/oauth.md"]
+    Services --> LSP["services/lsp.md"]
+    Services --> Analytics["services/analytics.md"]
+
+    Agent --> BuiltIn["agent/built-in/_index.md"]
+    Agent --> SubAgent["agent/fork-subagent.md"]
+
+    UI["ui/_index.md"]
+    UI --> Ink["ui/ink.md"]
+    UI --> REPL["ui/repl.md"]
 ```
 
-## 文档清单
+## 模块文档映射
 
-| 文档 | 说明 | 优先级 |
-|------|------|--------|
-| [index.md](index.md) | 项目主页 | 高 |
-| [architecture.md](architecture.md) | 系统架构总览 | 高 |
-| [getting-started.md](getting-started.md) | 快速开始指南 | 高 |
-| [doc-map.md](doc-map.md) | 文档索引 | 高 |
-| [cli/_index.md](cli/_index.md) | CLI 核心与入口概览 | 高 |
-| [cli/entrypoints.md](cli/entrypoints.md) | CLI 入口点 | 高 |
-| [cli/startup.md](cli/startup.md) | 启动流程与快速路径 | 高 |
-| [agent/_index.md](agent/_index.md) | 智能体与协调概览 | 高 |
-| [agent/agent-tool.md](agent/agent-tool.md) | Agent 工具 | 高 |
-| [agent/fork-subagent.md](agent/fork-subagent.md) | Fork 子智能体 | 高 |
-| [agent/built-in/_index.md](agent/built-in/_index.md) | 内置智能体概览 | 高 |
-| [agent/built-in/explore-agent.md](agent/built-in/explore-agent.md) | Explore Agent | 高 |
-| [agent/built-in/plan-agent.md](agent/built-in/plan-agent.md) | Plan Agent | 高 |
-| [agent/built-in/verification-agent.md](agent/built-in/verification-agent.md) | Verification Agent | 高 |
-| [agent/built-in/claude-code-guide-agent.md](agent/built-in/claude-code-guide-agent.md) | Claude Code Guide Agent | 高 |
-| [agent/built-in/general-purpose-agent.md](agent/built-in/general-purpose-agent.md) | General Purpose Agent | 高 |
-| [agent/built-in/statusline-setup-agent.md](agent/built-in/statusline-setup-agent.md) | Statusline Setup Agent | 高 |
-| [remote/_index.md](remote/_index.md) | 远程与服务扩展概览 | 高 |
-| [remote/bridge.md](remote/bridge.md) | Remote Control Bridge | 高 |
-| [remote/mcp.md](remote/mcp.md) | MCP 客户端 | 高 |
-| [plugins/_index.md](plugins/_index.md) | 插件与技能系统概览 | 高 |
-| [plugins/builtin.md](plugins/builtin.md) | 内置插件 | 高 |
-| [plugins/bundled-skills.md](plugins/bundled-skills.md) | 打包技能 | 高 |
-| [plugins/companion.md](plugins/companion.md) | 伴侣系统 | 中 |
-| [core/commands.md](core/commands.md) | 命令系统 | 中 |
-| [core/tools.md](core/tools.md) | 工具系统 | 中 |
-| [core/query.md](core/query.md) | 查询引擎 | 中 |
-| [core/context.md](core/context.md) | Context 状态管理 | 高 |
-| [core/hooks.md](core/hooks.md) | Hooks 事件系统 | 高 |
-| [services/api.md](services/api.md) | API 服务 | 中 |
-| [services/mcp.md](services/mcp.md) | MCP 服务 | 中 |
-| [services/oauth.md](services/oauth.md) | OAuth 认证 | 中 |
-| [ui/repl.md](ui/repl.md) | REPL 界面 | 中 |
-| [ui/ink.md](ui/ink.md) | Ink 渲染引擎 | 低 |
-| [reference/types.md](reference/types.md) | 类型定义 | 低 |
+| 模块路径 | 文档位置 | 描述 |
+|---------|---------|------|
+| `src/main.tsx` | [core/_index.md](core/_index.md) | 主入口 |
+| `src/QueryEngine.ts` | [core/query.md](core/query.md) | 查询引擎 |
+| `src/Task.ts` | [core/_index.md](core/_index.md) | 任务管理 |
+| `src/Tool.ts` | [core/tools.md](core/tools.md) | 工具基类 |
+| `src/commands.ts` | [core/commands.md](core/commands.md) | 命令注册 |
+| `src/entrypoints/cli.tsx` | [cli/entrypoints.md](cli/entrypoints.md) | CLI 入口 |
+| `src/services/api/` | [services/api.md](services/api.md) | API 服务 |
+| `src/services/mcp/` | [services/mcp.md](services/mcp.md) | MCP 服务 |
+| `src/services/oauth/` | [services/oauth.md](services/oauth.md) | OAuth 服务 |
+| `src/services/lsp/` | [services/lsp.md](services/lsp.md) | LSP 服务 |
+| `src/screens/REPL.tsx` | [ui/repl.md](ui/repl.md) | REPL 界面 |
+| `src/ink/` | [ui/ink.md](ui/ink.md) | Ink 组件 |
+| `src/plugins/` | [plugins/_index.md](plugins/_index.md) | 插件系统 |
+| `src/bridge/` | [remote/bridge.md](remote/bridge.md) | 桥接模式 |
+
+## 源码路径映射
+
+| 源码文件 | Wiki 文档 | 说明 |
+|---------|----------|------|
+| `/restored-src/src/main.tsx` | [index.md](index.md) | 项目主页 |
+| `/restored-src/src/entrypoints/cli.tsx` | [cli/entrypoints.md](cli/entrypoints.md) | CLI 入口点 |
+| `/restored-src/src/QueryEngine.ts` | [core/query.md](core/query.md) | 查询引擎（1177 行） |
+| `/restored-src/src/Task.ts` | [core/_index.md](core/_index.md) | 任务系统（125 行） |
+| `/restored-src/src/Tool.ts` | [core/tools.md](core/tools.md) | 工具系统（792 行） |
+| `/restored-src/src/commands.ts` | [core/commands.md](core/commands.md) | 命令系统 |
+
+## 阅读路线
+
+### 开发者入门
+1. [主页](index.md) - 项目概览
+2. [快速开始](getting-started.md) - 安装和配置
+3. [系统架构](architecture.md) - 架构理解
+4. [CLI 入口](cli/entrypoints.md) - 入口点详解
+
+### 核心开发
+1. [命令系统](core/commands.md) - 命令实现
+2. [查询引擎](core/query.md) - 查询处理
+3. [工具系统](core/tools.md) - 工具实现
+4. [Hook 系统](core/hooks.md) - 扩展机制
+
+### 服务集成
+1. [API 服务](services/api.md) - API 客户端
+2. [MCP 服务](services/mcp.md) - MCP 协议
+3. [OAuth 服务](services/oauth.md) - 认证
+4. [LSP 服务](services/lsp.md) - 语言服务器
+
+### UI 开发
+1. [REPL 界面](ui/repl.md) - 交互界面
+2. [Ink 组件](ui/ink.md) - 终端 UI 组件
+3. [Companion](buddy/companion.md) - 伴侣系统
+
+## 核心源码文件索引
+
+| 文件 | 行数 | 功能 | 文档 |
+|------|------|------|------|
+| [QueryEngine.ts](/restored-src/src/QueryEngine.ts) | 1177 | 查询引擎核心 | [query.md](core/query.md) |
+| [Tool.ts](/restored-src/src/Tool.ts) | 792 | 工具抽象基类 | [tools.md](core/tools.md) |
+| [query.ts](/restored-src/src/query.ts) | 600+ | 查询循环实现 | [query.md](core/query.md) |
+| [Task.ts](/restored-src/src/Task.ts) | 125 | 任务类型管理 | [core/_index.md](core/_index.md) |
+| [commands.ts](/restored-src/src/commands.ts) | 300+ | 命令注册 | [commands.md](core/commands.md) |
+
+## 相关文档
+
+- [主页](index.md)
+- [架构文档](architecture.md)
+- [快速开始](getting-started.md)
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-03-31*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-05-12*

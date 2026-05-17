@@ -20,7 +20,7 @@ The agent system supports three execution modes: local execution, remote CCR exe
 | [Session History](session-history.md) | Agent SDK session event history | [session-history.md](session-history.md) |
 | [Built-in Agents](built-in/_index.md) | Built-in agents overview | [built-in/_index.md](built-in/_index.md) |
 | [Coordinator Mode](../coordinator/coordinator.md) | Multi-agent coordination orchestration | [coordinator.md](../coordinator/coordinator.md) |
-| [AI Buddy](../buddy/_index.md) | Terminal companion UI & interaction | [buddy/index.md](../buddy/_index.md) |
+| [AI Buddy](../buddy/_index.md) | Terminal companion UI & interaction | [buddy/_index.md](../buddy/_index.md) |
 
 ## Built-in Agents
 

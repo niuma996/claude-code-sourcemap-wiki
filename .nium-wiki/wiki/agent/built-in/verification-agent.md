@@ -45,13 +45,13 @@ flowchart TB
         Probes["对抗性探测"]
         Report["判定报告"]
     end
-    subgraph Strategy["验证策略"]
+    subgraph Strategy_sub["验证策略"]
         Frontend["前端变更"]
         Backend["后端/API 变更"]
         CLI["CLI/脚本变更"]
         Config["基础设施变更"]
     end
-    subgraph Probes["对抗性探测"]
+    subgraph Probes_sub["对抗性探测"]
         Concurrency["并发测试"]
         Boundaries["边界值测试"]
         Idempotency["幂等性测试"]

@@ -89,19 +89,30 @@ sequenceDiagram
         alt New work found
             API-->>Bridge: WorkResponse
             Bridge->>Spawner: spawn()
-            Spawner->>Child: Launch Claude process
-            alt SpawnMode = worktree
-                Spawner->>Worktree: Create Worktree
+            alt spawn fails
+                Spawner-->>Bridge: Error string (no throw)
+                Bridge->>API: Report failure status
+            else spawn succeeds
+                Spawner->>Child: Launch Claude process
+                alt SpawnMode = worktree
+                    Spawner->>Worktree: Create Worktree
+                end
+                Bridge->>Bridge: Register session
+                loop Session lifecycle
+                    Bridge->>Bridge: Heartbeat report
+                    Bridge->>Child: Monitor output
+                    alt Session timeout (default 24h)
+                        Bridge->>Child: Terminate process
+                        Bridge->>API: Report timeout status
+                    end
+                end
+                Child-->>Bridge: Session ends
+                Bridge->>API: Report completion status
             end
-            Bridge->>Bridge: Register session
-            loop Session lifecycle
-                Bridge->>Bridge: Heartbeat report
-                Bridge->>Child: Monitor output
-            end
-            Child-->>Bridge: Session ends
-            Bridge->>API: Report completion status
         else No work
             Bridge->>Bridge: Exponential backoff wait
+        else Auth failure
+            Bridge->>Bridge: Exit (no retry)
         end
     end
 ```

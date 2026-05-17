@@ -22,7 +22,7 @@ flowchart TB
         SDK["Claude Agent SDK<br/>框架"]
         API["Claude API<br/>模型交互"]
     end
-    subgraph CC["Claude Code"]
+    subgraph CC_sub["Claude Code"]
         Install["安装配置"]
         Hooks["Hooks"]
         Skills["自定义技能"]
@@ -30,13 +30,13 @@ flowchart TB
         IDE["IDE 集成"]
         Settings["设置"]
     end
-    subgraph SDK["Agent SDK"]
+    subgraph SDK_sub["Agent SDK"]
         Overview["SDK 概览"]
         AgentConfig["智能体配置"]
         Session["会话管理"]
         Tools["自定义工具"]
     end
-    subgraph API["Claude API"]
+    subgraph API_sub["Claude API"]
         Messages["Messages API"]
         ToolUse["工具使用"]
         Vision["Vision/PDF"]

@@ -45,12 +45,12 @@ flowchart TB
         Design["方案设计"]
         Planning["计划输出"]
     end
-    subgraph Exploration["代码探索"]
+    subgraph Exploration_sub["代码探索"]
         ReadFiles["读取初始文件"]
         FindPatterns["查找现有模式"]
         TracePaths["追踪代码路径"]
     end
-    subgraph Design["方案设计"]
+    subgraph Design_sub["方案设计"]
         Tradeoffs["权衡分析"]
         Patterns["遵循现有模式"]
     end

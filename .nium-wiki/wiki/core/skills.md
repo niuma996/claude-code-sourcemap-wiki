@@ -138,30 +138,32 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    A["registerBundledSkill<br/>definition"] --> B{有 files 字段?}
-    B -->|是| C["extractBundledSkillFiles<br/>延迟提取到磁盘"]
-    B -->|否| D["直接注册"]
+    A[registerBundledSkill definition] --> B{有 files 字段?}
+    B -->|是| C[extractBundledSkillFiles 延迟提取到磁盘]
+    B -->|否| D[直接注册]
     C --> D
-    D --> E["Command 对象<br/>type: 'prompt'<br/>source: 'bundled'"]
-    E --> F["bundledSkills[] 注册表"]
-    F --> G["getBundledSkills()"]
+    D --> E[Command 对象 type prompt source bundled]
+    E --> F[bundledSkills 注册表]
+    F --> G[getBundledSkills]
 ```
 
 ### 磁盘 Skill 解析流程
 
 ```mermaid
 flowchart TB
-    A[".claude/skills/<br/>skill-name/SKILL.md"] --> B["parseFrontmatter()<br/>提取 YAML 元数据"]
-    B --> C{"context: fork?"}
-    C -->|是| D["子代理配置<br/>agent: string"]
-    C -->|否| E["Inline 配置"]
-    D --> F["createSkillCommand()<br/>生成 Command 对象"]
+    A[.claude/skills/skill-name/SKILL.md] --> B[parseFrontmatter 提取 YAML 元数据]
+    B --> C{context fork?}
+    C -->|是| D[子代理配置 agent string]
+    C -->|否| E[Inline 配置]
+    D --> F[createSkillCommand 生成 Command 对象]
     E --> F
-    F --> G{"有 paths frontmatter?"}
-    G -->|是| H["条件激活<br/>conditionalSkills Map"]
-    G -->|否| I["无条件 Skills 列表"]
-    H --> I
-    I --> J["getSkillDirCommands()<br/>返回 Command[]"]
+    F --> G{有 paths frontmatter?}
+    G -->|是| H[条件激活 conditionalSkills Map]
+    G -->|否| I[无条件 Skills 列表]
+    H --> J[合并：conditionalSkills + 无条件列表]
+    I --> J
+    J --> K[getSkillDirCommands 返回 Command\[\]]
+    K --> L[loadAllCommands 聚合所有来源]
 ```
 
 ## Frontmatter 规范
@@ -223,17 +225,17 @@ shell: bash
 
 ```mermaid
 flowchart TD
-    A["checkPermissions()<br/>SkillTool.ts"] --> B{deny rules 匹配?}
-    B -->|是| C["deny<br/>阻止执行"]
+    A[checkPermissions SkillTool.ts] --> B{deny rules 匹配?}
+    B -->|是| C[deny 阻止执行]
     B -->|否| D{remote canonical skill?}
-    D -->|是| E["auto-allow<br/>ANT 内部实验"]
+    D -->|是| E[auto-allow ANT 内部实验]
     D -->|否| F{allow rules 匹配?}
-    F -->|是| G["allow<br/>直接执行"]
+    F -->|是| G[allow 直接执行]
     F -->|否| H{safe properties only?}
     H -->|是| G
-    H -->|否| I["ask<br/>用户确认"]
-    G --> J["执行 Skill"]
-    C --> K["拒绝"]
+    H -->|否| I[ask 用户确认]
+    G --> J[执行 Skill]
+    C --> K[拒绝]
     I --> J
     I --> K
 ```

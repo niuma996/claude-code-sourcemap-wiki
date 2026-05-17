@@ -159,12 +159,12 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    MagicDocs["MagicDocs"] --> FileReadTool["FileReadTool"]
-    MagicDocs --> runAgent["runAgent"]
-    MagicDocs --> postSamplingHooks["postSamplingHooks"]
-    FileEditTool["FileEditTool"] --> MagicDocs
+    MagicDocs[MagicDocs] --> FileReadTool[FileReadTool]
+    MagicDocs --> runAgent[runAgent]
+    MagicDocs --> postSamplingHooks[postSamplingHooks]
+    FileEditTool[FileEditTool] --> MagicDocs
 
-    subgraph 调用方
+    subgraph Callers[调用方]
         FileReadTool
         runAgent
     end

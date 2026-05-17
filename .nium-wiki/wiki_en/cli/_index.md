@@ -1,94 +1,147 @@
-# CLI Core and Entry
+# CLI Entry
 
 ## Overview
 
-The CLI Core and Entry module is the startup layer of Claude Code, responsible for process initialization, command-line argument parsing, and fast-path optimization. The module uses a **dynamic import strategy** to achieve zero-module loading for version checks, ensuring that fast paths like `--version` have minimal startup time.
-
-The CLI layer contains no business logic — its sole purpose is **routing**: directing execution to the correct subsystem (full CLI, Remote Control Bridge, Daemon process, etc.) based on command-line arguments.
-
-## Submodules
-
-| Module | Description | Document |
-|--------|-------------|----------|
-| [CLI Entry Points](entrypoints.md) | Entry files and argument routing | [entrypoints.md](entrypoints.md) |
-| [Startup and Fast Paths](startup.md) | Dynamic imports, profiler, performance optimization | [startup.md](startup.md) |
+The CLI entry module handles command-line argument parsing, fast-path optimization, and application startup.
 
 ## Architecture Position
 
 ```mermaid
-flowchart TB
-    subgraph CLI["CLI Core and Entry"]
-        cli["cli.tsx"]
-        main["main.tsx"]
-        init["init.ts"]
-        profiler["startupProfiler"]
-        config["config.ts"]
+flowchart LR
+    subgraph Entry["CLI Entry"]
+        CLI["cli.tsx"]
+        Main["main.tsx"]
+        Init["init.ts"]
     end
-    cli --> main
-    cli --> profiler
-    main --> init
-    init --> config
+    subgraph FastPaths["Fast Paths"]
+        Version["Version Check"]
+        Bridge["Bridge Mode"]
+        Daemon["Daemon"]
+        Sessions["Session Management"]
+    end
+    subgraph MainFlow["Main Flow"]
+        Commands["Command System"]
+        REPL["REPL Interface"]
+    end
+    CLI --> FastPaths
+    CLI --> Main
+    Main --> Commands
+    Commands --> REPL
 ```
 
-## Core Design Principles
+## Entry Files
 
-### 1. Dynamic Import
+| File | Description | Responsibilities |
+|------|-------------|------------------|
+| [cli.tsx](/restored-src/src/entrypoints/cli.tsx) | CLI main entry | Argument parsing, fast-path dispatch |
+| [main.tsx](/restored-src/src/main.tsx) | Main flow | Full CLI initialization |
+| [init.ts](/restored-src/src/entrypoints/init.ts) | Initialization | Config loading and environment setup |
 
-The CLI entry file [cli.tsx](/restored-src/src/entrypoints/cli.tsx) uses `await import()` for all heavy modules. This ensures the `--version` fast path loads no modules at all.
+## Fast-Path Optimization
 
-```typescript
-// Fast path: version check — zero imports
-if (args.length === 1 && (args[0] === '--version' || args[0] === '-v')) {
-  console.log(`${MACRO.VERSION} (Claude Code)`)
-  return
-}
+Claude Code uses dynamic import strategies for fast-path optimization, minimizing module loading at startup.
 
-// Slow path: full CLI
-const { main: cliMain } = await import('../main.js')
-await cliMain()
+### Version Check
+
+```bash
+claude --version
+claude -v
 ```
 
-### 2. Conditional Compilation (Feature Flags)
+Zero module loading, directly outputs the inlined version number.
 
-`feature('FEATURE_NAME')` enables build-time feature switches. Internal builds (Ant) include experimental features; external builds eliminate this code via DCE (Dead Code Elimination).
+### Bridge Mode
 
-### 3. Startup Profiling
+```bash
+claude remote-control
+claude rc
+claude bridge
+```
 
-[startupProfiler.ts](/restored-src/src/utils/startupProfiler.ts) records checkpoints at critical module-loading points. `profileCheckpoint()` marks timestamps throughout the startup process.
+Starts the bridge service, allowing remote control.
 
-### 4. Environment Adaptation
+### Daemon
 
-The CLI layer adapts behavior to the runtime environment (local, Remote Container, BYOC, etc.), such as setting larger Node.js heap memory in CCR environments (16GB container → `--max-old-space-size=8192`).
+```bash
+claude daemon
+```
 
-## Entry Command Routing Table
+Starts a long-running daemon process.
 
-| Command / Argument | Target Module | Description |
-|-------------------|--------------|-------------|
-| `--version` / `-v` | Direct output | Zero-import fast path |
-| `--dump-system-prompt` | prompts.js | Output system prompt and exit |
-| `remote-control` / `bridge` | bridgeMain.ts | Start Remote Control Bridge |
-| `daemon` | daemon/main.ts | Start Daemon supervisor process |
-| `ps` / `logs` / `attach` / `kill` | cli/bg.js | Background session management |
-| `new` / `list` / `reply` | templateJobs.js | Template job commands |
-| `environment-runner` | environment-runner/main.js | BYOC runner |
-| `--tmux --worktree` | worktree.js | Tmux worktree fast path |
-| No special args | main.tsx | Full interactive CLI |
+### Session Management
 
-## Key Types
+```bash
+claude ps
+claude logs <id>
+claude attach <id>
+claude kill <id>
+```
 
-| Type | Definition Location | Description |
-|------|-------------------|-------------|
-| `profileCheckpoint` | [startupProfiler.ts](/restored-src/src/utils/startupProfiler.ts) | Startup profiling checkpoint function |
-| `feature` | bun:bundle | Conditional compilation feature switch macro |
-| `enableConfigs` | [config.ts](/restored-src/src/utils/config.ts) | Enable configuration reading |
+Manages background sessions.
+
+### Template Commands
+
+```bash
+claude new <template>
+claude list
+claude reply
+```
+
+Template job management.
+
+## Conditional Compilation
+
+Uses `feature()` function for build-time feature switches:
+
+| Feature | Description |
+|---------|-------------|
+| `BRIDGE_MODE` | Bridge mode support |
+| `DAEMON` | Daemon support |
+| `BG_SESSIONS` | Background session support |
+| `TEMPLATES` | Template support |
+| `COORDINATOR_MODE` | Coordinator mode |
+
+## Startup Flow
+
+```mermaid
+sequenceDiagram
+    participant CLI
+    participant Config
+    participant Commands
+    participant QueryEngine
+    participant REPL
+
+    CLI->>CLI: Parse arguments
+    alt Fast Path
+        CLI->>CLI: Execute fast path
+    else Main Path
+        CLI->>Config: Enable configuration
+        Config->>Commands: Load commands
+        Commands->>QueryEngine: Initialize engine
+        QueryEngine->>REPL: Start interface
+    end
+```
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `CLAUDE_CODE_REMOTE` | Remote environment flag | - |
+| `CLAUDE_CODE_SIMPLE` | Simple mode (no TUI) | - |
+| `NODE_OPTIONS` | Node.js options | - |
+
+## Source References
+
+- [cli.tsx](/restored-src/src/entrypoints/cli.tsx)
+- [main.tsx](/restored-src/src/main.tsx)
+- [init.ts](/restored-src/src/entrypoints/init.ts)
 
 ## Related Documents
 
-- [Architecture Overview](../architecture.md)
-- [Home](../index.md)
-- [CLI Entry Points](entrypoints.md)
-- [Startup and Fast Paths](startup.md)
+- [Entry Points Details](entrypoints.md)
+- [Startup Flow](startup.md)
+- [Architecture Documentation](../architecture.md)
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-03-31*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-05-12*

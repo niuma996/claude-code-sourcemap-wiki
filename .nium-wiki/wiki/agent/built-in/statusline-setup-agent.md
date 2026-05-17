@@ -38,7 +38,7 @@ flowchart TB
         Generate["生成命令"]
         Update["更新设置"]
     end
-    subgraph PS1Read["PS1 读取"]
+    subgraph PS1Read_sub["PS1 读取"]
         Zshrc["~/.zshrc"]
         Bashrc["~/.bashrc"]
         BashProfile["~/.bash_profile"]

@@ -1,128 +1,157 @@
-# 助手服务
+# 服务层
 
-## 概览
+## 概述
 
-助手服务模块是 Claude Code 的核心辅助能力集合，提供与外部系统集成、数据处理、权限控制等关键功能。该模块包含多个独立服务，协同工作以支持智能体的完整生命周期和用户交互体验。
-
-## 子模块
-
-| 模块 | 说明 | 文档 |
-|------|------|------|
-| [LSP 服务](lsp.md) | Language Server Protocol 语言服务器协议集成 | [lsp.md](lsp.md) |
-| [MCP 服务](mcp.md) | Model Context Protocol 模型上下文协议客户端 | [mcp.md](mcp.md) |
-| [OAuth 服务](oauth.md) | OAuth 2.0 认证授权管理 | [oauth.md](oauth.md) |
-| [分析服务](analytics.md) | 使用分析和遥测数据收集 | [analytics.md](analytics.md) |
-| [内存服务](memory.md) | 持久化记忆存储与管理 | [memory.md](memory.md) |
-| [团队内存同步](team-memory-sync.md) | 多用户团队记忆同步 | [team-memory-sync.md](team-memory-sync.md) |
-| [语音服务](voice.md) | 语音录制与麦克风访问 | [voice.md](voice.md) |
-| [策略限制](policy-limits.md) | 使用策略与速率限制管理 | [policy-limits.md](policy-limits.md) |
-| [速率限制模拟](rate-limit-mocking.md) | 测试用速率限制模拟 | [rate-limit-mocking.md](rate-limit-mocking.md) |
+服务层提供 Claude Code 的基础设施功能，包括 API 通信、MCP 协议、OAuth 认证、LSP 支持和分析服务。
 
 ## 架构位置
 
 ```mermaid
 flowchart TB
-    subgraph AssistantServices["助手服务"]
-        LSP["LSP 服务"]
-        MCP["MCP 服务"]
-        OAuth["OAuth 服务"]
-        Analytics["分析服务"]
-        Memory["内存服务"]
-        TeamSync["团队内存同步"]
-        Voice["语音服务"]
-        Policy["策略限制"]
-        RateLimit["速率限制模拟"]
+    subgraph Services["服务层"]
+        API[API 服务]
+        MCP[MCP 服务]
+        OAuth[OAuth 服务]
+        LSP[LSP 服务]
+        Analytics[分析服务]
+        Memory[内存服务]
+        Voice[语音服务]
     end
-    subgraph Agent["智能体模块"]
-        AgentCore["Agent Core"]
-        AgentTool["AgentTool"]
+    subgraph Core["核心系统"]
+        Query[QueryEngine]
     end
-    AgentCore --> LSP
-    AgentCore --> MCP
-    AgentCore --> Memory
-    AgentCore --> TeamSync
-    AgentCore --> Policy
-    AgentTool --> OAuth
-    AgentTool --> Analytics
-    Voice -.-> AgentTool
-    RateLimit -.-> Policy
+    Query --> API
+    Query --> MCP
+    Query --> OAuth
+    Query --> LSP
+    Query --> Analytics
+    Query --> Memory
+    Query --> Voice
 ```
 
-## 核心概念
+## 服务模块
 
-### 服务依赖关系
+| 服务 | 路径 | 描述 |
+|------|------|------|
+| API | [services/api/](/restored-src/src/services/api/) | Claude API 客户端和通信 |
+| MCP | [services/mcp/](/restored-src/src/services/mcp/) | Model Context Protocol 支持 |
+| OAuth | [services/oauth/](/restored-src/src/services/oauth/) | OAuth 认证流程 |
+| LSP | [services/lsp/](/restored-src/src/services/lsp/) | Language Server Protocol |
+| Analytics | [services/analytics/](/restored-src/src/services/analytics/) | 遥测和指标收集 |
+| Memory | [services/memory/](/restored-src/src/services/memory/) | 内存管理 |
+| Voice | [services/voice/](/restored-src/src/services/voice/) | 语音功能 |
+
+## API 服务
+
+API 服务负责与 Claude API 的所有通信。
+
+### 主要功能
+
+- **API 客户端**: 封装所有 API 调用
+- **错误处理**: 重试逻辑和错误分类
+- **用量追踪**: 记录和报告 API 使用量
+- **日志记录**: 请求和响应日志
+
+### 关键文件
+
+- [client.ts](/restored-src/src/services/api/client.ts) - API 客户端
+- [claude.ts](/restored-src/src/services/api/claude.ts) - Claude API 封装
+- [errors.ts](/restored-src/src/services/api/errors.ts) - 错误处理
+- [usage.ts](/restored-src/src/services/api/usage.ts) - 用量追踪
+
+## MCP 服务
+
+MCP (Model Context Protocol) 服务提供标准化工具接口。
+
+### 主要功能
+
+- **MCP 客户端**: 管理 MCP 服务器连接
+- **工具调用**: 统一的工具调用接口
+- **资源管理**: MCP 资源访问
+- **认证**: MCP 认证支持
+
+### 关键文件
+
+- [client.ts](/restored-src/src/services/mcp/client.ts) - MCP 客户端
+- [config.ts](/restored-src/src/services/mcp/config.ts) - MCP 配置
+- [auth.ts](/restored-src/src/services/mcp/auth.ts) - MCP 认证
+
+## OAuth 服务
+
+OAuth 服务处理用户认证。
+
+### 主要功能
+
+- **授权码流程**: 标准 OAuth 2.0 授权码流程
+- **令牌管理**: Access token 和 refresh token 管理
+- **加密**: 安全令牌存储
+
+### 关键文件
+
+- [client.ts](/restored-src/src/services/oauth/client.ts) - OAuth 客户端
+- [crypto.ts](/restored-src/src/services/oauth/crypto.ts) - 加密工具
+
+## LSP 服务
+
+LSP 服务集成 Language Server Protocol。
+
+### 主要功能
+
+- **诊断**: 代码诊断和错误提示
+- **补全**: 代码补全建议
+- **跳转到定义**: 导航支持
+
+### 关键文件
+
+- [manager.ts](/restored-src/src/services/lsp/manager.ts) - LSP 管理器
+- [LSPClient.ts](/restored-src/src/services/lsp/LSPClient.ts) - LSP 客户端
+
+## 分析服务
+
+分析服务负责遥测和指标收集。
+
+### 主要功能
+
+- **事件日志**: 用户行为事件记录
+- **指标收集**: 性能和使用指标
+- **GrowthBook**: A/B 测试支持
+
+### 关键文件
+
+- [sink.ts](/restored-src/src/services/analytics/sink.ts) - 事件接收器
+- [datadog.ts](/restored-src/src/services/analytics/datadog.ts) - DataDog 集成
+
+## 服务依赖关系
 
 ```mermaid
 flowchart LR
-    OAuth["OAuth"] --> MCP["MCP"]
-    MCP --> Memory["Memory"]
-    Memory --> TeamSync["TeamSync"]
-    Analytics --> RateLimit["RateLimitMock"]
-    RateLimit --> Policy["PolicyLimits"]
-    Voice --> Agent["Agent"]
-    LSP --> Agent
+    subgraph Core["核心引擎"]
+        Query["QueryEngine"]
+    end
+    subgraph Services["服务层（并列，均由 QueryEngine 调用）"]
+        API["API 服务"]
+        MCP["MCP 服务"]
+        OAuth["OAuth 服务"]
+        LSP["LSP 服务"]
+        Analytics["分析服务"]
+    end
+    Query --> API
+    Query --> MCP
+    Query --> OAuth
+    Query --> LSP
+    Query --> Analytics
+    OAuth -->|"提供 access token"| API
 ```
-
-### 数据流概览
-
-```mermaid
-sequenceDiagram
-    participant User as 用户
-    participant Agent as Agent
-    participant OAuth as OAuth
-    participant MCP as MCP
-    participant Memory as Memory
-    participant Analytics as Analytics
-
-    User->>Agent: 发起请求
-    Agent->>OAuth: 验证授权
-    OAuth-->>Agent: 授权状态
-    Agent->>MCP: 获取上下文
-    MCP-->>Agent: 工具/资源
-    Agent->>Memory: 存储记忆
-    Memory-->>Agent: 记忆片段
-    Agent->>Analytics: 记录事件
-    Analytics-->>Agent: 确认记录
-    Agent-->>User: 返回结果
-```
-
-## 关键设计决策
-
-### 1. 服务隔离架构
-
-每个服务模块独立运行，通过明确定义的接口进行通信。这种设计允许：
-- 按需加载/卸载服务
-- 独立测试和调试
-- 灵活的扩展和定制
-
-### 2. 认证与授权分离
-
-OAuth 服务专门处理第三方认证，而策略限制由 policyLimits 独立管理，实现关注点分离。
-
-### 3. 内存分层存储
-
-- **会话内存**：当前对话上下文
-- **持久内存**：长期记忆存储
-- **团队内存**：跨用户共享知识
-
-## 源码引用
-
-- [services/lsp/](/restored-src/src/services/lsp/)
-- [services/mcp/](/restored-src/src/services/mcp/)
-- [services/oauth/](/restored-src/src/services/oauth/)
-- [services/analytics/](/restored-src/src/services/analytics/)
-- [memdir/](/restored-src/src/memdir/)
-- [services/teamMemorySync/](/restored-src/src/services/teamMemorySync/)
-- [services/voice.ts](/restored-src/src/services/voice.ts)
-- [services/policyLimits/](/restored-src/src/services/policyLimits/)
-- [services/rateLimitMocking.ts](/restored-src/src/services/rateLimitMocking.ts)
 
 ## 相关文档
 
-- [智能体与协调](../agent/_index.md)
-- [架构总览](../architecture.md)
-- [主页](../index.md)
+- [API 服务](api.md)
+- [MCP 服务](mcp.md)
+- [OAuth 服务](oauth.md)
+- [LSP 服务](lsp.md)
+- [分析服务](analytics.md)
+- [架构文档](../architecture.md)
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-04-02*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-05-12*

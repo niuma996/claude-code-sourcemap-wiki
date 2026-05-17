@@ -1,118 +1,180 @@
-# Documentation Map
+# Document Map
+
+This document provides an index and relationship guide for all documentation in the Claude Code project.
 
 ## Document Structure
 
 ```
-wiki/
-├── index.md              # Project home page
-├── architecture.md       # System architecture
-├── getting-started.md    # Getting started
-├── doc-map.md           # Documentation index (this file)
+.nium-wiki/wiki/
+├── index.md                  # Project home
+├── architecture.md           # System architecture
+├── getting-started.md        # Quick start
+├── doc-map.md               # This document
 │
-├── cli/                 # CLI Core and Entry
-│   ├── _index.md       # CLI module overview
-│   ├── entrypoints.md   # CLI entry points
-│   └── startup.md       # Startup and fast paths
+├── core/                    # Core modules
+│   ├── _index.md           # Core modules overview
+│   ├── commands.md         # Command system
+│   ├── context.md          # Context management
+│   ├── hooks.md           # Hook system
+│   ├── query.md           # Query engine
+│   ├── skills.md          # Skills system
+│   └── tools.md           # Tool system
 │
-├── agent/               # Agent and Coordination
-│   ├── _index.md       # Agent module overview
-│   ├── agent-tool.md    # Agent tool
-│   └── fork-subagent.md # Fork subagent
+├── cli/                     # CLI entry
+│   ├── _index.md          # CLI overview
+│   ├── entrypoints.md     # Entry points
+│   └── startup.md         # Startup flow
 │
-├── remote/              # Remote and Service Extensions
-│   ├── _index.md       # Remote extensions overview
-│   ├── bridge.md       # Remote Control Bridge
-│   └── mcp.md          # MCP client
+├── agent/                   # Agent system
+│   ├── _index.md          # Agent overview
+│   ├── agent-tool.md      # Agent tool
+│   ├── fork-subagent.md   # Sub-agent
+│   ├── session-history.md # Session history
+│   └── built-in/          # Built-in agents
+│       ├── _index.md
+│       ├── general-purpose-agent.md
+│       ├── explore-agent.md
+│       ├── plan-agent.md
+│       ├── verification-agent.md
+│       └── ...
 │
-├── plugins/             # Plugins and Skills System
-│   ├── _index.md       # Plugin system overview
-│   ├── builtin.md      # Built-in plugins
-│   ├── bundled-skills.md # Bundled skills
-│   └── companion.md    # Companion system
+├── services/               # Service layer
+│   ├── _index.md          # Services overview
+│   ├── api.md             # API service
+│   ├── mcp.md             # MCP service
+│   ├── oauth.md           # OAuth service
+│   ├── lsp.md             # LSP service
+│   ├── analytics.md       # Analytics service
+│   ├── memory.md          # Memory service
+│   ├── voice.md           # Voice service
+│   └── ...
 │
-├── core/                # Core modules
-│   ├── _index.md       # Core modules overview
-│   ├── commands.md     # Command system
-│   ├── tools.md        # Tool system
-│   ├── query.md        # Query engine
-│   ├── context.md      # Context state management
-│   └── hooks.md        # Hooks event system
+├── plugins/                # Plugin system
+│   ├── _index.md          # Plugin overview
+│   ├── builtin.md         # Built-in plugins
+│   ├── bundled-skills.md  # Bundled skills
+│   └── ...
 │
-├── services/            # Service layer
-│   ├── _index.md       # Service layer overview
-│   ├── api.md          # API service
-│   ├── mcp.md          # MCP service
-│   └── oauth.md        # OAuth authentication
+├── remote/                 # Remote system
+│   ├── _index.md          # Remote overview
+│   └── bridge.md          # Bridge mode
 │
-├── ui/                  # User interface
-│   ├── _index.md       # UI layer overview
-│   ├── repl.md         # REPL interface
-│   └── ink.md          # Ink rendering engine
+├── ui/                     # User interface
+│   ├── _index.md          # UI overview
+│   ├── ink.md             # Ink components
+│   └── repl.md            # REPL interface
 │
-└── reference/           # Reference documentation
-    ├── _index.md       # Reference docs overview
-    ├── api.md          # API reference
-    └── types.md        # Type definitions
+├── buddy/                  # Companion system
+│   ├── _index.md          # Buddy overview
+│   ├── companion.md       # Companion
+│   ├── buddy-prompt.md   # Buddy prompt
+│   └── sprites.md         # Sprites
+│
+└── coordinator/           # Coordinator
+    └── coordinator.md     # Task coordination
 ```
 
-## Module Dependencies
+## Document Dependencies
 
 ```mermaid
-flowchart LR
-    UI[User Interface]
-    Core[Core Engine]
-    Commands[Command System]
-    Services[Service Layer]
-    Tools[Tool System]
-    CLI[CLI Entry]
-    Agent[Agent System]
-    Remote[Remote Extensions]
-    Plugins[Plugins System]
+graph TD
+    Home["index.md"]
+    Arch["architecture.md"]
+    GS["getting-started.md"]
+    DM["doc-map.md"]
 
-    UI --> Core
-    UI --> Commands
-    CLI --> Core
-    Commands --> Core
-    Core --> Tools
-    Core --> Services
-    Agent --> Core
-    Remote --> Services
-    Plugins --> Services
+    Home --> Arch
+    Home --> GS
+    Home --> DM
+
+    Arch --> Core["core/_index.md"]
+    Arch --> Cli["cli/_index.md"]
+    Arch --> Services["services/_index.md"]
+
+    Core --> Commands["core/commands.md"]
+    Core --> Context["core/context.md"]
+    Core --> Tools["core/tools.md"]
+    Core --> Query["core/query.md"]
+    Core --> Hooks["core/hooks.md"]
+
+    Commands --> Agent["agent/_index.md"]
+    Commands --> Skills["core/skills.md"]
+
+    Services --> API["services/api.md"]
+    Services --> MCP["services/mcp.md"]
+    Services --> OAuth["services/oauth.md"]
+    Services --> LSP["services/lsp.md"]
+    Services --> Analytics["services/analytics.md"]
+
+    Agent --> BuiltIn["agent/built-in/_index.md"]
+    Agent --> SubAgent["agent/fork-subagent.md"]
+
+    UI["ui/_index.md"]
+    UI --> Ink["ui/ink.md"]
+    UI --> REPL["ui/repl.md"]
 ```
 
-## Documentation Checklist
+## Module Document Mapping
 
-| Document | Description | Priority |
-|----------|-------------|----------|
-| [index.md](index.md) | Project home page | High |
-| [architecture.md](architecture.md) | System architecture overview | High |
-| [getting-started.md](getting-started.md) | Getting started guide | High |
-| [doc-map.md](doc-map.md) | Documentation index | High |
-| [cli/_index.md](cli/_index.md) | CLI Core and Entry overview | High |
-| [cli/entrypoints.md](cli/entrypoints.md) | CLI entry points | High |
-| [cli/startup.md](cli/startup.md) | Startup and fast paths | High |
-| [agent/_index.md](agent/_index.md) | Agent and Coordination overview | High |
-| [agent/agent-tool.md](agent/agent-tool.md) | Agent tool | High |
-| [agent/fork-subagent.md](agent/fork-subagent.md) | Fork subagent | High |
-| [remote/_index.md](remote/_index.md) | Remote and Service Extensions overview | High |
-| [remote/bridge.md](remote/bridge.md) | Remote Control Bridge | High |
-| [remote/mcp.md](remote/mcp.md) | MCP client | High |
-| [plugins/_index.md](plugins/_index.md) | Plugins and Skills System overview | High |
-| [plugins/builtin.md](plugins/builtin.md) | Built-in plugins | High |
-| [plugins/bundled-skills.md](plugins/bundled-skills.md) | Bundled skills | High |
-| [plugins/companion.md](plugins/companion.md) | Companion system | Medium |
-| [core/commands.md](core/commands.md) | Command system | Medium |
-| [core/tools.md](core/tools.md) | Tool system | Medium |
-| [core/query.md](core/query.md) | Query engine | Medium |
-| [core/context.md](core/context.md) | Context state management | High |
-| [core/hooks.md](core/hooks.md) | Hooks event system | High |
-| [services/api.md](services/api.md) | API service | Medium |
-| [services/mcp.md](services/mcp.md) | MCP service | Medium |
-| [services/oauth.md](services/oauth.md) | OAuth authentication | Medium |
-| [ui/repl.md](ui/repl.md) | REPL interface | Medium |
-| [ui/ink.md](ui/ink.md) | Ink rendering engine | Low |
-| [reference/types.md](reference/types.md) | Type definitions | Low |
+| Module Path | Document Location | Description |
+|------------|------------------|-------------|
+| `src/main.tsx` | [core/_index.md](core/_index.md) | Main entry |
+| `src/QueryEngine.ts` | [core/query.md](core/query.md) | Query engine |
+| `src/Task.ts` | [core/_index.md](core/_index.md) | Task system |
+| `src/Tool.ts` | [core/tools.md](core/tools.md) | Tool base class |
+| `src/commands.ts` | [core/commands.md](core/commands.md) | Command system |
+| `src/entrypoints/cli.tsx` | [cli/entrypoints.md](cli/entrypoints.md) | CLI entry |
+| `src/services/api/` | [services/api.md](services/api.md) | API service |
+| `src/services/mcp/` | [services/mcp.md](services/mcp.md) | MCP service |
+| `src/services/oauth/` | [services/oauth.md](services/oauth.md) | OAuth service |
+| `src/services/lsp/` | [services/lsp.md](services/lsp.md) | LSP service |
+| `src/screens/REPL.tsx` | [ui/repl.md](ui/repl.md) | REPL interface |
+| `src/ink/` | [ui/ink.md](ui/ink.md) | Ink components |
+| `src/plugins/` | [plugins/_index.md](plugins/_index.md) | Plugin system |
+| `src/bridge/` | [remote/bridge.md](remote/bridge.md) | Bridge mode |
+
+## Source Path Mapping
+
+| Source File | Wiki Document | Description |
+|------------|--------------|-------------|
+| `/restored-src/src/main.tsx` | [index.md](index.md) | Project home |
+| `/restored-src/src/entrypoints/cli.tsx` | [cli/entrypoints.md](cli/entrypoints.md) | CLI entry points |
+| `/restored-src/src/QueryEngine.ts` | [core/query.md](core/query.md) | Query engine |
+| `/restored-src/src/Task.ts` | [core/_index.md](core/_index.md) | Task system |
+| `/restored-src/src/Tool.ts` | [core/tools.md](core/tools.md) | Tool system |
+| `/restored-src/src/commands.ts` | [core/commands.md](core/commands.md) | Command system |
+
+## Reading Paths
+
+### Developer Getting Started
+1. [Home](index.md) - Project overview
+2. [Quick Start](getting-started.md) - Installation and configuration
+3. [System Architecture](architecture.md) - Architecture understanding
+4. [CLI Entry](cli/entrypoints.md) - Entry points details
+
+### Core Development
+1. [Command System](core/commands.md) - Command implementation
+2. [Query Engine](core/query.md) - Query processing
+3. [Tool System](core/tools.md) - Tool implementation
+4. [Hook System](core/hooks.md) - Extension mechanism
+
+### Service Integration
+1. [API Service](services/api.md) - API client
+2. [MCP Service](services/mcp.md) - MCP protocol
+3. [OAuth Service](services/oauth.md) - Authentication
+4. [LSP Service](services/lsp.md) - Language server
+
+### UI Development
+1. [REPL Interface](ui/repl.md) - Interactive interface
+2. [Ink Components](ui/ink.md) - Terminal UI components
+3. [Companion](buddy/companion.md) - Companion system
+
+## Related Documents
+
+- [Home](index.md)
+- [Architecture Documentation](architecture.md)
+- [Quick Start](getting-started.md)
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-03-31*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-05-12*

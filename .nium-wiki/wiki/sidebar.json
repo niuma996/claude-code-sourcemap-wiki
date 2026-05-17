@@ -1,0 +1,358 @@
+{
+  "items": [
+    {
+      "text": "Claude Code Sourcemap",
+      "link": "/",
+      "type": "page",
+      "order": 0
+    },
+    {
+      "text": "系统架构",
+      "link": "/architecture.md",
+      "type": "page",
+      "order": 1
+    },
+    {
+      "text": "快速开始",
+      "link": "/getting-started.md",
+      "type": "page",
+      "order": 2
+    },
+    {
+      "text": "文档地图",
+      "link": "/doc-map.md",
+      "type": "page",
+      "order": 3
+    },
+    {
+      "text": "",
+      "dirName": "agent",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "智能体与协调",
+          "link": "/agent/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Agent 工具",
+          "link": "/agent/agent-tool.md",
+          "type": "page"
+        },
+        {
+          "text": "Fork 子智能体",
+          "link": "/agent/fork-subagent.md",
+          "type": "page"
+        },
+        {
+          "text": "会话历史 (Session History)",
+          "link": "/agent/session-history.md",
+          "type": "page"
+        },
+        {
+          "text": "",
+          "dirName": "built-in",
+          "type": "group",
+          "collapsed": false,
+          "children": [
+            {
+              "text": "内置智能体（Built-in Agents）",
+              "link": "/agent/built-in/_index.md",
+              "type": "page"
+            },
+            {
+              "text": "Claude Code Guide Agent（Claude 代码指南智能体）",
+              "link": "/agent/built-in/claude-code-guide-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "Explore Agent（探索智能体）",
+              "link": "/agent/built-in/explore-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "General Purpose Agent（通用目的智能体）",
+              "link": "/agent/built-in/general-purpose-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "Plan Agent（计划智能体）",
+              "link": "/agent/built-in/plan-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "Statusline Setup Agent（状态栏配置智能体）",
+              "link": "/agent/built-in/statusline-setup-agent.md",
+              "type": "page"
+            },
+            {
+              "text": "Verification Agent（验证智能体）",
+              "link": "/agent/built-in/verification-agent.md",
+              "type": "page"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "buddy",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "AI 伴侣 (Buddy)",
+          "link": "/buddy/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Buddy 通知与提示",
+          "link": "/buddy/buddy-notifications.md",
+          "type": "page"
+        },
+        {
+          "text": "Buddy 提示词集成",
+          "link": "/buddy/buddy-prompt.md",
+          "type": "page"
+        },
+        {
+          "text": "CompanionSprite UI",
+          "link": "/buddy/companion-sprite-ui.md",
+          "type": "page"
+        },
+        {
+          "text": "Companion 抽卡系统",
+          "link": "/buddy/companion.md",
+          "type": "page"
+        },
+        {
+          "text": "Sprites 精灵渲染",
+          "link": "/buddy/sprites.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "cli",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "CLI 入口",
+          "link": "/cli/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "CLI 入口点",
+          "link": "/cli/entrypoints.md",
+          "type": "page"
+        },
+        {
+          "text": "启动流程与快速路径",
+          "link": "/cli/startup.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "coordinator",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "协调器模式 (Coordinator Mode)",
+          "link": "/coordinator/coordinator.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "core",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "核心模块",
+          "link": "/core/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "命令系统",
+          "link": "/core/commands.md",
+          "type": "page"
+        },
+        {
+          "text": "Context 模块",
+          "link": "/core/context.md",
+          "type": "page"
+        },
+        {
+          "text": "Hooks 模块",
+          "link": "/core/hooks.md",
+          "type": "page"
+        },
+        {
+          "text": "查询引擎",
+          "link": "/core/query.md",
+          "type": "page"
+        },
+        {
+          "text": "Skills 模块",
+          "link": "/core/skills.md",
+          "type": "page"
+        },
+        {
+          "text": "工具系统",
+          "link": "/core/tools.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "plugins",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "插件与技能系统",
+          "link": "/plugins/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "内置插件",
+          "link": "/plugins/builtin.md",
+          "type": "page"
+        },
+        {
+          "text": "打包技能",
+          "link": "/plugins/bundled-skills.md",
+          "type": "page"
+        },
+        {
+          "text": "伴侣系统",
+          "link": "/plugins/companion.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "remote",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "远程与服务扩展",
+          "link": "/remote/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Remote Control Bridge",
+          "link": "/remote/bridge.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "services",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "服务层",
+          "link": "/services/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "分析服务",
+          "link": "/services/analytics.md",
+          "type": "page"
+        },
+        {
+          "text": "API 服务",
+          "link": "/services/api.md",
+          "type": "page"
+        },
+        {
+          "text": "Compact 模块",
+          "link": "/services/compact.md",
+          "type": "page"
+        },
+        {
+          "text": "LSP 服务",
+          "link": "/services/lsp.md",
+          "type": "page"
+        },
+        {
+          "text": "MagicDocs 自动文档维护",
+          "link": "/services/magicdocs.md",
+          "type": "page"
+        },
+        {
+          "text": "MCP 服务",
+          "link": "/services/mcp.md",
+          "type": "page"
+        },
+        {
+          "text": "内存服务",
+          "link": "/services/memory.md",
+          "type": "page"
+        },
+        {
+          "text": "OAuth 服务",
+          "link": "/services/oauth.md",
+          "type": "page"
+        },
+        {
+          "text": "策略限制",
+          "link": "/services/policy-limits.md",
+          "type": "page"
+        },
+        {
+          "text": "速率限制模拟",
+          "link": "/services/rate-limit-mocking.md",
+          "type": "page"
+        },
+        {
+          "text": "团队内存同步",
+          "link": "/services/team-memory-sync.md",
+          "type": "page"
+        },
+        {
+          "text": "语音服务",
+          "link": "/services/voice.md",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "text": "",
+      "dirName": "ui",
+      "type": "group",
+      "collapsed": false,
+      "children": [
+        {
+          "text": "用户界面层",
+          "link": "/ui/_index.md",
+          "type": "page"
+        },
+        {
+          "text": "Ink 渲染引擎",
+          "link": "/ui/ink.md",
+          "type": "page"
+        },
+        {
+          "text": "REPL 界面",
+          "link": "/ui/repl.md",
+          "type": "page"
+        }
+      ]
+    }
+  ]
+}

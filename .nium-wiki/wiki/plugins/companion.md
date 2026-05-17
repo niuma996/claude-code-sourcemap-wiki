@@ -18,10 +18,10 @@ export function roll(seed: string): Companion
 
 ```mermaid
 flowchart LR
-    A["会话 ID"] --> B["哈希函数"]
-    B --> C["确定种子"]
-    C --> D["确定性 RNG"]
-    D --> E["伴侣属性"]
+    A[会话 ID] --> B[哈希函数]
+    B --> C[确定种子]
+    C --> D[确定性 RNG]
+    D --> E[伴侣属性]
 ```
 
 系统使用会话 ID 作为种子，通过哈希函数生成确定性随机数，然后使用该随机数从预定义的角色池中选择伴侣。

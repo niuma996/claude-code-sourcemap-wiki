@@ -20,7 +20,7 @@
 | [会话历史](session-history.md) | Agent SDK 会话事件历史读取 | [session-history.md](session-history.md) |
 | [内置智能体](built-in/_index.md) | 内置智能体概览 | [built-in/_index.md](built-in/_index.md) |
 | [协调器模式](../coordinator/coordinator.md) | 多智能体协调编排 | [coordinator.md](../coordinator/coordinator.md) |
-| [AI 伴侣](../buddy/_index.md) | 终端伴侣 UI 与交互 | [buddy/index.md](../buddy/_index.md) |
+| [AI 伴侣](../buddy/_index.md) | 终端伴侣 UI 与交互 | [buddy/_index.md](../buddy/_index.md) |
 
 ## 内置智能体
 

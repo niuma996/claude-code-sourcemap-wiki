@@ -1,10 +1,10 @@
 # Claude Code
 
-> Anthropic AI Terminal Assistant — Use Claude directly in your command line
+> Anthropic AI Terminal Assistant — Use Claude directly from the command line
 
-Claude Code is a powerful command-line tool that enables developers to use Anthropic's AI assistant Claude directly in the terminal. Claude can understand codebases, edit files, execute terminal commands, and handle various complex workflows.
+Claude Code is a powerful command-line tool that allows developers to use Anthropic's AI assistant Claude directly in the terminal. Claude can understand codebases, edit files, execute terminal commands, and handle various complex workflows.
 
-This repository contains TypeScript source code restored from the npm package (`@anthropic-ai/claude-code`) via source map, version 2.1.88. This source code is for research purposes only and does not represent the official internal development repository structure.
+This repository contains TypeScript source code restored via source maps from the npm package (`@anthropic-ai/claude-code`), version 2.1.88. This source code is for research purposes only and does not represent the official internal development repository structure.
 
 ## Architecture Preview
 
@@ -13,6 +13,7 @@ flowchart TB
     subgraph CL ["CLI Entry Layer"]
         CLI[cli.tsx]
         Init[init.ts]
+        Main[main.tsx]
     end
     subgraph CM ["Command System"]
         Commands[commands.ts]
@@ -21,61 +22,81 @@ flowchart TB
     subgraph CS ["Core System"]
         Query[QueryEngine]
         Task[Task]
-        ToolBase[ToolBase]
+        ToolBase[Tool]
     end
     subgraph TS ["Tool System"]
-        ToolEntry[Tool Entry]
         Bash[BashTool]
         FileEdit[FileEditTool]
         Grep[GrepTool]
         MCPTool[MCPTool]
+        Agent[AgentTool]
+        Glob[GlobTool]
+        WebSearch[WebSearchTool]
+        WebFetch[WebFetchTool]
     end
     subgraph SV ["Service Layer"]
-        ServiceEntry[Service Entry]
         API[API Service]
         MCP_Svc[MCP Service]
-        Auth[Auth Service]
+        OAuth[OAuth Service]
+        LSP[LSP Service]
+        Analytics[Analytics Service]
     end
-    subgraph UL ["User Interface"]
+    subgraph UI ["User Interface"]
         REPL[REPL Interface]
-        Ink[Ink Components]
+        Components[React Components]
+        Ink[Ink Renderer]
     end
     CLI --> Init
-    CLI --> Commands
+    CLI --> Main
+    Main --> Commands
     Commands --> Handlers
     Handlers --> Query
     Query --> Task
-    Task --> ToolBase
-    Task --> ServiceEntry
-    ToolBase --> ToolEntry
-    ToolEntry --> Bash
-    ToolEntry --> FileEdit
-    ToolEntry --> Grep
-    ToolEntry --> MCPTool
-    ServiceEntry --> API
-    ServiceEntry --> MCP_Svc
-    ServiceEntry --> Auth
-    REPL --> Ink
+    Query --> ToolBase
+    ToolBase --> Bash
+    ToolBase --> FileEdit
+    ToolBase --> Grep
+    ToolBase --> MCPTool
+    ToolBase --> Agent
+    Query --> API
+    Query --> MCP_Svc
+    Query --> OAuth
+    Query --> LSP
+    REPL --> Components
+    Components --> Ink
 ```
 
 ## Documentation Navigation
 
 | Document | Description | Audience |
 |----------|-------------|----------|
-| [Architecture](architecture.md) | System architecture, module dependencies, design patterns | Developers, Contributors |
+| [Architecture](architecture.md) | System architecture, module dependencies, design patterns | Developers, contributors |
 | [Getting Started](getting-started.md) | Installation, configuration, basic usage | All users |
-| [Doc Map](doc-map.md) | Index and relationships of all documents | Contributors |
+| [Document Map](doc-map.md) | Index and relationships of all documents | Contributors |
 
 ## Core Features
 
 | Feature | Description | Module |
 |---------|-------------|--------|
-| Command System | Support for 80+ slash commands (/help, /commit, /review, etc.) | [commands.ts](/restored-src/src/commands.ts) |
+| Command System | 80+ slash commands (/help, /commit, /review, etc.) | [commands.ts](/restored-src/src/commands.ts) |
 | Tool Execution | Tools available to AI agents (Bash, file editing, Grep, etc.) | [tools/](/restored-src/src/tools/) |
 | MCP Integration | Model Context Protocol support | [services/mcp/](/restored-src/src/services/mcp/) |
 | REPL Interface | Interactive terminal user interface | [screens/REPL.tsx](/restored-src/src/screens/REPL.tsx) |
-| Authentication System | OAuth and API Key authentication | [services/oauth/](/restored-src/src/services/oauth/) |
-| Plugin System | Extend functionality and custom skills | [plugins/](/restored-src/src/plugins/) |
+| Authentication | OAuth and API Key authentication | [services/oauth/](/restored-src/src/services/oauth/) |
+| Plugin System | Extension functionality and custom skills | [plugins/](/restored-src/src/plugins/) |
+| Bridge Mode | Remote control of Claude Code | [bridge/](/restored-src/src/bridge/) |
+| Analytics Service | Telemetry and metrics collection | [services/analytics/](/restored-src/src/services/analytics/) |
+
+## Core Modules
+
+| Module | Description | Path |
+|--------|-------------|------|
+| CLI Entry | Command-line entry and fast paths | [entrypoints/cli.tsx](/restored-src/src/entrypoints/cli.tsx) |
+| Command System | Slash command management | [commands/](/restored-src/src/commands/) |
+| Query Engine | AI query processing | [QueryEngine.ts](/restored-src/src/QueryEngine.ts) |
+| Task System | Task management and execution | [Task.ts](/restored-src/src/Task.ts) |
+| Tool Base | Tool abstraction and execution | [Tool.ts](/restored-src/src/Tool.ts) |
+| State Management | React state and app state | [state/](/restored-src/src/state/) |
 
 ## Quick Start
 
@@ -83,7 +104,7 @@ flowchart TB
 # Install Claude Code
 npm install -g @anthropic-ai/claude-code
 
-# Start an interactive session
+# Start interactive session
 claude
 
 # View help
@@ -94,16 +115,16 @@ claude --help
 
 ```
 Claude Code 2.1.88
-Use Claude to work on your codebase.
+Use Claude to work with your codebase.
 
 Usage:
   claude [options] [command]
 
 Available commands:
   help     Show help information
-  config   Configure settings
-  login    Log in to Claude
-  logout   Log out
+  config   Configuration settings
+  login    Login to Claude
+  logout   Logout from Claude
   ...
 ```
 
@@ -112,11 +133,11 @@ Available commands:
 | Metric | Value |
 |--------|-------|
 | Restored Version | 2.1.88 |
-| Source Files | 1884 .ts/.tsx files |
-| Total Files | 1905 |
-| Main Modules | 2 (package, restored-src) |
+| Source Files | 1901 TypeScript/TSX files |
+| Total Files | 1905+ |
+| Main Modules | Core system, command system, tool system, service layer, UI layer |
 | Tech Stack | TypeScript, Node.js, Ink (React) |
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-03-31*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-05-12*

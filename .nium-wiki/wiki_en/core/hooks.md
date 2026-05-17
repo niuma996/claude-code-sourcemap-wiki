@@ -353,7 +353,7 @@ flowchart TD
     CheckFlag -->|"true"| CheckValid["In HOOK_EVENTS?"]
     CheckValid -->|"Yes"| Allow2["return true"]
     CheckValid -->|"No"| Deny["return false"]
-    CheckFlag -->|"false"| Deny2["return false"]
+    CheckFlag -->|"false (default)"| Deny2["return false"]
 
     style Allow fill:#c8f7c5
     style Allow2 fill:#c8f7c5
@@ -362,7 +362,7 @@ flowchart TD
 ```
 
 - **Always emitted**: `SessionStart` and `Setup` always broadcast regardless of `includeHookEvents` setting
-- **Conditional**: Other events only broadcast after `setAllHookEventsEnabled(true)` (enabled when SDK's `includeHookEvents` option is `true`, or in `CLAUDE_CODE_REMOTE` mode)
+- **Conditional**: Other events are **not broadcast by default** (`allHookEventsEnabled` defaults to `false`). They only broadcast after `setAllHookEventsEnabled(true)` — enabled when SDK's `includeHookEvents` option is `true`, or in `CLAUDE_CODE_REMOTE` mode
 - **Pending buffer**: When no handler is registered, events are buffered in memory (max 100), and flushed when handler registers
 
 ```typescript
@@ -855,7 +855,7 @@ removeFunctionHook(setAppState, sessionId, 'UserPromptSubmit', hookId)
 View current session's hook configurations:
 
 ```bash
-/claude hooks
+/hooks
 ```
 
 Displays:
@@ -869,7 +869,7 @@ Displays:
 Visualize current context usage:
 
 ```bash
-/claude context
+/context
 ```
 
 Displays:
@@ -959,7 +959,6 @@ Hook system enforces `SyntheticOutputTool` for structured results:
 - [Tools System](/wiki/core/tools.md)
 - [Query Engine](/wiki/core/query.md)
 - [Configuration System](/wiki/core/commands.md)
-- [Permissions System](/wiki/core/permissions.md)
 
 ---
 

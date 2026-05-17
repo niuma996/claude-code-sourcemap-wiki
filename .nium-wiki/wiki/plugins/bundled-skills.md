@@ -40,10 +40,10 @@ type BundledSkillDefinition = {
 
 ```mermaid
 flowchart LR
-    A["registerBundledSkill(definition)"] --> B["转换为 Command 对象"]
-    B --> C["bundledSkills[]"]
-    C --> D["getBundledSkills()"]
-    D --> E["命令系统"]
+    A[registerBundledSkill definition] --> B[Convert to Command object]
+    B --> C[bundledSkills]
+    C --> D[getBundledSkills]
+    D --> E[Command system]
 ```
 
 ```typescript
@@ -212,12 +212,12 @@ function prependBaseDir(
 
 ```mermaid
 flowchart TB
-    A["registerBundledSkill()"] --> B["bundledSkills[]"]
-    C["registerBuiltinPlugin()"] --> D["BUILTIN_PLUGINS Map"]
-    D --> E["getBuiltinPluginSkillCommands()"]
-    E --> F["skillDefinitionToCommand()"]
+    A[registerBundledSkill] --> B[bundledSkills]
+    C[registerBuiltinPlugin] --> D[BUILTIN_PLUGINS Map]
+    D --> E[getBuiltinPluginSkillCommands]
+    E --> F[skillDefinitionToCommand]
     F --> B
-    B --> G["命令系统"]
+    B --> G[Command system]
 ```
 
 内置插件的技能最终也通过 `skillDefinitionToCommand()` 转换为 `Command` 对象，与打包技能共享同一注册表。

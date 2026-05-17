@@ -8,6 +8,12 @@
 
 > **注意**：`Tool` 是 TypeScript `interface` 而非 class 基类。实际方法为 `call()`（执行）和 `description()`（生成描述），而非 `invoke()`/`getMetadata()`。
 
+**核心源码位置**
+- [Tool.ts](/restored-src/src/Tool.ts#L1) - 工具基类接口
+- [tools.ts](/restored-src/src/tools.ts#L1) - 工具注册
+- [tools/BashTool/](/restored-src/src/tools/BashTool/) - Bash 工具实现
+- [tools/FileEditTool/](/restored-src/src/tools/FileEditTool/) - 文件编辑工具
+
 ## 架构位置
 
 ```mermaid
@@ -45,26 +51,55 @@ flowchart TB
 
 ```
 restored-src/src/
-├── Tool.ts                 # 工具基类
+├── Tool.ts                 # 工具基类接口
+├── tools.ts                # 工具注册表
 ├── tools/                  # 工具实现目录
 │   ├── BashTool/          # Bash 执行工具
+│   │   ├── BashTool.ts    # Bash 工具主实现
 │   │   ├── UI.tsx        # Bash 工具 UI
 │   │   ├── prompt.ts     # 提示词模板
 │   │   └── utils.ts      # 工具函数
 │   ├── FileEditTool/     # 文件编辑工具
+│   │   ├── FileEditTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
 │   ├── FileReadTool/     # 文件读取工具
 │   ├── GlobTool/         # 文件搜索工具
+│   │   ├── GlobTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
 │   ├── GrepTool/         # 代码搜索工具
+│   │   ├── GrepTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
 │   ├── MCPTool/          # MCP 工具
+│   │   ├── MCPTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
 │   ├── LSPTool/          # LSP 工具
+│   │   ├── LSPTool.ts
+│   │   ├── UI.tsx
+│   │   ├── prompt.ts
+│   │   └── schemas.ts
 │   ├── AgentTool/        # Agent 工具
+│   │   ├── AgentTool.ts
+│   │   ├── UI.tsx
+│   │   └── prompt.ts
 │   ├── WebFetchTool/     # Web 获取工具
+│   ├── WebSearchTool/    # Web 搜索工具
 │   ├── TaskStopTool/     # 任务停止工具
 │   ├── SleepTool/        # 睡眠工具
 │   ├── ConfigTool/       # 配置工具
 │   ├── SkillTool/        # 技能工具
 │   └── BriefTool/        # 简要工具
 ```
+
+**源码映射**
+- [Tool.ts](/restored-src/src/Tool.ts) - 工具基类接口
+- [tools.ts](/restored-src/src/tools.ts) - 工具注册逻辑
+- [tools/BashTool/BashTool.ts](/restored-src/src/tools/BashTool/) - Bash 工具实现
+- [tools/GlobTool/GlobTool.ts](/restored-src/src/tools/GlobTool/) - Glob 工具实现
+- [tools/GrepTool/GrepTool.ts](/restored-src/src/tools/GrepTool/) - Grep 工具实现
 
 ## 核心工作流
 
@@ -110,49 +145,47 @@ classDiagram
 
 ## API 摘要
 
-| 工具 | 说明 | 主要方法 |
-|------|------|----------|
-| BashTool | 执行 shell 命令 | `invoke(input: BashInput)` |
-| FileEditTool | 编辑文件内容 | `invoke(input: EditInput)` |
-| FileReadTool | 读取文件内容 | `invoke(input: ReadInput)` |
-| GlobTool | 模式匹配文件 | `invoke(input: GlobInput)` |
-| GrepTool | 代码搜索 | `invoke(input: GrepInput)` |
-| MCPTool | MCP 工具调用 | `invoke(input: MCPInput)` |
-| LSPTool | LSP 操作 | `invoke(input: LSPInput)` |
-| AgentTool | 子代理执行 | `invoke(input: AgentInput)` |
+| 工具 | 说明 | 主要方法 | 源码位置 |
+|------|------|----------|----------|
+| BashTool | 执行 shell 命令 | `call(input, context, ...)` | [BashTool.ts](/restored-src/src/tools/BashTool/BashTool.ts) |
+| FileEditTool | 编辑文件内容 | `call(input, context, ...)` | [FileEditTool.ts](/restored-src/src/tools/FileEditTool/FileEditTool.ts) |
+| FileReadTool | 读取文件内容 | `call(input, context, ...)` | [FileReadTool.ts](/restored-src/src/tools/FileReadTool/) |
+| GlobTool | 模式匹配文件 | `call(input, context, ...)` | [GlobTool.ts](/restored-src/src/tools/GlobTool/GlobTool.ts) |
+| GrepTool | 代码搜索 | `call(input, context, ...)` | [GrepTool.ts](/restored-src/src/tools/GrepTool/GrepTool.ts) |
+| MCPTool | MCP 工具调用 | `call(input, context, ...)` | [MCPTool.ts](/restored-src/src/tools/MCPTool/MCPTool.ts) |
+| LSPTool | LSP 操作 | `call(input, context, ...)` | [LSPTool.ts](/restored-src/src/tools/LSPTool/LSPTool.ts) |
+| AgentTool | 子代理执行 | `call(input, context, ...)` | [AgentTool.ts](/restored-src/src/tools/AgentTool/AgentTool.ts) |
+| WebFetchTool | 网页获取 | `call(input, context, ...)` | [WebFetchTool.ts](/restored-src/src/tools/WebFetchTool/) |
+| WebSearchTool | 网络搜索 | `call(input, context, ...)` | [WebSearchTool.ts](/restored-src/src/tools/WebSearchTool/) |
 
 ## BashTool 详细说明
 
-BashTool 是最常用的工具，允许执行 shell 命令：
+BashTool 是最常用的工具，允许执行 shell 命令。以下为示意性输入/输出结构（非源码中的实际类型名，具体实现见 [BashTool.ts](/restored-src/src/tools/BashTool/BashTool.ts)）：
 
 ```typescript
-interface BashInput {
-  command: string        // 要执行的命令
-  context?: {
-    cwd?: string        // 工作目录
-    env?: Record<string, string>
-    timeout?: number    // 超时时间（毫秒）
-  }
+// 示意性结构（非源码实际类型名）
+// 输入：command 为必填，timeout 可选（毫秒）
+{
+  command: string
+  timeout?: number
 }
 
-interface BashResult {
-  stdout: string         // 标准输出
-  stderr: string         // 标准错误
-  exitCode: number       // 退出码
-  duration: number       // 执行时长（毫秒）
+// 输出：stdout/stderr 文本 + 退出码
+{
+  stdout: string
+  stderr: string
+  exitCode: number
 }
 ```
 
 ## 文件编辑工具
 
-文件编辑工具支持多种操作：
+文件编辑工具支持以下操作（操作名称以源码实际参数为准，见 [FileEditTool.ts](/restored-src/src/tools/FileEditTool/FileEditTool.ts)）：
 
 | 操作 | 说明 | 参数 |
 |------|------|------|
 | `create` | 创建新文件 | `file_path`, `content` |
-| `edit` | 编辑文件内容 | `file_path`, `old_string`, `new_string` |
-| `delete` | 删除文件 | `file_path` |
-| `rename` | 重命名文件 | `old_path`, `new_path` |
+| `str_replace` | 替换文件中的字符串 | `file_path`, `old_string`, `new_string` |
 
 ## MCP 工具集成
 
@@ -172,7 +205,7 @@ interface MCPInput {
 
 | 原则 | 说明 |
 |------|------|
-| 参数验证 | 在 `invoke` 前验证所有参数 |
+| 参数验证 | 在 `call()` 前验证所有参数 |
 | 错误处理 | 捕获并适当处理执行错误 |
 | 超时控制 | 为长时间操作设置超时 |
 | 结果缓存 | 缓存可重用的结果 |
@@ -188,17 +221,29 @@ interface MCPInput {
 
 ## 源码引用
 
-- [Tool.ts](/restored-src/src/Tool.ts)
-- [tools/BashTool/](/restored-src/src/tools/BashTool/)
-- [tools/FileEditTool/](/restored-src/src/tools/FileEditTool/)
-- [tools/GrepTool/](/restored-src/src/tools/GrepTool/)
+**核心文件**
+- [Tool.ts](/restored-src/src/Tool.ts) - 工具基类接口
+- [tools.ts](/restored-src/src/tools.ts) - 工具注册表
+
+**工具实现**
+- [tools/BashTool/BashTool.ts](/restored-src/src/tools/BashTool/) - Bash 工具
+- [tools/FileEditTool/](/restored-src/src/tools/FileEditTool/) - 文件编辑工具
+- [tools/GrepTool/](/restored-src/src/tools/GrepTool/) - 搜索工具
+- [tools/GlobTool/](/restored-src/src/tools/GlobTool/) - 文件匹配工具
+- [tools/MCPTool/](/restored-src/src/tools/MCPTool/) - MCP 工具
+- [tools/AgentTool/](/restored-src/src/tools/AgentTool/) - 代理工具
+
+**工具 UI 和提示**
+- [BashTool/UI.tsx](/restored-src/src/tools/BashTool/UI.tsx) - Bash UI
+- [GlobTool/prompt.ts](/restored-src/src/tools/GlobTool/prompt.ts) - Glob 提示
 
 ## 相关文档
 
 - [查询引擎](query.md)
 - [MCP 服务](../../services/mcp.md)
 - [命令系统](commands.md)
+- [核心模块索引](_index.md)
 
 ---
 
-*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-03-31*
+*Generated by [Nium-Wiki v0.0.0](https://github.com/niuma996/nium-wiki) | 2026-05-15*

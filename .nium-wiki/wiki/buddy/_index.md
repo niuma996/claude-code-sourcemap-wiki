@@ -160,30 +160,14 @@ flowchart TD
     CompanionSprite -->|reservedColumns| PromptInput["PromptInput 列宽预留"]
 ```
 
-## 发布时序
-
-```mermaid
-gantt
-    dateFormat  X
-    axisFormat  %m-%d
-
-    section 功能
-    /buddy 命令激活      :active, 04-01, 7d
-    彩虹公告窗口          :active, 04-01, 7d
-    Companion 机制激活   :04-01, 30d
-```
-
-- **4 月 1-7 日**：彩虹公告窗口（`isBuddyTeaserWindow()`），向未孵化伴侣的用户显示提示
-- **4 月 1 日起**：`isBuddyLive()` 恒为 true，功能全面激活
-
 ## 源码引用
 
-- [types.ts](/src/buddy/types.ts)
-- [companion.ts](/src/buddy/companion.ts)
-- [sprites.ts](/src/buddy/sprites.ts)
-- [CompanionSprite.tsx](/src/buddy/CompanionSprite.tsx)
-- [useBuddyNotification.tsx](/src/buddy/useBuddyNotification.tsx)
-- [prompt.ts](/src/buddy/prompt.ts)
+- [types.ts](/restored-src/src/buddy/types.ts)
+- [companion.ts](/restored-src/src/buddy/companion.ts)
+- [sprites.ts](/restored-src/src/buddy/sprites.ts)
+- [CompanionSprite.tsx](/restored-src/src/buddy/CompanionSprite.tsx)
+- [useBuddyNotification.tsx](/restored-src/src/buddy/useBuddyNotification.tsx)
+- [prompt.ts](/restored-src/src/buddy/prompt.ts)
 
 ## 相关文档
 
